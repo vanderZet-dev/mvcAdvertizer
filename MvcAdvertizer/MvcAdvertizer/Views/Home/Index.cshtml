@@ -1,0 +1,133 @@
+﻿@using MvcAdvertizer.Core.Domains;
+@model MvcAdvertizer.Core.ViewModels.IndexViewModel
+@*подключаем все tag-хелперы*@
+@addTagHelper *, MvcAdvertizer
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Объявления</title>
+    <link href="/node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="alert-success" style="margin:20px;padding:15px;height:50px; text-align:center;">Используем NPM</div>
+    <script src="/node_modules/jquery/dist/jquery.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <style>
+        @@font-face {
+            font-family: 'FontAwesome';
+            src: url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2') format('woff2'), url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff') format('woff'), url('https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/fonts/fontawesome-webfont.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal
+        }
+
+        .glyphicon {
+            display: inline-block;
+            font: normal normal normal 14px/1 FontAwesome;
+            font-size: inherit;
+            text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale
+        }
+
+        .glyphicon-chevron-down:before {
+            content: "\f078";
+        }
+
+        .glyphicon-chevron-up:before {
+            content: "\f077";
+        }
+
+        button {
+            background: #ffffff;
+            color: #252870;
+            border-radius: 15px;
+            padding: 5px 20px 5px 20px;
+            padding-right: 20px;
+            font-weight: bold;
+        }
+
+        table {
+            border-collapse: separate; /* Способ отображения границы */
+            border-spacing: 0px 20px; /* Расстояние между ячейками */
+            min-width: 300px;
+            width: auto;
+            margin: auto;
+        }
+
+        tr {
+            box-shadow: 1px 1px 4px 4px rgba(0,0,0,0.12);
+            -webkit-box-shadow: 1px 1px 4px 4px rgba(0,0,0,0.12);
+            -moz-box-shadow: 1px 1px 4px 4px rgba(0,0,0,0.12);
+            border-radius: 20px;
+        }
+
+        td {
+            padding: 10px; /* Поля вокруг текста */
+            color: #4200be;
+        }
+
+        th {
+            color: white;
+            border: 0px
+        }
+
+        tr:first-child {
+            box-shadow: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+        }
+    </style>
+
+    <h3>Объявления</h3>
+    <div>
+        <div style="text-align: center; background: #4200be; height: 200px; margin-bottom: -50px;">
+            <button type="button" onclick="location.href='@Url.Action("Index", "Home")'">ДОБАВИТЬ</button>
+        </div>
+
+        <div style="margin: 0px 10px 0px 10px;">
+            <table>
+                <tr>
+                    <th>
+                        <sort-header action="Index" up="@Model.SortViewModel.Up"
+                                     current="@Model.SortViewModel.Current" property="@Model.SortViewModel.NumberSort">
+                            Номер
+                        </sort-header>
+                    </th>
+                    <th>Создано</th>
+                    <th>Объявление</th>
+                    <th>Рейтинг</th>
+                    <th>Пользователь</th>
+                </tr>
+                @foreach (Advert advert in Model.Adverts)
+                {
+                    <tr>
+                        <td><input style="margin-right: 15px" type="checkbox" value="@advert.Selected">@advert.Number</td>
+                        <td>@advert.CreatedOn?.ToString("dd/MM/yyyy")</td>
+                        <td>@advert.Content</td>
+                        <td style="text-align:right">@advert.Rate</td>
+                        <td style="text-align:right">@advert.User?.Name</td>
+                    </tr>
+                }
+            </table>
+            <form method="get">
+                <div class="form-inline form-group">
+                    <label class="control-label">Номер: </label>
+                    <input name="number" class="form-control" />
+
+                    <label class="control-label">Пользователь: </label>
+                    <select name="user" asp-items="Model.Users" class="form-control"></select>
+
+                    <input type="submit" value="Фильтр" class="btn btn-default" />
+                </div>
+            </form>
+            <page-link page-model="Model.PageViewModel" page-action="Index"></page-link>
+        </div>
+    </div>
+
+
+</body>
+</html>

@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
 
+
 namespace MvcAdvertizer
 {
     public class Startup
@@ -31,7 +32,7 @@ namespace MvcAdvertizer
         {
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection));
-            services.AddMvc();            
+            services.AddMvc();                
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

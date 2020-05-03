@@ -12,6 +12,8 @@ namespace MvcAdvertizer.Core.Domains.Enums
         CreatedOnAsc,
         CreatedOnDesc,
         UpdatedOnAsc,
-        UpdatedOnDesc
+        UpdatedOnDesc,
+        AdvertContentAsc,
+        AdvertContentDesc
     }
 }

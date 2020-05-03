@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using MvcAdvertizer.Config;
 using MvcAdvertizer.Config.Database;
+using MvcAdvertizer.Config.Tools;
 using MvcAdvertizer.Core.Domains;
-using MvcAdvertizer.Core.Domains.Enums;
-using MvcAdvertizer.Core.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,51 +16,58 @@ namespace MvcAdvertizer.Controllers
         {
             db = context;
         }
-        public async Task<IActionResult> Index(Guid? user, string number, int page = 1, int pageSize = 5, AdvertSortState sortOrder = AdvertSortState.NumberDesc)
+        public async Task<IActionResult> Index(
+                                                string sortOrder,
+                                                string currentFilter,
+                                                string searchString,            
+                                                int? pageNumber,
+                                                int pageSize = 3
+                                                )
         {
-            IQueryable<Advert> source = db.Adverts.Include(c => c.User);
-            
-            if (user != null)
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NumberSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Number_desc" : "";
+            ViewData["CreatedOnSortParm"] = sortOrder == "CreatedOn" ? "CreatedOn_desc" : "CreatedOn";
+            ViewData["PageSize"] = pageSize;
+
+            if (searchString != null)
             {
-                source = source.Where(p => p.UserId == user);
+                pageNumber = 1;
             }
-            if (!string.IsNullOrEmpty(number))
+            else
             {
-                source = source.Where(p => p.Number.ToString().Contains(number));
+                searchString = currentFilter;
             }
 
-            List<User> users = db.Users.ToList();
-            // устанавливаем начальный элемент, который позволит выбрать всех
-            users.Insert(0, new User { Name = "Все"});
+            ViewData["CurrentFilter"] = searchString;
 
-            source = sortOrder switch
+            IQueryable<Advert> adverts = db.Adverts.Include(c => c.User);
+
+            if (!String.IsNullOrEmpty(searchString))
             {
-                AdvertSortState.RateAsc => source.OrderBy(s => s.Rate),
-                AdvertSortState.RateDesc => source.OrderByDescending(s => s.Rate),                
+                adverts = adverts.Where(s => s.Number.ToString().Equals(searchString)
+                                       || (User != null && EF.Functions.Like(s.User.Name.ToUpper(), $"%{searchString.ToUpper()}%"))
+                                       || EF.Functions.Like(s.Content.ToUpper(), $"%{searchString.ToUpper()}%")
+                                       );
+            }
 
-                AdvertSortState.UserNameAsc => source.OrderBy(s => s.User.Name),
-                AdvertSortState.UserNameDesc => source.OrderByDescending(s => s.User.Name),                
-
-                AdvertSortState.CreatedOnAsc => source.OrderBy(s => s.CreatedOn),
-                AdvertSortState.CreatedOnDesc => source.OrderByDescending(s => s.CreatedOn),
-
-                AdvertSortState.NumberAsc => source.OrderBy(s => s.Number),                
-                _ => source.OrderByDescending(s => s.Number)              
-            };
-
-            var count = await source.CountAsync();
-            var items = await source.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-
-            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
-            IndexViewModel viewModel = new IndexViewModel
+            switch (sortOrder)
             {
-                PageViewModel = pageViewModel,
-                SortViewModel = new SortViewModel(sortOrder),
-                Users = new SelectList(users, "id", "Name"),
-                Number = number,
-                Adverts = items
-            };
-            return View(viewModel);
+                case "Number_desc":
+                    adverts = adverts.OrderByDescending(s => s.Number);
+                    break;
+                case "CreatedOn":
+                    adverts = adverts.OrderBy(s => s.CreatedOn);
+                    break;
+                case "CreatedOn_desc":
+                    adverts = adverts.OrderByDescending(s => s.CreatedOn);
+                    break;
+                default:
+                    adverts = adverts.OrderBy(s => s.Number);
+                    break;
+            }
+
+                        
+            return View(await PaginatedList<Advert>.CreateAsync(adverts.AsNoTracking(), pageNumber ?? 1, pageSize));                     
         }
     }
 }

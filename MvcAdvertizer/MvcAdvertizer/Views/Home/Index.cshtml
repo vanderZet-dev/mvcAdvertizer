@@ -1,10 +1,13 @@
 ﻿@using MvcAdvertizer.Core.Domains;
-@model MvcAdvertizer.Core.ViewModels.IndexViewModel
-@*подключаем все tag-хелперы*@
-@addTagHelper *, MvcAdvertizer
+@using MvcAdvertizer.Config.Tools;
+@model PaginatedList<Advert>
+
 @{
-    Layout = null;
+    ViewData["Title"] = "Index";
 }
+@addTagHelper " *, Microsoft.AspNetCore.Mvc.TagHelpers"
+@addTagHelper *, MvcAdvertizer
+
 <!DOCTYPE html>
 
 <html>
@@ -13,11 +16,11 @@
     <link href="/node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="alert-success" style="margin:20px;padding:15px;height:50px; text-align:center;">Используем NPM</div>
+    @*<div class="alert-success" style="margin:20px;padding:15px;height:50px; text-align:center;">Используем NPM</div>*@
     <script src="/node_modules/jquery/dist/jquery.js"></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.js"></script>
     <style>
-        @@font-face {
+        /*@@font-face {
             font-family: 'FontAwesome';
             src: url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2') format('woff2'), url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff') format('woff'), url('https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/fonts/fontawesome-webfont.ttf') format('truetype');
             font-weight: normal;
@@ -33,12 +36,22 @@
             -moz-osx-font-smoothing: grayscale
         }
 
+        .glyphicon-chevron-right:before {
+            content: "\f054";
+        }
+
+        .glyphicon-chevron-left:before {
+            content: "\f053";
+        }
+
         .glyphicon-chevron-down:before {
-            content: "\f078";
+            content: "\f0d7";
+            color: inherit;
         }
 
         .glyphicon-chevron-up:before {
-            content: "\f077";
+            content: "\f0d8";
+            color: inherit;
         }
 
         button {
@@ -48,12 +61,12 @@
             padding: 5px 20px 5px 20px;
             padding-right: 20px;
             font-weight: bold;
-        }
+        }*/
 
         table {
             border-collapse: separate; /* Способ отображения границы */
             border-spacing: 0px 20px; /* Расстояние между ячейками */
-            min-width: 300px;
+            min-width: 400px;            
             width: auto;
             margin: auto;
         }
@@ -62,71 +75,214 @@
             box-shadow: 1px 1px 4px 4px rgba(0,0,0,0.12);
             -webkit-box-shadow: 1px 1px 4px 4px rgba(0,0,0,0.12);
             -moz-box-shadow: 1px 1px 4px 4px rgba(0,0,0,0.12);
-            border-radius: 20px;
+            border-radius: 15px;
         }
+
+            tr:first-child {
+                box-shadow: none;
+                -webkit-box-shadow: none;
+                -moz-box-shadow: none;
+            }
+
+        th {
+            color: white;
+            border: 0px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+            th:first-child {
+                padding-left: 5px
+            }
+
+            th:last-child {
+                padding-right: 5px
+            }
 
         td {
             padding: 10px; /* Поля вокруг текста */
             color: #4200be;
         }
 
-        th {
-            color: white;
-            border: 0px
+        /*a.likeSimpleText:link {
+            color: inherit;
+            text-decoration: inherit;
         }
 
-        tr:first-child {
-            box-shadow: none;
-            -webkit-box-shadow: none;
-            -moz-box-shadow: none;
+        a.likeSimpleText:visited {
+            color: inherit;
+            text-decoration: inherit;
         }
+
+        a.likeSimpleText:hover {
+            color: inherit;
+            text-decoration: inherit;
+        }
+
+        a.likeSimpleText:active {
+            color: inherit;
+            text-decoration: inherit;
+        }*/
+
+        /*.checkboxOfField {
+            display: inline-block;
+            width: 100%;
+            background-color: red;
+            height: 40px;
+            line-height: 40px;
+        }*/
     </style>
 
     <h3>Объявления</h3>
     <div>
-        <div style="text-align: center; background: #4200be; height: 200px; margin-bottom: -50px;">
-            <button type="button" onclick="location.href='@Url.Action("Index", "Home")'">ДОБАВИТЬ</button>
+        <div style="text-align: center;
+        background: #4200be;
+        height: 200px;
+        margin-bottom: -50px;">
+            <button type="button" class="btn btn-default" onclick="location.href='@Url.Action("Index", "Home")'">ДОБАВИТЬ</button>
+            <form style="color:inherit;" asp-action="Index" method="get">
+                <div class="form-actions no-color">
+                    <p>
+                        <input type="text" placeholder="Общий поиск" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                        <input type="hidden" name="PageSize" value="@ViewData["PageSize"]" />
+                        <input type="submit" value="Search" class="btn btn-default" />
+                    </p>
+                </div>
+            </form>
         </div>
 
         <div style="margin: 0px 10px 0px 10px;">
             <table>
                 <tr>
                     <th>
-                        <sort-header action="Index" up="@Model.SortViewModel.Up"
-                                     current="@Model.SortViewModel.Current" property="@Model.SortViewModel.NumberSort">
-                            Номер
-                        </sort-header>
+                        <a style="color:inherit;" asp-action="Index"
+                           asp-route-sortOrder="@ViewData["NumberSortParm"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-pageSize="@ViewData["PageSize"]">Номер</a>
                     </th>
-                    <th>Создано</th>
-                    <th>Объявление</th>
-                    <th>Рейтинг</th>
-                    <th>Пользователь</th>
+                    <th>
+                        <a style="color:inherit;"
+                           asp-action="Index"
+                           asp-route-sortOrder="@ViewData["CreatedOnSortParm"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-pageSize="@ViewData["PageSize"]">Создано</a>
+                    </th>
+                    <th>
+                        Объявление
+                    </th>
+                    <th>
+                        Рейтинг
+                    </th>
+                    <th>
+                        Пользовтаель
+                    </th>
                 </tr>
-                @foreach (Advert advert in Model.Adverts)
+                @foreach (Advert advert in Model)
                 {
                     <tr>
-                        <td><input style="margin-right: 15px" type="checkbox" value="@advert.Selected">@advert.Number</td>
+                        <td>
+                            <input style="width: 20px; height: 20px; float: left; display: inline-block;" type="checkbox" value="@advert.Selected" />
+                            <span style="float:right; display: inline-block;">@advert.Number</span>
+                        </td>
                         <td>@advert.CreatedOn?.ToString("dd/MM/yyyy")</td>
                         <td>@advert.Content</td>
                         <td style="text-align:right">@advert.Rate</td>
                         <td style="text-align:right">@advert.User?.Name</td>
                     </tr>
                 }
-            </table>
-            <form method="get">
-                <div class="form-inline form-group">
-                    <label class="control-label">Номер: </label>
-                    <input name="number" class="form-control" />
+            </table>            
 
-                    <label class="control-label">Пользователь: </label>
-                    <select name="user" asp-items="Model.Users" class="form-control"></select>
+            <div>
+                <div >  
+                    <span style="float:left">Количество строк на странице:</span>
+                    <ul class="pagination">
+                        @{
+                            var additional = @ViewData["PageSize"].ToString() == "1" ? "active" : "";
+                        }
+                        <li class="page-item  @additional">
+                            <a class="page-link" style="margin-left:10px;margin-right:10px"
+                               asp-action="Index"
+                               asp-route-sortOrder="@ViewData["CurrentSort"]"
+                               asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                               asp-route-pageSize=1>
+                                1
+                            </a>
+                        </li>
+                        @{
+                            additional = @ViewData["PageSize"].ToString() == "3" ? "active" : "";
+                        }
+                    <li class="page-item  @additional">
+                        <a class="page-link" style="margin-right:10px"
+                           asp-action="Index"
+                           asp-route-sortOrder="@ViewData["CurrentSort"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-pageSize=3>
+                            3
+                        </a>
+                    </li>
+                        @{
+                            additional = @ViewData["PageSize"].ToString() == "5" ? "active" : "";
+                        }
+                    <li class="page-item  @additional">
+                        <a class="page-link" style="margin-right:10px"
+                           asp-action="Index"
+                           asp-route-sortOrder="@ViewData["CurrentSort"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-pageSize=5>
+                            5
+                        </a>
+                    </li>
+                        @{
+                            additional = @ViewData["PageSize"].ToString() == "10" ? "active" : "";
+                        }
+                    <li class="page-item  @additional">
+                        <a class="page-link" style="margin-right:10px; @Model"
+                           asp-action="Index"
+                           asp-route-sortOrder="@ViewData["CurrentSort"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-pageSize=10>
+                            10
+                        </a>
+                    </li>
+                    </ul>
+                </div>               
 
-                    <input type="submit" value="Фильтр" class="btn btn-default" />
-                </div>
-            </form>
-            <page-link page-model="Model.PageViewModel" page-action="Index"></page-link>
+                <page-link page-model="Model" page-action="Index"
+                           page-url-currentFilter="@ViewData["CurrentFilter"]"
+                           page-url-pageSize="@ViewData["PageSize"]"
+                           page-url-sortorder="@ViewData["CurrentSort"]"></page-link>
+
+                @{
+                    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                }
+
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-pageSize="@ViewData["PageSize"]"
+                   class="btn btn-default @prevDisabled">
+                    Previous
+                </a>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-pageSize="@ViewData["PageSize"]"
+                   class="btn btn-default @nextDisabled">
+                    Next
+                </a>
+
+            </div>
+            
         </div>
     </div>
+
+
+
+
+
 
 
 </body>

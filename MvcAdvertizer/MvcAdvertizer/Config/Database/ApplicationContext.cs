@@ -14,7 +14,7 @@ namespace MvcAdvertizer.Config.Database
               
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)        
         {
-        
+                       
         }               
 
         public override int SaveChanges()

@@ -1,11 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcAdvertizer.Config.Database;
 using MvcAdvertizer.Config.Tools;
 using MvcAdvertizer.Core.Domains;
+using MvcAdvertizer.Core.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 
 namespace MvcAdvertizer.Controllers
 {
@@ -14,60 +18,57 @@ namespace MvcAdvertizer.Controllers
         private ApplicationContext db;
         public HomeController(ApplicationContext context)
         {
-            db = context;
+            db = context;            
         }
-        public async Task<IActionResult> Index(
-                                                string sortOrder,
-                                                string currentFilter,
-                                                string searchString,            
+        public async Task<IActionResult> Index(string sortOrderName,
+                                                string sortDirection,
+                                                bool notChangeSort,
+                                                Guid? userId,                                                
+                                                string searchStringQuery,
                                                 int? pageNumber,
-                                                int pageSize = 3
-                                                )
+                                                int? pageSize)
         {
-            ViewData["CurrentSort"] = sortOrder;
-            ViewData["NumberSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Number_desc" : "";
-            ViewData["CreatedOnSortParm"] = sortOrder == "CreatedOn" ? "CreatedOn_desc" : "CreatedOn";
-            ViewData["PageSize"] = pageSize;
+            var result = new AdvertListViewModel("Number", "desc", 5);            
+            result.SortingListTool.ActivateSortingElement(sortOrderName, sortDirection, notChangeSort);
 
-            if (searchString != null)
-            {
-                pageNumber = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
+            //биндим параметры сортировки и элементы представления
+            ViewData["Number"] = result.SortingListTool?.GetSortingElementByName("Number");
+            ViewData["NumberSortDirection"] = result.SortingListTool?.GetSortingElementByName("Number")?.SortDirection;
+            ViewData["CreatedOn"] = result.SortingListTool.GetSortingElementByName("CreatedOn");
+            ViewData["CreatedOnSortDirection"] = result.SortingListTool.GetSortingElementByName("CreatedOn")?.SortDirection;
+            ViewData["Content"] = result.SortingListTool.GetSortingElementByName("Content");
+            ViewData["ContentSortDirection"] = result.SortingListTool.GetSortingElementByName("Content")?.SortDirection;
+            ViewData["Rate"] = result.SortingListTool.GetSortingElementByName("Rate");
+            ViewData["RateSortDirection"] = result.SortingListTool.GetSortingElementByName("Rate")?.SortDirection;
+            ViewData["User"] = result.SortingListTool.GetSortingElementByName("User");
+            ViewData["UserSortDirection"] = result.SortingListTool.GetSortingElementByName("User")?.SortDirection;
 
-            ViewData["CurrentFilter"] = searchString;
+            //биндим буферные настройки сортировки для случаев, когда они не должны изменяться - запрос приходит не из контроллера, отвечающего за сортировку
+            ViewData["BufferSortParam"] = result.SortingListTool?.GetActiveSortingElement();
+            ViewData["BufferSortDirection"] = result.SortingListTool?.GetActiveSortingElement()?.SortDirection;
 
+            //задаем настройки для страниц
+            result.SelectedPageNumber = pageNumber;
+            result.SelectedPageSize = pageSize;
+            ViewData["PageSize"] = result.SelectedPageSize;
+
+
+            //формирования списка пользователей для осуществления поиска по юзерам
+            result.SearchedUserId = userId;
+            IQueryable<User> users = db.Users;
+            ViewData["UserList"] = result.GetUserSearchList(users);
+            ViewData["BufferUserId"] = userId;
+            
+            //обработка поисковой строки
+            result.StringQuerySearch = searchStringQuery;
+            ViewData["SearchStringQuery"] = searchStringQuery;
+
+            //отправка собственно самого основного запроса
             IQueryable<Advert> adverts = db.Adverts.Include(c => c.User);
+            await result.CreateAsync(adverts);
 
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                adverts = adverts.Where(s => s.Number.ToString().Equals(searchString)
-                                       || (User != null && EF.Functions.Like(s.User.Name.ToUpper(), $"%{searchString.ToUpper()}%"))
-                                       || EF.Functions.Like(s.Content.ToUpper(), $"%{searchString.ToUpper()}%")
-                                       );
-            }
-
-            switch (sortOrder)
-            {
-                case "Number_desc":
-                    adverts = adverts.OrderByDescending(s => s.Number);
-                    break;
-                case "CreatedOn":
-                    adverts = adverts.OrderBy(s => s.CreatedOn);
-                    break;
-                case "CreatedOn_desc":
-                    adverts = adverts.OrderByDescending(s => s.CreatedOn);
-                    break;
-                default:
-                    adverts = adverts.OrderBy(s => s.Number);
-                    break;
-            }
-
-                        
-            return View(await PaginatedList<Advert>.CreateAsync(adverts.AsNoTracking(), pageNumber ?? 1, pageSize));                     
+            return View(result);                     
         }
+                
     }
 }

@@ -15,7 +15,6 @@
   <ItemGroup>
     <Folder Include="Core\Intefaces\" />
     <Folder Include="Core\Services\" />
-    <Folder Include="Core\ViewModels\" />
   </ItemGroup>
 
 </Project>

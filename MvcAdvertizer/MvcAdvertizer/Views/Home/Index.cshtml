@@ -1,6 +1,7 @@
 ﻿@using MvcAdvertizer.Core.Domains;
+@using MvcAdvertizer.Core.ViewModels;
 @using MvcAdvertizer.Config.Tools;
-@model PaginatedList<Advert>
+@model AdvertListViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -66,7 +67,7 @@
         table {
             border-collapse: separate; /* Способ отображения границы */
             border-spacing: 0px 20px; /* Расстояние между ячейками */
-            min-width: 400px;            
+            min-width: 400px;
             width: auto;
             margin: auto;
         }
@@ -140,13 +141,15 @@
         height: 200px;
         margin-bottom: -50px;">
             <button type="button" class="btn btn-default" onclick="location.href='@Url.Action("Index", "Home")'">ДОБАВИТЬ</button>
-            <form style="color:inherit;" asp-action="Index" method="get">
-                <div class="form-actions no-color">
-                    <p>
-                        <input type="text" placeholder="Общий поиск" name="SearchString" value="@ViewData["CurrentFilter"]" />
-                        <input type="hidden" name="PageSize" value="@ViewData["PageSize"]" />
-                        <input type="submit" value="Search" class="btn btn-default" />
-                    </p>
+            <form style="color:inherit;" asp-action="Index" method="get">                
+                <div class="form-inline form-group">
+                    <select name="userId" asp-for="SearchedUserId" asp-items="(SelectList)@ViewData["UserList"]" class="form-control" onchange="this.form.submit()"></select>
+                    <input type="text" placeholder="Общий поиск" name="SearchStringQuery" value="@ViewData["SearchStringQuery"]" />
+                    <input type="hidden" name="PageSize" value="@ViewData["PageSize"]" />
+                    <input type="hidden" name="SortOrderName" value="@ViewData["BufferSortParam"]" />
+                    <input type="hidden" name="SortDirection" value="@ViewData["BufferSortDirection"]" />
+                    <input type="hidden" name="NotChangeSort" value=true />                                        
+                    <input type="submit" value="Search" class="btn btn-default" />
                 </div>
             </form>
         </div>
@@ -156,28 +159,44 @@
                 <tr>
                     <th>
                         <a style="color:inherit;" asp-action="Index"
-                           asp-route-sortOrder="@ViewData["NumberSortParm"]"
-                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                           asp-route-pageSize="@ViewData["PageSize"]">Номер</a>
+                           asp-route-sortOrderName="@ViewData["Number"]"
+                           asp-route-sortDirection="@ViewData["NumberSortDirection"]"
+                           asp-route-userId="@ViewData["BufferUserId"]"
+                           asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
+                           asp-route-pageSize="@ViewData["PageSize"]">Номер / @ViewData["NumberSortDirection"]</a>
                     </th>
                     <th>
                         <a style="color:inherit;"
                            asp-action="Index"
-                           asp-route-sortOrder="@ViewData["CreatedOnSortParm"]"
-                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                           asp-route-pageSize="@ViewData["PageSize"]">Создано</a>
+                           asp-route-sortOrderName="@ViewData["CreatedOn"]"
+                           asp-route-sortDirection="@ViewData["CreatedOnSortDirection"]"
+                           asp-route-userId="@ViewData["BufferUserId"]"
+                           asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
+                           asp-route-pageSize="@ViewData["PageSize"]">Создано / @ViewData["CreatedOnSortDirection"]</a>
                     </th>
                     <th>
-                        Объявление
+                        <a style="color:inherit;"
+                           asp-action="Index"
+                           asp-route-sortOrderName="@ViewData["Content"]"
+                           asp-route-sortDirection="@ViewData["ContentSortDirection"]"
+                           asp-route-userId="@ViewData["BufferUserId"]"
+                           asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
+                           asp-route-pageSize="@ViewData["PageSize"]">Объявление / @ViewData["ContentSortDirection"]</a>                        
                     </th>
                     <th>
-                        Рейтинг
+                        <a style="color:inherit;"
+                           asp-action="Index"
+                           asp-route-sortOrderName="@ViewData["Rate"]"
+                           asp-route-sortDirection="@ViewData["RateSortDirection"]"
+                           asp-route-userId="@ViewData["BufferUserId"]"
+                           asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
+                           asp-route-pageSize="@ViewData["PageSize"]">Рейтинг / @ViewData["RateSortDirection"]</a>                        
                     </th>
                     <th>
-                        Пользовтаель
+                        Пользователь
                     </th>
                 </tr>
-                @foreach (Advert advert in Model)
+                @foreach (Advert advert in Model.Adverts)
                 {
                     <tr>
                         <td>
@@ -190,10 +209,10 @@
                         <td style="text-align:right">@advert.User?.Name</td>
                     </tr>
                 }
-            </table>            
+            </table>
 
             <div>
-                <div >  
+                <div>
                     <span style="float:left">Количество строк на странице:</span>
                     <ul class="pagination">
                         @{
@@ -202,8 +221,11 @@
                         <li class="page-item  @additional">
                             <a class="page-link" style="margin-left:10px;margin-right:10px"
                                asp-action="Index"
-                               asp-route-sortOrder="@ViewData["CurrentSort"]"
-                               asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                               asp-route-sortOrderName="@ViewData["BufferSortParam"]"
+                               asp-route-sortDirection="@ViewData["BufferSortDirection"]"
+                               asp-route-notChangeSort=true
+                               asp-route-userId="@ViewData["BufferUserId"]"
+                               asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
                                asp-route-pageSize=1>
                                 1
                             </a>
@@ -211,71 +233,90 @@
                         @{
                             additional = @ViewData["PageSize"].ToString() == "3" ? "active" : "";
                         }
-                    <li class="page-item  @additional">
-                        <a class="page-link" style="margin-right:10px"
-                           asp-action="Index"
-                           asp-route-sortOrder="@ViewData["CurrentSort"]"
-                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                           asp-route-pageSize=3>
-                            3
-                        </a>
-                    </li>
+                        <li class="page-item  @additional">
+                            <a class="page-link" style="margin-right:10px"
+                               asp-action="Index"
+                               asp-route-sortOrderName="@ViewData["BufferSortParam"]"
+                               asp-route-sortDirection="@ViewData["BufferSortDirection"]"
+                               asp-route-notChangeSort=true
+                               asp-route-userId="@ViewData["BufferUserId"]"
+                               asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
+                               asp-route-pageSize=3>
+                                3
+                            </a>
+                        </li>
                         @{
                             additional = @ViewData["PageSize"].ToString() == "5" ? "active" : "";
                         }
-                    <li class="page-item  @additional">
-                        <a class="page-link" style="margin-right:10px"
-                           asp-action="Index"
-                           asp-route-sortOrder="@ViewData["CurrentSort"]"
-                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                           asp-route-pageSize=5>
-                            5
-                        </a>
-                    </li>
+                        <li class="page-item  @additional">
+                            <a class="page-link" style="margin-right:10px"
+                               asp-action="Index"
+                               asp-route-sortOrderName="@ViewData["BufferSortParam"]"
+                               asp-route-sortDirection="@ViewData["BufferSortDirection"]"
+                               asp-route-notChangeSort=true
+                               asp-route-userId="@ViewData["BufferUserId"]"
+                               asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
+                               asp-route-pageSize=5>
+                                5
+                            </a>
+                        </li>
                         @{
                             additional = @ViewData["PageSize"].ToString() == "10" ? "active" : "";
                         }
-                    <li class="page-item  @additional">
-                        <a class="page-link" style="margin-right:10px; @Model"
-                           asp-action="Index"
-                           asp-route-sortOrder="@ViewData["CurrentSort"]"
-                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                           asp-route-pageSize=10>
-                            10
-                        </a>
-                    </li>
+                        <li class="page-item  @additional">
+                            <a class="page-link" style="margin-right:10px;"
+                               asp-action="Index"
+                               asp-route-sortOrderName="@ViewData["BufferSortParam"]"
+                               asp-route-sortDirection="@ViewData["BufferSortDirection"]"
+                               asp-route-notChangeSort=true
+                               asp-route-userId="@ViewData["BufferUserId"]"
+                               asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
+                               asp-route-pageSize=10>
+                                10
+                            </a>
+                        </li>
                     </ul>
-                </div>               
+                </div>
 
-                <page-link page-model="Model" page-action="Index"
-                           page-url-currentFilter="@ViewData["CurrentFilter"]"
-                           page-url-pageSize="@ViewData["PageSize"]"
-                           page-url-sortorder="@ViewData["CurrentSort"]"></page-link>
+                <page-link page-model="Model.Adverts" page-action="Index"
+                           page-url-sortOrderName="@ViewData["BufferSortParam"]"
+                           page-url-sortDirection="@ViewData["BufferSortDirection"]"
+                           page-url-notChangeSort=true   
+                           page-url-userId="@ViewData["BufferUserId"]"
+                           page-url-searchStringQuery="@ViewData["SearchStringQuery"]"
+                           page-url-pageSize="@ViewData["PageSize"]"                           
+                           ></page-link>
 
                 @{
-                    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-                    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                    var prevDisabled = !Model.Adverts.HasPreviousPage ? "disabled" : "";
+                    var nextDisabled = !Model.Adverts.HasNextPage ? "disabled" : "";
                 }
 
                 <a asp-action="Index"
-                   asp-route-sortOrder="@ViewData["CurrentSort"]"
-                   asp-route-pageNumber="@(Model.PageIndex - 1)"
-                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrderName="@ViewData["BufferSortParam"]"
+                   asp-route-sortDirection="@ViewData["BufferSortDirection"]"
+                   asp-route-notChangeSort=true
+                   asp-route-userId="@ViewData["BufferUserId"]"
+                   asp-route-pageNumber="@(Model.Adverts.PageIndex - 1)"
+                   asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
                    asp-route-pageSize="@ViewData["PageSize"]"
                    class="btn btn-default @prevDisabled">
                     Previous
                 </a>
                 <a asp-action="Index"
-                   asp-route-sortOrder="@ViewData["CurrentSort"]"
-                   asp-route-pageNumber="@(Model.PageIndex + 1)"
-                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrderName="@ViewData["BufferSortParam"]"
+                   asp-route-sortDirection="@ViewData["BufferSortDirection"]"
+                   asp-route-notChangeSort=true
+                   asp-route-userId="@ViewData["BufferUserId"]"
+                   asp-route-pageNumber="@(Model.Adverts.PageIndex + 1)"
+                   asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
                    asp-route-pageSize="@ViewData["PageSize"]"
                    class="btn btn-default @nextDisabled">
                     Next
                 </a>
 
             </div>
-            
+
         </div>
     </div>
 

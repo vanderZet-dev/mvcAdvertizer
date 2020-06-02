@@ -18,39 +18,6 @@
     <link href="~/lib/jqueryui/themes/redmond/jquery-ui.min.css" rel="stylesheet" />
 </head>
 <body>
-    @*<div class="alert-success" style="margin:20px;padding:15px;height:50px; text-align:center;">Используем NPM</div>*@
-    @*<script src="/node_modules/jquery/dist/jquery.js"></script>
-    <script src="/node_modules/bootstrap/dist/js/bootstrap.js"></script>
-
-    <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
-    <script type="text/javascript">
-        $(function () { // will trigger when the document is ready
-            //Initialise all datepickers whose class name are mydatepicker
-            // Display them with a button which containes a small calendar icon.
-            $(".mydatepicker")
-                .wrap('＜div class="input-group"＞')
-                .datepicker({
-                    dateFormat: "dd.mm.yy",
-                    changeYear: true,
-                    yearRange: "-70:+0",//year selection is possible from starting 70 years before now
-                    showOn: "both"
-                })
-                .next("button").button({
-                    icons: { primary: "ui-icon-calendar" },
-                    label: "Select Date",
-                    text: false
-                })
-                .addClass("btn btn-default")
-                .wrap('＜span class="input-group-btn"＞')
-                .find('.ui-button-text')
-                .css({
-                    'visibility': 'hidden',
-                    'display': 'inline'
-                });
-        });
-    </script>*@
-   
-
     <style>
         @@font-face {
             font-family: 'FontAwesome';
@@ -135,34 +102,7 @@
             padding: 10px; /* Поля вокруг текста */
             color: #4200be;
         }
-
-        /*a.likeSimpleText:link {
-            color: inherit;
-            text-decoration: inherit;
-        }
-
-        a.likeSimpleText:visited {
-            color: inherit;
-            text-decoration: inherit;
-        }
-
-        a.likeSimpleText:hover {
-            color: inherit;
-            text-decoration: inherit;
-        }
-
-        a.likeSimpleText:active {
-            color: inherit;
-            text-decoration: inherit;
-        }*/
-
-        /*.checkboxOfField {
-            display: inline-block;
-            width: 100%;
-            background-color: red;
-            height: 40px;
-            line-height: 40px;
-        }*/
+      
     </style>
 
     <h3>Объявления</h3>

@@ -10,13 +10,15 @@ namespace MvcAdvertizer.Config.Tools
     {
         public int PageIndex { get; private set; }        
         public int TotalPages { get; private set; }
+        public int ItemsCount { get; private set; }
 
         public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
         {
             PageIndex = pageIndex;
-            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+            ItemsCount = count;
+            TotalPages = (int)Math.Ceiling(ItemsCount / (double)pageSize);
 
-            this.AddRange(items);
+            AddRange(items);
         }
 
         public bool HasPreviousPage

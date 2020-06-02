@@ -15,13 +15,44 @@
 <head>
     <title>Объявления</title>
     <link href="/node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/lib/jqueryui/themes/redmond/jquery-ui.min.css" rel="stylesheet" />
 </head>
 <body>
     @*<div class="alert-success" style="margin:20px;padding:15px;height:50px; text-align:center;">Используем NPM</div>*@
-    <script src="/node_modules/jquery/dist/jquery.js"></script>
+    @*<script src="/node_modules/jquery/dist/jquery.js"></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.js"></script>
+
+    <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
+    <script type="text/javascript">
+        $(function () { // will trigger when the document is ready
+            //Initialise all datepickers whose class name are mydatepicker
+            // Display them with a button which containes a small calendar icon.
+            $(".mydatepicker")
+                .wrap('＜div class="input-group"＞')
+                .datepicker({
+                    dateFormat: "dd.mm.yy",
+                    changeYear: true,
+                    yearRange: "-70:+0",//year selection is possible from starting 70 years before now
+                    showOn: "both"
+                })
+                .next("button").button({
+                    icons: { primary: "ui-icon-calendar" },
+                    label: "Select Date",
+                    text: false
+                })
+                .addClass("btn btn-default")
+                .wrap('＜span class="input-group-btn"＞')
+                .find('.ui-button-text')
+                .css({
+                    'visibility': 'hidden',
+                    'display': 'inline'
+                });
+        });
+    </script>*@
+   
+
     <style>
-        /*@@font-face {
+        @@font-face {
             font-family: 'FontAwesome';
             src: url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2') format('woff2'), url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff') format('woff'), url('https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/fonts/fontawesome-webfont.ttf') format('truetype');
             font-weight: normal;
@@ -62,7 +93,7 @@
             padding: 5px 20px 5px 20px;
             padding-right: 20px;
             font-weight: bold;
-        }*/
+        }
 
         table {
             border-collapse: separate; /* Способ отображения границы */
@@ -141,56 +172,79 @@
         height: 200px;
         margin-bottom: -50px;">
             <button type="button" class="btn btn-default" onclick="location.href='@Url.Action("Index", "Home")'">ДОБАВИТЬ</button>
-            <form style="color:inherit;" asp-action="Index" method="get">                
+            <form style="color:inherit;" asp-action="Index" method="get">
                 <div class="form-inline form-group">
-                    <select name="userId" asp-for="SearchedUserId" asp-items="(SelectList)@ViewData["UserList"]" class="form-control" onchange="this.form.submit()"></select>
-                    <input type="text" placeholder="Общий поиск" name="SearchStringQuery" value="@ViewData["SearchStringQuery"]" />
-                    <input type="hidden" name="PageSize" value="@ViewData["PageSize"]" />
-                    <input type="hidden" name="SortOrderName" value="@ViewData["BufferSortParam"]" />
-                    <input type="hidden" name="SortDirection" value="@ViewData["BufferSortDirection"]" />
-                    <input type="hidden" name="NotChangeSort" value=true />                                        
+                    <div class="form-group">
+                        <label class="control-label" style="color:white">от</label>
+                        <input class="form-control" name="DateStartSearch" type="date" value="@Model.AdvertSearchObject.DateStartSearchString"/>
+                        <span asp-validation-for="@Model.AdvertSearchObject.DateStartSearch" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label" style="color:white">до</label>
+                        <input class="form-control" name="DateEndSearch" type="date" value="@Model.AdvertSearchObject.DateEndSearchString" />
+                        <span asp-validation-for="@Model.AdvertSearchObject.DateEndSearch" class="text-danger"></span>
+                    </div>
+
+                    <select name="userId" asp-for="@Model.AdvertSearchObject.UserId" asp-items="@Model.UserSearchList" class="form-control" onchange="this.form.submit()"></select>
+
+                    <input type="text" placeholder="Общий поиск" name="SearchStringQuery" value="@Model.AdvertSearchObject.SearchStringQuery" />
+                    <input type="hidden" name="PageSize" value="@Model.RepresentObjectConfigurator.PageSize" />
+                    <input type="hidden" name="SortOrderName" value="@Model.SortingListTool.SortOrderName" />
+                    <input type="hidden" name="SortDirection" value="@Model.SortingListTool.SortDirection" />
+                    <input type="hidden" name="NotChangeSort" value=true />
                     <input type="submit" value="Search" class="btn btn-default" />
                 </div>
             </form>
+            <label class="control-label" style="color:white">Найдено записей: @Model.Adverts.ItemsCount</label>
         </div>
 
         <div style="margin: 0px 10px 0px 10px;">
             <table>
                 <tr>
                     <th>
-                        <a style="color:inherit;" asp-action="Index"
-                           asp-route-sortOrderName="@ViewData["Number"]"
-                           asp-route-sortDirection="@ViewData["NumberSortDirection"]"
-                           asp-route-userId="@ViewData["BufferUserId"]"
-                           asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
-                           asp-route-pageSize="@ViewData["PageSize"]">Номер / @ViewData["NumberSortDirection"]</a>
+                        <a style="color:inherit;"
+                           asp-action="Index"
+                           asp-route-sortOrderName="@Model.SortingListTool?.GetSortingElementByName("Number")"
+                           asp-route-sortDirection="@Model.SortingListTool?.GetSortingElementByName("Number")?.MirrorSortDirection"
+                           asp-route-userId="@Model.AdvertSearchObject.UserId"
+                           asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
+                           asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
+                           asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
+                           asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Номер <sort-header current-sort="@Model.SortingListTool?.GetSortingElementByName("Number")?.SortDirection" /></a>
                     </th>
                     <th>
                         <a style="color:inherit;"
                            asp-action="Index"
-                           asp-route-sortOrderName="@ViewData["CreatedOn"]"
-                           asp-route-sortDirection="@ViewData["CreatedOnSortDirection"]"
-                           asp-route-userId="@ViewData["BufferUserId"]"
-                           asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
-                           asp-route-pageSize="@ViewData["PageSize"]">Создано / @ViewData["CreatedOnSortDirection"]</a>
+                           asp-route-sortOrderName="@Model.SortingListTool?.GetSortingElementByName("CreatedOn")"
+                           asp-route-sortDirection="@Model.SortingListTool?.GetSortingElementByName("CreatedOn")?.MirrorSortDirection"
+                           asp-route-userId="@Model.AdvertSearchObject.UserId"
+                           asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
+                           asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
+                           asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
+                           asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Создано <sort-header current-sort="@Model.SortingListTool?.GetSortingElementByName("CreatedOn")?.SortDirection"/></a>
                     </th>
                     <th>
                         <a style="color:inherit;"
                            asp-action="Index"
-                           asp-route-sortOrderName="@ViewData["Content"]"
-                           asp-route-sortDirection="@ViewData["ContentSortDirection"]"
-                           asp-route-userId="@ViewData["BufferUserId"]"
-                           asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
-                           asp-route-pageSize="@ViewData["PageSize"]">Объявление / @ViewData["ContentSortDirection"]</a>                        
+                           asp-route-sortOrderName="@Model.SortingListTool?.GetSortingElementByName("Content")"
+                           asp-route-sortDirection="@Model.SortingListTool?.GetSortingElementByName("Content")?.MirrorSortDirection"
+                           asp-route-userId="@Model.AdvertSearchObject.UserId"
+                           asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
+                           asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
+                           asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
+                           asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Объявление <sort-header current-sort="@Model.SortingListTool?.GetSortingElementByName("Content")?.SortDirection" /></a>
                     </th>
                     <th>
                         <a style="color:inherit;"
                            asp-action="Index"
-                           asp-route-sortOrderName="@ViewData["Rate"]"
-                           asp-route-sortDirection="@ViewData["RateSortDirection"]"
-                           asp-route-userId="@ViewData["BufferUserId"]"
-                           asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
-                           asp-route-pageSize="@ViewData["PageSize"]">Рейтинг / @ViewData["RateSortDirection"]</a>                        
+                           asp-route-sortOrderName="@Model.SortingListTool?.GetSortingElementByName("Rate")"
+                           asp-route-sortDirection="@Model.SortingListTool?.GetSortingElementByName("Rate")?.MirrorSortDirection"
+                           asp-route-userId="@Model.AdvertSearchObject.UserId"
+                           asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
+                           asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
+                           asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
+                           asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Рейтинг <sort-header current-sort="@Model.SortingListTool?.GetSortingElementByName("Rate")?.SortDirection" /></a>
                     </th>
                     <th>
                         Пользователь
@@ -216,61 +270,69 @@
                     <span style="float:left">Количество строк на странице:</span>
                     <ul class="pagination">
                         @{
-                            var additional = @ViewData["PageSize"].ToString() == "1" ? "active" : "";
+                            var additional = Model.RepresentObjectConfigurator.PageSize.ToString() == "1" ? "active" : "";
                         }
                         <li class="page-item  @additional">
                             <a class="page-link" style="margin-left:10px;margin-right:10px"
                                asp-action="Index"
-                               asp-route-sortOrderName="@ViewData["BufferSortParam"]"
-                               asp-route-sortDirection="@ViewData["BufferSortDirection"]"
+                               asp-route-sortOrderName="@Model.SortingListTool.SortOrderName"
+                               asp-route-sortDirection="@Model.SortingListTool.SortDirection"
                                asp-route-notChangeSort=true
-                               asp-route-userId="@ViewData["BufferUserId"]"
-                               asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
+                               asp-route-userId="@Model.AdvertSearchObject.UserId"
+                               asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
+                               asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
+                               asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
                                asp-route-pageSize=1>
                                 1
                             </a>
                         </li>
                         @{
-                            additional = @ViewData["PageSize"].ToString() == "3" ? "active" : "";
+                            additional = Model.RepresentObjectConfigurator.PageSize.ToString() == "3" ? "active" : "";
                         }
                         <li class="page-item  @additional">
                             <a class="page-link" style="margin-right:10px"
                                asp-action="Index"
-                               asp-route-sortOrderName="@ViewData["BufferSortParam"]"
-                               asp-route-sortDirection="@ViewData["BufferSortDirection"]"
+                               asp-route-sortOrderName="@Model.SortingListTool.SortOrderName"
+                               asp-route-sortDirection="@Model.SortingListTool.SortDirection"
                                asp-route-notChangeSort=true
-                               asp-route-userId="@ViewData["BufferUserId"]"
-                               asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
+                               asp-route-userId="@Model.AdvertSearchObject.UserId"
+                               asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
+                               asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
+                               asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
                                asp-route-pageSize=3>
                                 3
                             </a>
                         </li>
                         @{
-                            additional = @ViewData["PageSize"].ToString() == "5" ? "active" : "";
+                            additional = Model.RepresentObjectConfigurator.PageSize.ToString() == "5" ? "active" : "";
                         }
                         <li class="page-item  @additional">
                             <a class="page-link" style="margin-right:10px"
                                asp-action="Index"
-                               asp-route-sortOrderName="@ViewData["BufferSortParam"]"
-                               asp-route-sortDirection="@ViewData["BufferSortDirection"]"
+                               asp-route-sortOrderName="@Model.SortingListTool.SortOrderName"
+                               asp-route-sortDirection="@Model.SortingListTool.SortDirection"
                                asp-route-notChangeSort=true
-                               asp-route-userId="@ViewData["BufferUserId"]"
-                               asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
+                               asp-route-userId="@Model.AdvertSearchObject.UserId"
+                               asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
+                               asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
+                               asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
                                asp-route-pageSize=5>
                                 5
                             </a>
                         </li>
                         @{
-                            additional = @ViewData["PageSize"].ToString() == "10" ? "active" : "";
+                            additional = @Model.RepresentObjectConfigurator.PageSize.ToString() == "10" ? "active" : "";
                         }
                         <li class="page-item  @additional">
                             <a class="page-link" style="margin-right:10px;"
                                asp-action="Index"
-                               asp-route-sortOrderName="@ViewData["BufferSortParam"]"
-                               asp-route-sortDirection="@ViewData["BufferSortDirection"]"
+                               asp-route-sortOrderName="@Model.SortingListTool.SortOrderName"
+                               asp-route-sortDirection="@Model.SortingListTool.SortDirection"
                                asp-route-notChangeSort=true
-                               asp-route-userId="@ViewData["BufferUserId"]"
-                               asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
+                               asp-route-userId="@Model.AdvertSearchObject.UserId"
+                               asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
+                               asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
+                               asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
                                asp-route-pageSize=10>
                                 10
                             </a>
@@ -279,13 +341,14 @@
                 </div>
 
                 <page-link page-model="Model.Adverts" page-action="Index"
-                           page-url-sortOrderName="@ViewData["BufferSortParam"]"
-                           page-url-sortDirection="@ViewData["BufferSortDirection"]"
-                           page-url-notChangeSort=true   
-                           page-url-userId="@ViewData["BufferUserId"]"
-                           page-url-searchStringQuery="@ViewData["SearchStringQuery"]"
-                           page-url-pageSize="@ViewData["PageSize"]"                           
-                           ></page-link>
+                           page-url-sortOrderName="@Model.SortingListTool.SortOrderName"
+                           page-url-sortDirection="@Model.SortingListTool.SortDirection"
+                           page-url-notChangeSort=true
+                           page-url-userId="@Model.AdvertSearchObject.UserId"
+                           page-url-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
+                           page-url-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
+                           page-url-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
+                           page-url-pageSize="@Model.RepresentObjectConfigurator.PageSize"></page-link>
 
                 @{
                     var prevDisabled = !Model.Adverts.HasPreviousPage ? "disabled" : "";
@@ -293,24 +356,28 @@
                 }
 
                 <a asp-action="Index"
-                   asp-route-sortOrderName="@ViewData["BufferSortParam"]"
-                   asp-route-sortDirection="@ViewData["BufferSortDirection"]"
+                   asp-route-sortOrderName="@Model.SortingListTool.SortOrderName"
+                   asp-route-sortDirection="@Model.SortingListTool.SortDirection"
                    asp-route-notChangeSort=true
-                   asp-route-userId="@ViewData["BufferUserId"]"
+                   asp-route-userId="@Model.AdvertSearchObject.UserId"
+                   asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
+                   asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
                    asp-route-pageNumber="@(Model.Adverts.PageIndex - 1)"
-                   asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
-                   asp-route-pageSize="@ViewData["PageSize"]"
+                   asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
+                   asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize"
                    class="btn btn-default @prevDisabled">
                     Previous
                 </a>
                 <a asp-action="Index"
-                   asp-route-sortOrderName="@ViewData["BufferSortParam"]"
-                   asp-route-sortDirection="@ViewData["BufferSortDirection"]"
+                   asp-route-sortOrderName="@Model.SortingListTool.SortOrderName"
+                   asp-route-sortDirection="@Model.SortingListTool.SortDirection"
                    asp-route-notChangeSort=true
-                   asp-route-userId="@ViewData["BufferUserId"]"
+                   asp-route-userId="@Model.AdvertSearchObject.UserId"
+                   asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
+                   asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
                    asp-route-pageNumber="@(Model.Adverts.PageIndex + 1)"
-                   asp-route-searchStringQuery="@ViewData["SearchStringQuery"]"
-                   asp-route-pageSize="@ViewData["PageSize"]"
+                   asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
+                   asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize"
                    class="btn btn-default @nextDisabled">
                     Next
                 </a>

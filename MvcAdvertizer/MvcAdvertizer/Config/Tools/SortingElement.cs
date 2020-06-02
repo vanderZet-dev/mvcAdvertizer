@@ -1,29 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
+using System.ComponentModel.DataAnnotations;
 
 namespace MvcAdvertizer.Config.Tools
 {
     public class SortingElement
     {
+        
         public string SortParam { get; private set; }
         public string SortDirection { get; private set; } = "desc";
-        public bool IsActive { get; private set; } = false;        
-
-        public SortingElement(string sortParam)
+        public string MirrorSortDirection
         {
-            SortParam = sortParam;
+            get
+            {
+                if (SortDirection != null && SortDirection.Equals("desc")) return "asc";
+                else return "desc";
+            }
         }
 
-        public void Activate (string sortDirection, bool notChangeSort)
+
+        public bool IsActive { get; private set; } = false;
+        public bool IsDefault { get; private set; }
+
+        public SortingElement(string sortParam, bool isDefault = false)
         {
-            IsActive = true;
-            if (notChangeSort)
-            {
-                SortDirection = sortDirection;
-            }
-            else SortDirection = sortDirection == "asc" ? "desc" : "asc";
+            SortParam = sortParam;
+            IsDefault = isDefault;
+        }
+
+        public void Activate (string sortDirection)
+        {
+            IsActive = true;            
+            SortDirection = sortDirection;
         }
 
         public void Deactivate ()
@@ -31,7 +38,7 @@ namespace MvcAdvertizer.Config.Tools
             IsActive = false;
             SortDirection = "desc";
         }
-
+        
         public override string ToString()
         {
             return SortParam;

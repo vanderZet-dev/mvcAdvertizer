@@ -4,16 +4,20 @@ using System.Linq;
 namespace MvcAdvertizer.Config.Tools
 {
     public class SortingList<T>
-    {
-        public List<SortingElement> SortingElements { get; private set; } = new List<SortingElement>();
-        public string DefaultSortingElementName { get; private set; }
-        public string DefaultSortingDirection { get; private set; }
+    {        
+        public string SortOrderName { get; set; }        
+        public string SortDirection { get; set; }    
+        
+        public string MirrorSortDirection
+        {
+            get
+            {
+                if (SortDirection != null && SortDirection.Equals("desc")) return "asc";
+                else return "desc";
+            }
+        }        
 
-        public SortingList(string defaultSortingElementName, string defaultSortingDirection)
-        {            
-            DefaultSortingElementName = defaultSortingElementName;
-            DefaultSortingDirection = defaultSortingDirection;
-        }
+        public List<SortingElement> SortingElements { get; private set; } = new List<SortingElement>();
 
         public void AddSortElement(SortingElement sortingElement)
         {
@@ -27,19 +31,27 @@ namespace MvcAdvertizer.Config.Tools
             return SortingElements.FirstOrDefault(x => x.SortParam.Equals(elementsName));
         }
 
-        public void ActivateSortingElement(string sortOrderName, string sortDirection, bool notChangeSort)
+        public void ActivateSortingElement()
         {
-            if (sortOrderName == null && DefaultSortingDirection != null && DefaultSortingElementName != null) {
-                sortOrderName = DefaultSortingElementName;
-                if (DefaultSortingDirection.Equals("desc")) sortDirection = "asc";
-                if (DefaultSortingDirection.Equals("asc")) sortDirection = "desc";
-            }
-            
+            SetDefaultSorting();
             foreach (var element in SortingElements)
             {
-                if (element.SortParam.Equals(sortOrderName)) element.Activate(sortDirection, notChangeSort);
+                if (element.SortParam.Equals(SortOrderName)) element.Activate(SortDirection);
                 else element.Deactivate();
-            }            
+            }
+        }
+
+        private void SetDefaultSorting()
+        {
+            if (SortOrderName == null)
+            {
+                var defaultSortingElementName = SortingElements.FirstOrDefault(x => x.IsDefault);
+                if (defaultSortingElementName != null)
+                {
+                    SortOrderName = defaultSortingElementName.SortParam;
+                    SortDirection = defaultSortingElementName.SortDirection;
+                }
+            }
         }
 
         public SortingElement GetActiveSortingElement()
@@ -65,5 +77,7 @@ namespace MvcAdvertizer.Config.Tools
             }
             return source;
         }
+
+        
     }
 }

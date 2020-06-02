@@ -50,4 +50,5 @@ D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\De
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\Razor\Views\Home\Create.cshtml.g.cs
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\package-lock.json
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\package.json
+D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\libman.json
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.csprojAssemblyReference.cache

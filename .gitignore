@@ -1,44 +1,75 @@
-MvcAdvertizer\MvcAdvertizer\bin\Debug
-MvcAdvertizer\MvcAdvertizer\obj\Debug
-MvcAdvertizer/.vs/MvcAdvertizer/config/applicationhost.config
-MvcAdvertizer/.vs/MvcAdvertizer/v16/.suo
-MvcAdvertizer/MvcAdvertizer/bin/Debug/netcoreapp3.1/MvcAdvertizer.deps.json
-MvcAdvertizer/MvcAdvertizer/bin/Debug/netcoreapp3.1/MvcAdvertizer.dll
-MvcAdvertizer/MvcAdvertizer/bin/Debug/netcoreapp3.1/MvcAdvertizer.exe
-MvcAdvertizer/MvcAdvertizer/bin/Debug/netcoreapp3.1/MvcAdvertizer.pdb
-MvcAdvertizer/MvcAdvertizer/bin/Debug/netcoreapp3.1/MvcAdvertizer.Views.dll
-MvcAdvertizer/MvcAdvertizer/bin/Debug/netcoreapp3.1/MvcAdvertizer.Views.pdb
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/.NETCoreApp,Version=v3.1.AssemblyAttributes.cs
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.csproj.CoreCompileInputs.cache
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.csproj.FileListAbsolute.txt
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.csprojAssemblyReference.cache
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.dll
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.exe
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.pdb
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.Views.dll
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.Views.pdb
-MvcAdvertizer/MvcAdvertizer/obj/MvcAdvertizer.csproj.nuget.dgspec.json
-MvcAdvertizer/MvcAdvertizer/obj/MvcAdvertizer.csproj.nuget.g.props
-MvcAdvertizer/MvcAdvertizer/obj/project.assets.json
-MvcAdvertizer/MvcAdvertizer/obj/project.nuget.cache
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.csprojAssemblyReference.cache
-MvcAdvertizer/MvcAdvertizer/obj/project.nuget.cache
-MvcAdvertizer/MvcAdvertizer/obj/project.assets.json
-MvcAdvertizer/MvcAdvertizer/obj/MvcAdvertizer.csproj.nuget.g.props
-MvcAdvertizer/MvcAdvertizer/obj/MvcAdvertizer.csproj.nuget.dgspec.json
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.Views.pdb
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.Views.dll
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.pdb
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.exe
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.dll
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.csprojAssemblyReference.cache
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.csproj.FileListAbsolute.txt
-MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.csproj.CoreCompileInputs.cache
-MvcAdvertizer/MvcAdvertizer/bin/Debug/netcoreapp3.1/MvcAdvertizer.Views.pdb
-MvcAdvertizer/MvcAdvertizer/bin/Debug/netcoreapp3.1/MvcAdvertizer.Views.dll
-MvcAdvertizer/MvcAdvertizer/bin/Debug/netcoreapp3.1/MvcAdvertizer.pdb
-MvcAdvertizer/MvcAdvertizer/bin/Debug/netcoreapp3.1/MvcAdvertizer.exe
-MvcAdvertizer/MvcAdvertizer/bin/Debug/netcoreapp3.1/MvcAdvertizer.dll
-MvcAdvertizer/MvcAdvertizer/bin/Debug/netcoreapp3.1/MvcAdvertizer.deps.json
-MvcAdvertizer/.vs/MvcAdvertizer/v16/.suo
-MvcAdvertizer/.vs/MvcAdvertizer/config/applicationhost.config
+###################
+# compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.pdb
+*.dll.config
+*.cache
+*.suo
+# Include dlls if they’re in the NuGet packages directory
+!/packages/*/lib/*.dll
+!/packages/*/lib/*/*.dll
+# Include dlls if they're in the CommonReferences directory
+!*CommonReferences/*.dll
+####################
+# VS Upgrade stuff #
+####################
+UpgradeLog.XML
+_UpgradeReport_Files/
+###############
+# Directories #
+###############
+bin/
+obj/
+TestResults/
+###################
+# Web publish log #
+###################
+*.Publish.xml
+#############
+# Resharper #
+#############
+/_ReSharper.*
+*.ReSharper.*
+############
+# Packages #
+############
+# it’s better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+######################
+# Logs and databases #
+######################
+*.log
+*.sqlite
+# OS generated files #
+######################
+.DS_Store?
+ehthumbs.db
+Icon?
+Thumbs.db
+[Bb]in
+[Oo]bj
+[Tt]est[Rr]esults
+*.suo
+*.user
+*.[Cc]ache
+*[Rr]esharper*
+packages
+NuGet.exe
+_[Ss]cripts
+*.exe
+*.dll
+*.nupkg
+*.ncrunchsolution
+*.dot[Cc]over

@@ -357,3 +357,7 @@ MigrationBackup/
 .ionide/
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio
+MvcAdvertizer/.vs/MvcAdvertizer/v16/.suo
+MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.csproj.FileListAbsolute.txt
+MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.csproj.FileListAbsolute.txt
+MvcAdvertizer/MvcAdvertizer/obj/Debug/netcoreapp3.1/MvcAdvertizer.Views.dll

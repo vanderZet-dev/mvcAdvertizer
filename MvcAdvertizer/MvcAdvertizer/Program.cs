@@ -1,15 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MvcAdvertizer.Config.Database;
-using MvcAdvertizer.Data.Models;
-using MvcAdvertizer.Support;
+using MvcAdvertizer.Data;
 
 namespace MvcAdvertizer
 {
@@ -25,7 +20,7 @@ namespace MvcAdvertizer
                 try
                 {
                     var context = services.GetRequiredService<ApplicationContext>();
-                    SampleData.Initialize(context);
+                    InitialData.Initialize(context);
                 }
                 catch (Exception ex)
                 {

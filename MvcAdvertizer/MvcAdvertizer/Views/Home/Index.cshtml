@@ -1,119 +1,27 @@
 ﻿@model AdvertListViewModel
 
-@{
-    ViewData["Title"] = "Index";
-}
-@addTagHelper " *, Microsoft.AspNetCore.Mvc.TagHelpers"
-@addTagHelper *, MvcAdvertizer
-
 <!DOCTYPE html>
 
 <html>
 <head>
     <title>Объявления</title>
-    <link href="/node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
-    <link href="~/lib/jqueryui/themes/redmond/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/style.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-    <style>
-        @@font-face {
-            font-family: 'FontAwesome';
-            src: url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2') format('woff2'), url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff') format('woff'), url('https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/fonts/fontawesome-webfont.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal
-        }
-
-        .glyphicon {
-            display: inline-block;
-            font: normal normal normal 14px/1 FontAwesome;
-            font-size: inherit;
-            text-rendering: auto;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale
-        }
-
-        .glyphicon-chevron-right:before {
-            content: "\f054";
-        }
-
-        .glyphicon-chevron-left:before {
-            content: "\f053";
-        }
-
-        .glyphicon-chevron-down:before {
-            content: "\f0d7";
-            color: inherit;
-        }
-
-        .glyphicon-chevron-up:before {
-            content: "\f0d8";
-            color: inherit;
-        }
-
-        button {
-            background: #ffffff;
-            color: #252870;
-            border-radius: 15px;
-            padding: 5px 20px 5px 20px;
-            padding-right: 20px;
-            font-weight: bold;
-        }
-
-        table {
-            border-collapse: separate; /* Способ отображения границы */
-            border-spacing: 0px 20px; /* Расстояние между ячейками */
-            min-width: 400px;
-            width: auto;
-            margin: auto;
-        }
-
-        tr {
-            box-shadow: 1px 1px 4px 4px rgba(0,0,0,0.12);
-            -webkit-box-shadow: 1px 1px 4px 4px rgba(0,0,0,0.12);
-            -moz-box-shadow: 1px 1px 4px 4px rgba(0,0,0,0.12);
-            border-radius: 15px;
-        }
-
-            tr:first-child {
-                box-shadow: none;
-                -webkit-box-shadow: none;
-                -moz-box-shadow: none;
-            }
-
-        th {
-            color: white;
-            border: 0px;
-            padding-left: 10px;
-            padding-right: 10px;
-        }
-
-            th:first-child {
-                padding-left: 5px
-            }
-
-            th:last-child {
-                padding-right: 5px
-            }
-
-        td {
-            padding: 10px; /* Поля вокруг текста */
-            color: #4200be;
-        }
-      
-    </style>
-
     <h3>Объявления</h3>
     <div>
         <div style="text-align: center;
         background: #4200be;
         height: 200px;
         margin-bottom: -50px;">
+            <a class="btn" asp-controller="">ДОБАВИТЬ</a>
             <button type="button" class="btn btn-default" onclick="location.href='@Url.Action("Index", "Home")'">ДОБАВИТЬ</button>
             <form style="color:inherit;" asp-action="Index" method="get">
                 <div class="form-inline form-group">
                     <div class="form-group">
                         <label class="control-label" style="color:white">от</label>
-                        <input class="form-control" name="DateStartSearch" type="date" value="@Model.AdvertSearchObject.DateStartSearchString"/>
+                        <input class="form-control" name="DateStartSearch" type="date" value="@Model.AdvertSearchObject.DateStartSearchString" />
                         <span asp-validation-for="@Model.AdvertSearchObject.DateStartSearch" class="text-danger"></span>
                     </div>
 
@@ -323,12 +231,6 @@
 
         </div>
     </div>
-
-
-
-
-
-
 
 </body>
 </html>

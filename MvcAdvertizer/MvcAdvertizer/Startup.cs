@@ -38,11 +38,11 @@ namespace MvcAdvertizer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
+            app.UseDeveloperExceptionPage();
+            app.UseStatusCodePages();
+            app.UseStaticFiles();
+            
+            //app.UseSession();
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
@@ -50,17 +50,7 @@ namespace MvcAdvertizer
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
-
-            // добавляем поддержку каталога node_modules
-            app.UseFileServer(new FileServerOptions()
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(env.ContentRootPath, "node_modules")
-                ),
-                RequestPath = "/node_modules",
-                EnableDirectoryBrowsing = false
-            });
+            });            
         }
     }
 }

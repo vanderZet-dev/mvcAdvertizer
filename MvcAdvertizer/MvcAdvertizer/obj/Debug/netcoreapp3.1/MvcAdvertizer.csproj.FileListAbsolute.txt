@@ -1,8 +1,5 @@
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\appsettings.Development.json
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\appsettings.json
-D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\libman.json
-D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\package-lock.json
-D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\package.json
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\MvcAdvertizer.exe
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\MvcAdvertizer.deps.json
@@ -22,7 +19,6 @@ D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\De
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\Microsoft.CodeAnalysis.Workspaces.dll
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.dll
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Abstractions.dll
-D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Design.dll
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Relational.dll
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Caching.Abstractions.dll
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Caching.Memory.dll
@@ -106,8 +102,6 @@ D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\De
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\bin\Debug\netcoreapp3.1\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.AssemblyInfoInputs.cache
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.AssemblyInfo.cs
-D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.csproj.CoreCompileInputs.cache
-D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.MvcApplicationPartsAssemblyInfo.cache
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.RazorAssemblyInfo.cache
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.RazorAssemblyInfo.cs
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.TagHelpers.input.cache
@@ -115,6 +109,7 @@ D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\De
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.RazorCoreGenerate.cache
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\Razor\Views\Home\Create.cshtml.g.cs
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\Razor\Views\Home\Index.cshtml.g.cs
+D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\Razor\Views\_ViewImports.cshtml.g.cs
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.RazorTargetAssemblyInfo.cache
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.RazorTargetAssemblyInfo.cs
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.Views.pdb
@@ -124,3 +119,6 @@ D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\De
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.dll
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.pdb
 D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.genruntimeconfig.cache
+D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.csprojAssemblyReference.cache
+D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.csproj.CoreCompileInputs.cache
+D:\VS\projects\AdvertismentRepo\mvcAdvertizer\MvcAdvertizer\MvcAdvertizer\obj\Debug\netcoreapp3.1\MvcAdvertizer.MvcApplicationPartsAssemblyInfo.cache

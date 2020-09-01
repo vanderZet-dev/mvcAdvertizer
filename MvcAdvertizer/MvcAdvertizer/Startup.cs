@@ -32,6 +32,9 @@ namespace MvcAdvertizer
         {
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection));
+
+            services.AddRazorPages().AddMvcOptions(options => options.EnableEndpointRouting = false);
+
             services.AddMvc();                
         }
 
@@ -41,16 +44,22 @@ namespace MvcAdvertizer
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
             app.UseStaticFiles();
-            
-            //app.UseSession();
-            app.UseRouting();
 
-            app.UseEndpoints(endpoints =>
+            //app.UseSession();
+            //app.UseRouting();
+
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllerRoute(
+            //        name: "default",
+            //        pattern: "{controller=Home}/{action=Index}/{id?}");
+            //});            
+
+            app.UseMvc(routes =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-            });            
+                routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute(name: "createAdvert", template: "{controller=Advert}/{action=Create}/{id?}");
+            });
         }
     }
 }

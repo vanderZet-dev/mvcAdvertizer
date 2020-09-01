@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcAdvertizer.Config.Tools;
-using MvcAdvertizer.Core.AdditionalObjects;
-using MvcAdvertizer.Core.Domains;
+using MvcAdvertizer.Data.AdditionalObjects;
+using MvcAdvertizer.Data.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MvcAdvertizer.Core.ViewModels
+namespace MvcAdvertizer.Data.ViewModels
 {
     public class AdvertListViewModel
     {

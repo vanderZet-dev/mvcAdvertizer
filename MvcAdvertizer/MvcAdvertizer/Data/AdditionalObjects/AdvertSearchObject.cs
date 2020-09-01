@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 
-namespace MvcAdvertizer.Core.AdditionalObjects
+namespace MvcAdvertizer.Data.AdditionalObjects
 {
     public class AdvertSearchObject
     {   

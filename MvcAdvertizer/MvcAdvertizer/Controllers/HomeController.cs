@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using MvcAdvertizer.Config.Database;
 using MvcAdvertizer.Config.Tools;
-using MvcAdvertizer.Core.AdditionalObjects;
-using MvcAdvertizer.Core.Domains;
-using MvcAdvertizer.Core.ViewModels;
+using MvcAdvertizer.Data.AdditionalObjects;
+using MvcAdvertizer.Data.Models;
+using MvcAdvertizer.Data.ViewModels;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;

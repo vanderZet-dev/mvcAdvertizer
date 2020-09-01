@@ -1,5 +1,5 @@
 ﻿
-namespace MvcAdvertizer.Core.Domains.Enums
+namespace MvcAdvertizer.Data.Models.Enums
 {
     public enum AdvertSortState
     {

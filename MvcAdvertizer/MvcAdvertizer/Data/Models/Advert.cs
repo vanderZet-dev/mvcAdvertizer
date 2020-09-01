@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MvcAdvertizer.Core.Domains
+namespace MvcAdvertizer.Data.Models
 {
     public class Advert : IAuditedEntity
     {

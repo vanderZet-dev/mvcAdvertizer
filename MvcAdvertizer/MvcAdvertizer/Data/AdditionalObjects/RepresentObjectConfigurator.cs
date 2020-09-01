@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MvcAdvertizer.Core.AdditionalObjects
+namespace MvcAdvertizer.Data.AdditionalObjects
 {
     public class RepresentObjectConfigurator
     {

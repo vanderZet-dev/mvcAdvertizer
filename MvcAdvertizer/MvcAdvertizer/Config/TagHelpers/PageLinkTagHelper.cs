@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using MvcAdvertizer.Config.Tools;
-using MvcAdvertizer.Core.Domains;
+using MvcAdvertizer.Data.Models;
 using System.Collections.Generic;
 
 namespace MvcAdvertizer.Config.TagHelpers

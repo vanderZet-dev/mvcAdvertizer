@@ -1,5 +1,5 @@
 ﻿using MvcAdvertizer.Config.Database;
-using MvcAdvertizer.Core.Domains;
+using MvcAdvertizer.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

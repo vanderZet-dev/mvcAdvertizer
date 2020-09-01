@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MvcAdvertizer.Config.Database;
-using MvcAdvertizer.Core.Domains;
+using MvcAdvertizer.Data.Models;
 using MvcAdvertizer.Support;
 
 namespace MvcAdvertizer

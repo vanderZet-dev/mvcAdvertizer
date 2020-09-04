@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace MvcAdvertizer.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,8 +30,9 @@ namespace MvcAdvertizer.Migrations
                     Number = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<Guid>(nullable: false),
-                    Content = table.Column<string>(nullable: true),
-                    Image = table.Column<byte[]>(nullable: true),
+                    Content = table.Column<string>(maxLength: 200, nullable: false),
+                    ImageName = table.Column<string>(nullable: true),
+                    ImageContent = table.Column<byte[]>(nullable: true),
                     Rate = table.Column<int>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: true),
                     UpdatedOn = table.Column<DateTime>(nullable: true)

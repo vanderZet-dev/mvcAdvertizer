@@ -10,44 +10,51 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MvcAdvertizer.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20200418193744_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20200904144839_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "3.1.3")
+                .HasAnnotation("ProductVersion", "3.1.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("MvcAdvertizer.Core.Domains.Advert", b =>
+            modelBuilder.Entity("MvcAdvertizer.Data.Models.Advert", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Content")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasColumnType("character varying(200)")
+                        .HasMaxLength(200);
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<byte[]>("Image")
+                    b.Property<byte[]>("ImageContent")
                         .HasColumnType("bytea");
+
+                    b.Property<string>("ImageName")
+                        .HasColumnType("text");
 
                     b.Property<int>("Number")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("Rate")
+                    b.Property<int?>("Rate")
+                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
+                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -57,7 +64,7 @@ namespace MvcAdvertizer.Migrations
                     b.ToTable("Adverts");
                 });
 
-            modelBuilder.Entity("MvcAdvertizer.Core.Domains.User", b =>
+            modelBuilder.Entity("MvcAdvertizer.Data.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -77,9 +84,9 @@ namespace MvcAdvertizer.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("MvcAdvertizer.Core.Domains.Advert", b =>
+            modelBuilder.Entity("MvcAdvertizer.Data.Models.Advert", b =>
                 {
-                    b.HasOne("MvcAdvertizer.Core.Domains.User", "User")
+                    b.HasOne("MvcAdvertizer.Data.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

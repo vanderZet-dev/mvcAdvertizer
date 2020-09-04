@@ -1,13 +1,31 @@
-﻿@model User
-@{
-    ViewBag.Title = "Добавление пользователя";
-}
-<form asp-action="create" asp-controller="home">
-    <div class="form-group">
-        <label asp-for="Name" class="control-label">Имя</label>
-        <input type="text" asp-for="Name" class="form-control" />
-    </div>   
-    <div class="form-group">
-        <input type="submit" value="Отправить" class="btn btn-default" />
-    </div>
-</form>
+﻿@model CreateAdvertViewModel
+
+<div>
+    <h3>Объявление</h3>
+    <form asp-action="Create" method="post" role="form" class="form" enctype="multipart/form-data">
+        <div class="form-group">
+            <label asp-for="Advert.UserId"></label>
+            <select class="custom-select" asp-for="Advert.UserId" asp-items="@Model.UserSelectList">
+                <option value="">Выберите пользователя</option>
+            </select>
+            <span asp-validation-for="Advert.UserId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Advert.Content"></label>
+            <textarea class="form-control" rows="10" asp-for="Advert.Content"></textarea>
+            <span asp-validation-for="Advert.Content" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Advert.ImageFromFile"></label>            
+            <input class="fil" type="file" asp-for="Advert.ImageFromFile" accept="image/*" />
+            <p><span class="text-danger" asp-validation-for="Advert.ImageFromFile"></span></p>
+        </div>
+        <div class="form-group">
+            <label asp-for="Advert.Rate"></label>
+            <input asp-for="Advert.Rate" type="number" class="form-control" />
+            <span asp-validation-for="Advert.Rate" class="text-danger"></span>
+        </div>
+        <input class="btn btn-success" type="submit" value="Сохранить" />
+    </form>
+    
+</div>

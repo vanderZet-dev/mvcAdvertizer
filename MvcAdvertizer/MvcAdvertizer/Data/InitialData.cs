@@ -35,7 +35,8 @@ namespace MvcAdvertizer.Data
                     context.Adverts.Add(new Advert
                     {
                         Content = "Тестовое содержание объявления " + i,
-                        User = user
+                        User = user,
+                        Rate = 10
                     });
                 }
                 context.SaveChanges();

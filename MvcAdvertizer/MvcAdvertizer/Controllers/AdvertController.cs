@@ -1,9 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MvcAdvertizer.Data.Interfaces;
+using MvcAdvertizer.Data.Models;
 using MvcAdvertizer.ViewModels;
 
 namespace MvcAdvertizer.Controllers
@@ -20,6 +22,19 @@ namespace MvcAdvertizer.Controllers
             this.advertRepository = advertRepository;
         }
 
+        
+        public IActionResult AdvertDetails(Guid id) {
+
+            var vm = new AdvertViewModel();            
+
+            var advert = advertRepository.findById(id);
+            vm = addUserSelectList(vm);
+
+            vm.Advert = advert;
+
+            return View(vm);
+        }
+        
         public IActionResult Create() {
 
             var viewModel = generateInitialCreateAdvertViewModel();
@@ -28,22 +43,39 @@ namespace MvcAdvertizer.Controllers
         }        
 
         [HttpPost]
-        public IActionResult Create(CreateAdvertViewModel viewModel) {
+        public IActionResult Create(AdvertViewModel viewModel) {
+                                    
+            viewModel.Advert.Image = fromFormFileToByteArray(viewModel.ImageFromFile);
 
             viewModel = addUserSelectList(viewModel);
 
-            viewModel.Advert.ImageName = viewModel.Advert?.ImageFromFile?.FileName;
-            viewModel.Advert.ImageContent = fromFormFileToByteArray(viewModel.Advert.ImageFromFile);
-
             if (ModelState.IsValid)
             {
-                advertRepository.Save(viewModel.Advert);
-                return RedirectToAction("CreateSuccess");
+                var saved = advertRepository.Save(viewModel.Advert);                
+                return RedirectToAction("AdvertDetails", new { id = saved.Id });
             }
             else
             {
                 return View(viewModel);
             }            
+        }
+
+        [HttpPost]
+        public IActionResult Save(AdvertViewModel viewModel) {
+
+            viewModel = addUserSelectList(viewModel);
+                        
+            viewModel.Advert.Image = fromFormFileToByteArray(viewModel.ImageFromFile);
+
+            if (ModelState.IsValid)
+            {
+                var updated = advertRepository.Update(viewModel.Advert);
+                return RedirectToAction("AdvertDetails", new { id = updated.Id });
+            }
+            else
+            {
+                return View("AdvertDetails", viewModel);
+            }
         }
 
         public IActionResult CreateSuccess() {
@@ -65,16 +97,16 @@ namespace MvcAdvertizer.Controllers
             return null;
         }        
 
-        private CreateAdvertViewModel generateInitialCreateAdvertViewModel() {
+        private AdvertViewModel generateInitialCreateAdvertViewModel() {
 
-            var viewModel = new CreateAdvertViewModel();
+            var viewModel = new AdvertViewModel();
 
             viewModel = addUserSelectList(viewModel);
 
             return viewModel;
         }    
         
-        private CreateAdvertViewModel addUserSelectList(CreateAdvertViewModel viewModel) {
+        private AdvertViewModel addUserSelectList(AdvertViewModel viewModel) {
 
             var userList = userRepository.findAll().ToList();
             var advert = viewModel.Advert;
@@ -82,7 +114,22 @@ namespace MvcAdvertizer.Controllers
             var selectedElement = userList.FirstOrDefault(x => x.Id == advert?.UserId);
             viewModel.UserSelectList = new SelectList(userList, "Id", "Name", selectedElement);
 
+            viewModel.ImageFromFile = retrieveIFormFile(viewModel.Advert);
+
             return viewModel;
+        }
+
+        private IFormFile retrieveIFormFile(Advert advert) {
+
+            IFormFile file = null;
+
+            if (advert?.Image != null)
+            {
+                var stream = new MemoryStream(advert.Image);
+                file = new FormFile(stream, 0, advert.Image.Length, "name", "fileName");
+            }           
+
+            return file;
         }
     }
 }

@@ -31,8 +31,7 @@ namespace MvcAdvertizer.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<Guid>(nullable: false),
                     Content = table.Column<string>(maxLength: 200, nullable: false),
-                    ImageName = table.Column<string>(nullable: true),
-                    ImageContent = table.Column<byte[]>(nullable: true),
+                    Image = table.Column<byte[]>(nullable: true),
                     Rate = table.Column<int>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: true),
                     UpdatedOn = table.Column<DateTime>(nullable: true)

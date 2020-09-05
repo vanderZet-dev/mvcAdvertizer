@@ -1,0 +1,44 @@
+﻿@model AdvertViewModel
+
+<div>
+    <h3>Объявление</h3>
+    <form asp-action="Save" method="post" role="form" class="form" enctype="multipart/form-data">
+        <div class="form-group">
+            <label asp-for="Advert.Number"></label>
+            <input class="form-control" asp-for="Advert.Number" />
+            <span asp-validation-for="Advert.Number" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Advert.CreatedOn"></label>
+            <input class="form-control" asp-for="Advert.CreatedOn" />
+            <span asp-validation-for="Advert.CreatedOn" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Advert.UserId"></label>
+            <select class="custom-select" asp-for="Advert.UserId" asp-items="@Model.UserSelectList">
+                <option value="">Выберите пользователя</option>
+            </select>
+            <span asp-validation-for="Advert.UserId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Advert.Content"></label>
+            <textarea class="form-control" rows="10" asp-for="Advert.Content"></textarea>
+            <span asp-validation-for="Advert.Content" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Advert.Rate"></label>
+            <input asp-for="Advert.Rate" type="number" class="form-control" />
+            <span asp-validation-for="Advert.Rate" class="text-danger"></span>
+        </div>
+        <div class="row">
+            <p><input class="btn btn-light mr-2" type="submit" value="Сохранить" /></p>
+            <p><a class="btn btn-danger" asp-controller="Home" asp-action="Index">Удалить</a></p>
+            <p><a class="btn btn-warning ml-2" asp-controller="Home" asp-action="Index">Отменить</a></p>
+        </div>
+    </form>
+
+    <img src="@Model.Img()" width="300" />
+    <img src="@Model.Img()" width="600" />
+    <img src="@Model.Img()" width="900" />
+
+</div>

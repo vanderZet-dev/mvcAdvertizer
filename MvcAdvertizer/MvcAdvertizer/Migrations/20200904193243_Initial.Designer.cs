@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MvcAdvertizer.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20200904144839_Initial")]
+    [Migration("20200904193243_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,11 +35,8 @@ namespace MvcAdvertizer.Migrations
                     b.Property<DateTime?>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<byte[]>("ImageContent")
+                    b.Property<byte[]>("Image")
                         .HasColumnType("bytea");
-
-                    b.Property<string>("ImageName")
-                        .HasColumnType("text");
 
                     b.Property<int>("Number")
                         .ValueGeneratedOnAdd()

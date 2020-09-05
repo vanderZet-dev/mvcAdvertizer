@@ -18,14 +18,22 @@ namespace MvcAdvertizer.Data.Repositories
             return source.Adverts;
         }
 
-        public IQueryable<Advert> findById(Guid guid) {
+        public Advert findById(Guid guid) {
 
-            return source.Adverts.Where(x => x.Id.Equals(guid));
+            return source.Adverts.Where(x => x.Id.Equals(guid)).FirstOrDefault();
         }
 
         public Advert Save(Advert obj) {
-
+            
             source.Adverts.Add(obj);
+            source.SaveChanges();            
+
+            return obj;
+        }
+
+        public Advert Update(Advert obj) {
+
+            source.Adverts.Update(obj);
             source.SaveChanges();
 
             return obj;

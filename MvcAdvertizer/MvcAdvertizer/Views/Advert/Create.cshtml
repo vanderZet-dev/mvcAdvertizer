@@ -1,31 +1,32 @@
-﻿@model CreateAdvertViewModel
+﻿@model AdvertViewModel
 
-<div>
-    <h3>Объявление</h3>
-    <form asp-action="Create" method="post" role="form" class="form" enctype="multipart/form-data">
-        <div class="form-group">
-            <label asp-for="Advert.UserId"></label>
-            <select class="custom-select" asp-for="Advert.UserId" asp-items="@Model.UserSelectList">
-                <option value="">Выберите пользователя</option>
-            </select>
-            <span asp-validation-for="Advert.UserId" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Advert.Content"></label>
-            <textarea class="form-control" rows="10" asp-for="Advert.Content"></textarea>
-            <span asp-validation-for="Advert.Content" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Advert.ImageFromFile"></label>            
-            <input class="fil" type="file" asp-for="Advert.ImageFromFile" accept="image/*" />
-            <p><span class="text-danger" asp-validation-for="Advert.ImageFromFile"></span></p>
-        </div>
-        <div class="form-group">
-            <label asp-for="Advert.Rate"></label>
-            <input asp-for="Advert.Rate" type="number" class="form-control" />
-            <span asp-validation-for="Advert.Rate" class="text-danger"></span>
-        </div>
-        <input class="btn btn-success" type="submit" value="Сохранить" />
-    </form>
-    
-</div>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>
+    <div>
+        <h3>Объявление</h3>
+        <form asp-action="Create" method="post" role="form" class="form" enctype="multipart/form-data">
+            <div class="form-group">
+                <label asp-for="Advert.UserId"></label>
+                <select class="custom-select" asp-for="Advert.UserId" asp-items="@Model.UserSelectList">
+                    <option value="">Выберите пользователя</option>
+                </select>
+                <span asp-validation-for="Advert.UserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Advert.Content"></label>
+                <textarea class="form-control" rows="10" asp-for="Advert.Content"></textarea>
+                <span asp-validation-for="Advert.Content" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageFromFile"></label>
+                <input class="fil" type="file" asp-for="ImageFromFile" accept="image/*" />
+                <p><span class="text-danger" asp-validation-for="ImageFromFile"></span></p>
+            </div>
+            <div class="form-group">
+                <label asp-for="Advert.Rate"></label>
+                <input asp-for="Advert.Rate" type="number" class="form-control" />
+                <span asp-validation-for="Advert.Rate" class="text-danger"></span>
+            </div>
+            <input class="btn btn-success" type="submit" value="Сохранить" />
+        </form>
+    </div>

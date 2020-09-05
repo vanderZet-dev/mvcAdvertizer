@@ -52,6 +52,8 @@ namespace MvcAdvertizer
             {
                 routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}");
                 routes.MapRoute(name: "createAdvert", template: "{controller=Advert}/{action=Create}/{id?}");
+                routes.MapRoute(name: "saveAdvert", template: "{controller=Advert}/{action=Save}/{id?}");
+                routes.MapRoute(name: "advertDetails", template: "{controller=Advert}/{action=AdvertDetails}/{id}");
             });
         }
     }

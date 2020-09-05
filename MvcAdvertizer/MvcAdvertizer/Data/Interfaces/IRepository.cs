@@ -6,8 +6,10 @@ namespace MvcAdvertizer.Data.Interfaces
     {
         public IQueryable<Type> findAll();
 
-        public IQueryable<Type> findById(Identifier guid);
+        public Type findById(Identifier guid);
 
         public Type Save(Type obj);
+
+        public Type Update(Type obj);
     }
 }

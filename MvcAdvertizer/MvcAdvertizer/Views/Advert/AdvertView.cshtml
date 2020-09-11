@@ -1,0 +1,38 @@
+﻿@model AdvertViewModel
+
+<div class="form-group" hidden="hidden">
+    <label asp-for="Advert.Id"></label>
+    <input class="form-control" asp-for="Advert.Id" readonly="readonly" />    
+</div>
+<div class="form-group">
+    <label asp-for="Advert.Number"></label>
+    <input class="form-control" asp-for="Advert.Number" readonly ="@Model.ReadOnly"/>
+    <span asp-validation-for="Advert.Number" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Advert.PublishingDate"></label>
+    <input class="form-control" asp-for="Advert.PublishingDate" readonly ="@Model.ReadOnly"/>
+    <span asp-validation-for="Advert.PublishingDate" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Advert.UserId"></label>
+    <select class="custom-select" asp-for="Advert.UserId" asp-items="@Model.UserSelectList" disabled ="@Model.ReadOnly">
+        <option value="">Выберите пользователя</option>
+    </select>
+    <span asp-validation-for="Advert.UserId" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Advert.Content"></label>
+    <textarea class="form-control" rows="10" asp-for="Advert.Content" readonly ="@Model.ReadOnly"></textarea>
+    <span asp-validation-for="Advert.Content" class="text-danger"></span>
+</div>
+<div class="form-group" hidden="@Model.HideImageChooser">
+    <label asp-for="ImageFromFile"></label>
+    <input class="fil" type="file" asp-for="ImageFromFile" accept="image/*" />
+    <p><span class="text-danger" asp-validation-for="ImageFromFile"></span></p>
+</div>
+<div class="form-group">
+    <label asp-for="Advert.Rate"></label>
+    <input asp-for="Advert.Rate" type="number" class="form-control" readonly ="@Model.ReadOnly"/>
+    <span asp-validation-for="Advert.Rate" class="text-danger"></span>
+</div>

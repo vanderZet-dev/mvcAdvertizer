@@ -4,7 +4,6 @@ using MvcAdvertizer.Data.Models;
 using MvcAdvertizer.Utils.Attributes;
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MvcAdvertizer.ViewModels
 {
@@ -13,8 +12,11 @@ namespace MvcAdvertizer.ViewModels
 
         public Advert Advert { get; set; }
 
-        [Display(Name = "Выберите изображение")]
-        [Required(ErrorMessage = "Вы не указали изображение")]
+        public bool ReadOnly { get; set; } = false;
+
+        public bool HideImageChooser { get; set; } = true;
+
+        [Display(Name = "Выберите изображение")]  
         [AllowedExtensions(new string[] { ".jpg", ".png" }, "Изображение имеет не верный формат")]
         [MaxFileSize(10, "Объем загружаемых файлов не должен превышать 10 мб")]
         public IFormFile ImageFromFile { get; set; }
@@ -29,6 +31,9 @@ namespace MvcAdvertizer.ViewModels
                 return imgSrc;
             }
             else return "";            
-        } 
+        }
+
+        [Display(Name = "Укажите предпочитаемую дату публикации")]
+        public DateTime PublishingDate { get; set; } = DateTime.Now;
     }
 }

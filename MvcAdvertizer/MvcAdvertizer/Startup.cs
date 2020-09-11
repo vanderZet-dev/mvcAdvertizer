@@ -36,24 +36,16 @@ namespace MvcAdvertizer
         {
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
-            app.UseStaticFiles();
-
-            //app.UseSession();
-            //app.UseRouting();
-
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapControllerRoute(
-            //        name: "default",
-            //        pattern: "{controller=Home}/{action=Index}/{id?}");
-            //});            
+            app.UseStaticFiles();           
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}");
                 routes.MapRoute(name: "createAdvert", template: "{controller=Advert}/{action=Create}/{id?}");
-                routes.MapRoute(name: "saveAdvert", template: "{controller=Advert}/{action=Save}/{id?}");
-                routes.MapRoute(name: "advertDetails", template: "{controller=Advert}/{action=AdvertDetails}/{id}");
+                
+                routes.MapRoute(name: "advertDetails", template: "{controller=Advert}/{action=Details}/{id}");
+                routes.MapRoute(name: "advertEdit", template: "{controller=Advert}/{action=Edit}/{id}");
+                routes.MapRoute(name: "advertUpdate", template: "{controller=Advert}/{action=Update}/{id?}");
             });
         }
     }

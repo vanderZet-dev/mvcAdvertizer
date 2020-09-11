@@ -1,0 +1,13 @@
+﻿@model AdvertViewModel
+
+<div>
+    <h3>Объявление</h3>
+    <p><img src="@Model.Img()" width="300" /></p>
+    <form role="form" class="form">
+        @Html.Partial("AdvertView", Model)
+        <div class="row">
+            <p><a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Вернутья</a></p>
+            <p><a class="btn btn-warning" asp-controller="Advert" asp-action="Edit" asp-route-id="@Model.Advert.Id">Редактировать</a></p>
+        </div>
+    </form>
+</div>

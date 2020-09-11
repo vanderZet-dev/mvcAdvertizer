@@ -23,9 +23,10 @@ namespace MvcAdvertizer.Controllers
         }
 
         
-        public IActionResult AdvertDetails(Guid id) {
+        public IActionResult Details(Guid id) {
 
-            var vm = new AdvertViewModel();            
+            var vm = new AdvertViewModel();
+            vm.ReadOnly = true;            
 
             var advert = advertRepository.findById(id);
             vm = addUserSelectList(vm);
@@ -34,54 +35,68 @@ namespace MvcAdvertizer.Controllers
 
             return View(vm);
         }
-        
-        public IActionResult Create() {
 
-            var viewModel = generateInitialCreateAdvertViewModel();
+        public IActionResult Edit(Guid id) {
 
-            return View(viewModel);
-        }        
+            var vm = new AdvertViewModel();
+            vm.ReadOnly = false;
+           
+            var advert = advertRepository.findById(id);
+            vm = addUserSelectList(vm);
 
-        [HttpPost]
-        public IActionResult Create(AdvertViewModel viewModel) {
-                                    
-            viewModel.Advert.Image = fromFormFileToByteArray(viewModel.ImageFromFile);
+            vm.Advert = advert;
 
-            viewModel = addUserSelectList(viewModel);
-
-            if (ModelState.IsValid)
-            {
-                var saved = advertRepository.Save(viewModel.Advert);                
-                return RedirectToAction("AdvertDetails", new { id = saved.Id });
-            }
-            else
-            {
-                return View(viewModel);
-            }            
+            return View(vm);
         }
 
         [HttpPost]
-        public IActionResult Save(AdvertViewModel viewModel) {
+        public IActionResult Edit(AdvertViewModel viewModel) {
 
             viewModel = addUserSelectList(viewModel);
-                        
-            viewModel.Advert.Image = fromFormFileToByteArray(viewModel.ImageFromFile);
+
+            viewModel.Advert.Image = fromFormFileToByteArray(viewModel.ImageFromFile);           
 
             if (ModelState.IsValid)
             {
                 var updated = advertRepository.Update(viewModel.Advert);
-                return RedirectToAction("AdvertDetails", new { id = updated.Id });
+                return RedirectToAction("Details", new { id = updated.Id });
             }
             else
             {
-                return View("AdvertDetails", viewModel);
+                return RedirectToAction("Edit", new { id = viewModel.Advert.Id });
             }
         }
 
-        public IActionResult CreateSuccess() {
-            ViewBag.Message = "Новое объявление успешно добавлено";
-            return View();
+        public IActionResult Create() {
+
+            var vm = generateInitialCreateAdvertViewModel();
+            vm.HideImageChooser = false;
+
+            return View(vm);
+        }        
+
+        [HttpPost]
+        public IActionResult Create(AdvertViewModel vm) {
+                                    
+            vm.Advert.Image = fromFormFileToByteArray(vm.ImageFromFile);
+
+            vm = addUserSelectList(vm);
+            vm.HideImageChooser = false;
+
+            if (ModelState.IsValid)
+            {
+                var created = advertRepository.Save(vm.Advert);
+                return RedirectToAction("Details", new { id = created.Id });
+            }
+            else
+            {
+                return View(vm);
+            }            
         }
+
+        
+
+       
 
         private byte[] fromFormFileToByteArray(IFormFile file) { 
             
@@ -102,6 +117,8 @@ namespace MvcAdvertizer.Controllers
             var viewModel = new AdvertViewModel();
 
             viewModel = addUserSelectList(viewModel);
+
+            viewModel.Advert.CreatedOn = DateTime.Now;
 
             return viewModel;
         }    

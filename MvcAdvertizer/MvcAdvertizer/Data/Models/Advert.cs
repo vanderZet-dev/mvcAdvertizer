@@ -11,8 +11,9 @@ namespace MvcAdvertizer.Data.Models
     {
         [Key]
         public Guid Id { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        
         [Display(Name = "Номер")]
+        [Required(ErrorMessage = "Необходимо указать номер для объявления")]
         public int Number { get; set; }
 
         [Display(Name = "Выберите пользователя")]
@@ -33,7 +34,10 @@ namespace MvcAdvertizer.Data.Models
         [Range(1, 10, ErrorMessage = "Рейтинг можно выставить в диапазоне от 1 до 10")]
         public int? Rate { get; set; }
 
-        [Display(Name = "Создано")]
+        [Display(Name = "Дата публикации")]
+        [Required(ErrorMessage = "Вы не указали дату публикации")]
+        public DateTime PublishingDate { get; set; }
+
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
 

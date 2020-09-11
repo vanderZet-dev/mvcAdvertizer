@@ -1,5 +1,6 @@
 ﻿using MvcAdvertizer.Config.Database;
 using MvcAdvertizer.Data.Models;
+using System;
 using System.Linq;
 
 namespace MvcAdvertizer.Data
@@ -28,16 +29,19 @@ namespace MvcAdvertizer.Data
             }
 
             if (!context.Adverts.Any())
-            {
-                var user = context.Users.FirstOrDefault();
-                for(int i = 1; i <= 25; i++)
+            {                
+                Random rng = new Random();
+                var allUsers = context.Users.ToList();
+                for (int i = 1; i <= 100; i++)
                 {
                     context.Adverts.Add(new Advert
                     {
+                        Number = rng.Next(10000),
                         Content = "Тестовое содержание объявления " + i,
-                        User = user,
-                        Rate = 10
-                    });
+                        User = allUsers[rng.Next(3)],
+                        Rate = rng.Next(11),
+                        PublishingDate = DateTime.Now
+                    }); ;
                 }
                 context.SaveChanges();
             }

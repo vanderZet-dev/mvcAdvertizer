@@ -34,6 +34,8 @@ namespace MvcAdvertizer.ViewModels
         }
 
         [Display(Name = "Укажите предпочитаемую дату публикации")]
-        public DateTime PublishingDate { get; set; } = DateTime.Now;
+        public string PublishingDate { get; set; }
+
+        public bool ShowViewModelPublishingDate { get; set; } = false;        
     }
 }

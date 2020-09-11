@@ -82,6 +82,7 @@ namespace MvcAdvertizer.Controllers
 
             vm = addUserSelectList(vm);
             vm.HideImageChooser = false;
+            vm.ShowViewModelPublishingDate = true;
 
             if (ModelState.IsValid)
             {
@@ -118,7 +119,8 @@ namespace MvcAdvertizer.Controllers
 
             viewModel = addUserSelectList(viewModel);
 
-            viewModel.Advert.CreatedOn = DateTime.Now;
+            viewModel.ShowViewModelPublishingDate = true;
+            viewModel.PublishingDate = DateTime.Now.ToString("yyyy-MM-dd");
 
             return viewModel;
         }    

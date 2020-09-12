@@ -40,7 +40,8 @@ namespace MvcAdvertizer.Data
                         Content = "Тестовое содержание объявления " + i,
                         User = allUsers[rng.Next(3)],
                         Rate = rng.Next(11),
-                        PublishingDate = DateTime.Now
+                        PublishingDate = DateTime.Now,
+                        Deleted = false
                     }); ;
                 }
                 context.SaveChanges();

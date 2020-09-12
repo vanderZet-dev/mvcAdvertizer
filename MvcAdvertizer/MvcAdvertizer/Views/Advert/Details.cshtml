@@ -1,48 +1,47 @@
 ﻿@model AdvertViewModel
 
-@*<script type="text/javascript">
-    function openImageWindow(src) {
-        var image = new Image();
-        image.src = src;
-        var width = image.width;
-        var height = image.height;
-        window.open(src, "Image", "width=" + width + ",height=" + height);
-    }
-</script>*@
-
 <div>
-    <h3>Объявление</h3>    
+    <h3>Объявление</h3>
 
-    <div id="img300" hidden="hidden">
-        <a asp-action="ShowImage" asp-route-id="@Model.Advert.Id" target="_blank">
-            <label>Image with width 300</label>
-            <p><img src="@Model.Img()" width="300" /></p>
-        </a>
-    </div>
-    
-    <div id="img500">
-        <a asp-action="ShowImage" asp-route-id="@Model.Advert.Id" target="_blank">
-            <label>Image with width 500</label>
-            <p><img src="@Model.Img()" width="500"/></p>
-        </a>        
-    </div>
-  
-    <div id="img800" hidden="hidden">
-        <a asp-action="ShowImage" asp-route-id="@Model.Advert.Id" target="_blank">
-            <label>Image with width 800</label>
-            <p><img src="@Model.Img()" width="800" /></p>
-        </a>
-    </div>    
+    @if (Model.ImgExists())
+    {
+        <div>
+            <div id="img300" hidden="hidden">
+                <a asp-action="ShowImage" asp-route-id="@Model.Advert.Id" target="_blank">
+                    <label>Image with width 300</label>
+                    <p><img src="@Model.Img()" width="300" /></p>
+                </a>
+            </div>
 
-    <input type="button" id="showImg300" value="Width 300" class="btn btn-secondary"/>
-    <input type="button" id="showImg500" value="Width 500" class="btn btn-primary"/>
-    <input type="button" id="showImg800" value="Width 800" class="btn btn-secondary"/>
+            <div id="img500">
+                <a asp-action="ShowImage" asp-route-id="@Model.Advert.Id" target="_blank">
+                    <label>Image with width 500</label>
+                    <p><img src="@Model.Img()" width="500" /></p>
+                </a>
+            </div>
+
+            <div id="img800" hidden="hidden">
+                <a asp-action="ShowImage" asp-route-id="@Model.Advert.Id" target="_blank">
+                    <label>Image with width 800</label>
+                    <p><img src="@Model.Img()" width="800" /></p>
+                </a>
+            </div>
+            <input type="button" id="showImg300" value="Width 300" class="btn btn-secondary" />
+            <input type="button" id="showImg500" value="Width 500" class="btn btn-primary" />
+            <input type="button" id="showImg800" value="Width 800" class="btn btn-secondary" />
+        </div>
+    }
+    else
+    {
+        <p><label>У этого объявления нет изображений</label></p>
+    }
 
     <form role="form" class="form">
         @Html.Partial("AdvertView", Model)
         <div class="row">
             <p><a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Вернутья</a></p>
-            <p><a class="btn btn-warning" asp-controller="Advert" asp-action="Edit" asp-route-id="@Model.Advert.Id">Редактировать</a></p>
+            <p><a class="btn btn-warning" asp-controller="Advert" asp-action="Edit" asp-route-id="@Model.Advert.Id">Редактировать</a></p>            
+            <p><a class="btn btn-danger" asp-controller="Advert" asp-action="SoftDelete" asp-route-id="@Model.Advert.Id">Удалить</a></p>
         </div>
     </form>
 </div>

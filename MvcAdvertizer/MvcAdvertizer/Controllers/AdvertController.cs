@@ -96,6 +96,19 @@ namespace MvcAdvertizer.Controllers
                 return View(vm);
             }            
         }
+                
+        public IActionResult SoftDelete(Guid id) {                        
+
+            var existedAdvert = advertRepository.findById(id);
+
+            if (existedAdvert != null && !existedAdvert.Deleted)
+            {
+                existedAdvert.Deleted = true;
+                advertRepository.Update(existedAdvert);                
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
 
         public IActionResult ShowImage(Guid id) {
 

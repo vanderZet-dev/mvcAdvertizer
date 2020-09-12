@@ -33,6 +33,18 @@ namespace MvcAdvertizer.ViewModels
             else return "";            
         }
 
+        public bool ImgExists() {
+
+            var exists = true;
+
+            if (Img().Equals(""))
+            {
+                exists = false;
+            }
+
+            return exists;
+        }
+
         [Display(Name = "Укажите предпочитаемую дату публикации")]
         public string PublishingDate { get; set; }
 

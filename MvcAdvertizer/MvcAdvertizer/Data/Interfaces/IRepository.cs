@@ -11,5 +11,7 @@ namespace MvcAdvertizer.Data.Interfaces
         public Type Save(Type obj);
 
         public Type Update(Type obj);
+
+        public void Delete(Type obj);
     }
 }

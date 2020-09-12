@@ -41,11 +41,12 @@ namespace MvcAdvertizer
             app.UseMvc(routes =>
             {
                 routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}");
-                routes.MapRoute(name: "createAdvert", template: "{controller=Advert}/{action=Create}/{id?}");
+                routes.MapRoute(name: "createAdvert", template: "{controller=Advert}/{action=Create}");
                 
                 routes.MapRoute(name: "advertDetails", template: "{controller=Advert}/{action=Details}/{id}");
                 routes.MapRoute(name: "advertEdit", template: "{controller=Advert}/{action=Edit}/{id}");
-                routes.MapRoute(name: "advertUpdate", template: "{controller=Advert}/{action=Update}/{id?}");
+                routes.MapRoute(name: "advertUpdate", template: "{controller=Advert}/{action=Update}/{id}");
+                routes.MapRoute(name: "advertSoftDelete", template: "{controller=Advert}/{action=SoftDelete}/{id}");
 
                 routes.MapRoute(name: "advertShowImage", template: "{controller=Advert}/{action=ShowImage}/{id}");
             });

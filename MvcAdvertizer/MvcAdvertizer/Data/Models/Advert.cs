@@ -1,5 +1,6 @@
 ﻿using MvcAdvertizer.Config.Database;
 using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -35,6 +36,9 @@ namespace MvcAdvertizer.Data.Models
         [Display(Name = "Дата публикации")]
         [Required(ErrorMessage = "Вы не указали дату публикации")]
         public DateTime PublishingDate { get; set; }
+
+        [DefaultValue(false)]
+        public bool Deleted { get; set; }
 
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }

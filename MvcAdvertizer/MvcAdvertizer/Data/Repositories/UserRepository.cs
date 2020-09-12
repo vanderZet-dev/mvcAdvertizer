@@ -36,5 +36,11 @@ namespace MvcAdvertizer.Data.Repositories
 
             return obj;
         }
+
+        public void Delete(User obj) {
+
+            source.Users.Remove(obj);
+            source.SaveChanges();
+        }
     }
 }

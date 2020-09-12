@@ -20,7 +20,7 @@ namespace MvcAdvertizer.ViewModels
         [AllowedExtensions(new string[] { ".jpg", ".png" }, "Изображение имеет не верный формат")]
         [MaxFileSize(10, "Объем загружаемых файлов не должен превышать 10 мб")]
         public IFormFile ImageFromFile { get; set; }
-
+                
         public string Img() {
 
             if (Advert?.Image != null)

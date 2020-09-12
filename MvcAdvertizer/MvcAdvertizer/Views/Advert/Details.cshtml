@@ -1,8 +1,43 @@
 ﻿@model AdvertViewModel
 
+@*<script type="text/javascript">
+    function openImageWindow(src) {
+        var image = new Image();
+        image.src = src;
+        var width = image.width;
+        var height = image.height;
+        window.open(src, "Image", "width=" + width + ",height=" + height);
+    }
+</script>*@
+
 <div>
-    <h3>Объявление</h3>
-    <p><img src="@Model.Img()" width="300" /></p>
+    <h3>Объявление</h3>    
+
+    <div id="img300" hidden="hidden">
+        <a asp-action="ShowImage" asp-route-id="@Model.Advert.Id" target="_blank">
+            <label>Image with width 300</label>
+            <p><img src="@Model.Img()" width="300" /></p>
+        </a>
+    </div>
+    
+    <div id="img500">
+        <a asp-action="ShowImage" asp-route-id="@Model.Advert.Id" target="_blank">
+            <label>Image with width 500</label>
+            <p><img src="@Model.Img()" width="500"/></p>
+        </a>        
+    </div>
+  
+    <div id="img800" hidden="hidden">
+        <a asp-action="ShowImage" asp-route-id="@Model.Advert.Id" target="_blank">
+            <label>Image with width 800</label>
+            <p><img src="@Model.Img()" width="800" /></p>
+        </a>
+    </div>    
+
+    <input type="button" id="showImg300" value="Width 300" class="btn btn-secondary"/>
+    <input type="button" id="showImg500" value="Width 500" class="btn btn-primary"/>
+    <input type="button" id="showImg800" value="Width 800" class="btn btn-secondary"/>
+
     <form role="form" class="form">
         @Html.Partial("AdvertView", Model)
         <div class="row">
@@ -11,3 +46,5 @@
         </div>
     </form>
 </div>
+
+<script src="~/js/blockResizer.js"></script>

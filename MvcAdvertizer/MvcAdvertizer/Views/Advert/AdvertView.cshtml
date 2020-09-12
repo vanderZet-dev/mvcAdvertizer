@@ -39,11 +39,16 @@ else
     <textarea class="form-control" rows="10" asp-for="Advert.Content" readonly="@Model.ReadOnly"></textarea>
     <span asp-validation-for="Advert.Content" class="text-danger"></span>
 </div>
-<div class="form-group" hidden="@Model.HideImageChooser">
-    <label asp-for="ImageFromFile"></label>
-    <input class="fil" type="file" asp-for="ImageFromFile" accept="image/*" />
-    <p><span class="text-danger" asp-validation-for="ImageFromFile"></span></p>
-</div>
+
+@if (!Model.HideImageChooser)
+{
+    <div class="form-group">
+        <label asp-for="ImageFromFile"></label>
+        <input class="fil" type="file" asp-for="ImageFromFile" accept="image/*" />
+        <p><span class="text-danger" asp-validation-for="ImageFromFile"></span></p>
+    </div>
+}
+
 <div class="form-group">
     <label asp-for="Advert.Rate"></label>
     <input asp-for="Advert.Rate" type="number" class="form-control" readonly="@Model.ReadOnly" />

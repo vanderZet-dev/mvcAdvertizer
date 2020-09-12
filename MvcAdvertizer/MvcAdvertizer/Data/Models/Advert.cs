@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using MvcAdvertizer.Config.Database;
-using MvcAdvertizer.Utils.Attributes;
+﻿using MvcAdvertizer.Config.Database;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,8 +7,8 @@ namespace MvcAdvertizer.Data.Models
 {
     public class Advert : IAuditedEntity
     {
-        [Key]
-        public Guid Id { get; set; }
+        [Key]        
+        public Guid? Id { get; set; }
         
         [Display(Name = "Номер")]
         [Required(ErrorMessage = "Необходимо указать номер для объявления")]

@@ -3,7 +3,7 @@
     <div>
         <h3>Объявление</h3>
         <form asp-action="Create" method="post" role="form" class="form" enctype="multipart/form-data">
-            @Html.Partial("AdvertView", Model)
+            @Html.Partial("AdvertView", Model)     
             <div class="row">
                 <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Вернутья</a>
                 <input class="btn btn-success" type="submit" value="Создать" />

@@ -84,6 +84,8 @@ namespace MvcAdvertizer.Controllers
             vm.HideImageChooser = false;
             vm.ShowViewModelPublishingDate = true;
 
+            vm.Advert.PublishingDate = Convert.ToDateTime(vm.PublishingDate);
+
             if (ModelState.IsValid)
             {
                 var created = advertRepository.Save(vm.Advert);
@@ -95,6 +97,16 @@ namespace MvcAdvertizer.Controllers
             }            
         }
 
+        public IActionResult ShowImage(Guid id) {
+
+            var vm = new AdvertViewModel();            
+
+            var advert = advertRepository.findById(id);            
+
+            vm.Advert = advert;
+
+            return View(vm);
+        }
         
 
        

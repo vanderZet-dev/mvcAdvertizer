@@ -34,13 +34,15 @@ namespace MvcAdvertizer.Data
                 var allUsers = context.Users.ToList();
                 for (int i = 1; i <= 100; i++)
                 {
+                    var datetime = DateTime.Now;
+                    datetime = datetime.AddTicks(-(datetime.Ticks % TimeSpan.TicksPerSecond));
                     context.Adverts.Add(new Advert
                     {
                         Number = rng.Next(10000),
                         Content = "Тестовое содержание объявления " + i,
                         User = allUsers[rng.Next(3)],
                         Rate = rng.Next(11),
-                        PublishingDate = DateTime.Now,
+                        PublishingDate = datetime,
                         Deleted = false
                     }); ;
                 }

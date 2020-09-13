@@ -50,7 +50,7 @@ namespace MvcAdvertizer.ViewModels
         }
 
         [Display(Name = "Укажите предпочитаемую дату публикации")]
-        public string PublishingDate { get; set; } = DateTime.Now.ToString("yyyy-MM-dd");
+        public string PublishingDate { get; set; } = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss").Replace(' ', 'T');
 
         public bool ShowViewModelPublishingDate { get; set; } = false;
         

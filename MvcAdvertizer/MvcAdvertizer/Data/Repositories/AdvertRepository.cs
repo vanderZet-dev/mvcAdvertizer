@@ -33,6 +33,7 @@ namespace MvcAdvertizer.Data.Repositories
             
             source.Adverts.Update(obj);
             source.Entry(obj).Property(x => x.Image).IsModified = false;
+            source.Entry(obj).Property(x => x.CreatedOn).IsModified = false;
             source.SaveChanges();
 
             return obj;

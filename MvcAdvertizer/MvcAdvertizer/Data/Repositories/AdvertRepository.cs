@@ -2,9 +2,7 @@
 using MvcAdvertizer.Data.Interfaces;
 using MvcAdvertizer.Data.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MvcAdvertizer.Data.Repositories
 {
@@ -23,7 +21,7 @@ namespace MvcAdvertizer.Data.Repositories
             return source.Adverts.Where(x => x.Id.Equals(guid)).FirstOrDefault();
         }
 
-        public Advert Save(Advert obj) {
+        public Advert Add(Advert obj) {
             
             source.Adverts.Add(obj);
             source.SaveChanges();            

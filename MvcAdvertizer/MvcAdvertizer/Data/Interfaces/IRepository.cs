@@ -8,7 +8,7 @@ namespace MvcAdvertizer.Data.Interfaces
 
         public Type findById(Identifier guid);
 
-        public Type Save(Type obj);
+        public Type Add(Type obj);
 
         public Type Update(Type obj);
 

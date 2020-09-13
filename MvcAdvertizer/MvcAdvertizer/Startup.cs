@@ -7,6 +7,8 @@ using MvcAdvertizer.Config.Database;
 using Microsoft.EntityFrameworkCore;
 using MvcAdvertizer.Data.Interfaces;
 using MvcAdvertizer.Data.Repositories;
+using MvcAdvertizer.Services.Interfaces;
+using MvcAdvertizer.Services.Implementations;
 
 namespace MvcAdvertizer
 {
@@ -23,6 +25,10 @@ namespace MvcAdvertizer
         {
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection));
+
+            services.AddHttpClient();
+
+            services.AddTransient<IRecaptchaService, RecaptchaService>();
 
             services.AddTransient<IUsers, UserRepository>();
             services.AddTransient<IAdverts, AdvertRepository>();

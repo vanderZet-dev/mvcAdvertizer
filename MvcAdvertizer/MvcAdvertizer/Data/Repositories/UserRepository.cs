@@ -21,7 +21,7 @@ namespace MvcAdvertizer.Data.Repositories
             return source.Users.Where(x=>x.Id.Equals(guid)).FirstOrDefault();
         }
 
-        public User Save(User obj) {
+        public User Add(User obj) {
 
             source.Users.Add(obj);
             source.SaveChanges();

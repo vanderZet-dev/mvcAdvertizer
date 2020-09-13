@@ -1,23 +1,24 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using MvcAdvertizer.Data.Interfaces;
-using MvcAdvertizer.Data.Models;
+using MvcAdvertizer.Services.Interfaces;
 using MvcAdvertizer.ViewModels;
 
 namespace MvcAdvertizer.Controllers
 {
     public class AdvertController : Controller
-    {
+    {        
+        private readonly IRecaptchaService recaptchaService;
         private readonly IUsers userRepository;
         private readonly IAdverts advertRepository;
 
-        public AdvertController(IUsers userRepository,
-                                IAdverts advertRepository) {
-
+        public AdvertController(IRecaptchaService recaptchaService,
+                                IUsers userRepository,
+                                IAdverts advertRepository) {            
+            this.recaptchaService = recaptchaService;
             this.userRepository = userRepository;
             this.advertRepository = advertRepository;
         }
@@ -25,36 +26,24 @@ namespace MvcAdvertizer.Controllers
         
         public IActionResult Details(Guid id) {
 
-            var vm = new AdvertViewModel();
-            vm.ReadOnly = true;            
+            var viewModel = new AdvertViewModel();            
 
-            var advert = advertRepository.findById(id);
-            vm = addUserSelectList(vm);
+            var advertId = id;            
+            viewModel = SetupForDetail(advertId, viewModel);
 
-            vm.Advert = advert;
-
-            return View(vm);
+            return View(viewModel);
         }
 
-        public IActionResult Edit(Guid id) {
+        public IActionResult Edit(Guid id) {            
 
-            var vm = new AdvertViewModel();
-            vm.ReadOnly = false;
-           
-            var advert = advertRepository.findById(id);
-            vm = addUserSelectList(vm);
+            var advertId = id;
+            var viewModel = SetupForEditBeforePost(advertId);
 
-            vm.Advert = advert;
-
-            return View(vm);
+            return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult Edit(AdvertViewModel viewModel) {
-
-            viewModel = addUserSelectList(viewModel);
-
-            viewModel.Advert.Image = fromFormFileToByteArray(viewModel.ImageFromFile);           
+        public IActionResult Edit(AdvertViewModel viewModel) {                        
 
             if (ModelState.IsValid)
             {
@@ -69,34 +58,38 @@ namespace MvcAdvertizer.Controllers
 
         public IActionResult Create() {
 
-            var vm = generateInitialCreateAdvertViewModel();
-            vm.HideImageChooser = false;
+            var viewModel = SetupCreateBeforePost();
 
-            return View(vm);
+            return View(viewModel);
         }        
 
         [HttpPost]
-        public IActionResult Create(AdvertViewModel vm) {
-                                    
-            vm.Advert.Image = fromFormFileToByteArray(vm.ImageFromFile);
+        public async Task<IActionResult> Create(AdvertViewModel viewModel) {
 
-            vm = addUserSelectList(vm);
-            vm.HideImageChooser = false;
-            vm.ShowViewModelPublishingDate = true;
+            string recaptchaResponse = Request.Form["g-recaptcha-response"];
+            string connectionRemoteIpAddress = HttpContext.Connection.RemoteIpAddress.ToString();
+            var validRecaptcha = await recaptchaService.checkRecaptcha(recaptchaResponse, connectionRemoteIpAddress);
 
-            vm.Advert.PublishingDate = Convert.ToDateTime(vm.PublishingDate);
+            var showRecaptchaErrorMessage = !validRecaptcha;
+            viewModel = SetupCreateAfterPost(viewModel, showRecaptchaErrorMessage);
+
+            if (!validRecaptcha)
+            {
+                ModelState.AddModelError("Recaptcha", "Check request return false value.");
+            }            
 
             if (ModelState.IsValid)
             {
-                var created = advertRepository.Save(vm.Advert);
+                var created = advertRepository.Add(viewModel.Advert);
                 return RedirectToAction("Details", new { id = created.Id });
             }
             else
             {
-                return View(vm);
+                return View(viewModel);
             }            
-        }
-                
+        }       
+
+
         public IActionResult SoftDelete(Guid id) {                        
 
             var existedAdvert = advertRepository.findById(id);
@@ -112,68 +105,54 @@ namespace MvcAdvertizer.Controllers
 
         public IActionResult ShowImage(Guid id) {
 
-            var vm = new AdvertViewModel();            
+            var viewModel = new AdvertViewModel();            
 
             var advert = advertRepository.findById(id);            
 
-            vm.Advert = advert;
+            viewModel.Advert = advert;
 
-            return View(vm);
+            return View(viewModel);
         }
-        
+              
 
-       
-
-        private byte[] fromFormFileToByteArray(IFormFile file) { 
-            
-            if (file != null)
-            {
-                using (var ms = new MemoryStream())
-                {
-                    file.CopyTo(ms);
-                    var fileBytes = ms.ToArray();                    
-                    return fileBytes;
-                }
-            }
-            return null;
-        }        
-
-        private AdvertViewModel generateInitialCreateAdvertViewModel() {
+        private AdvertViewModel SetupCreateBeforePost() {
 
             var viewModel = new AdvertViewModel();
 
-            viewModel = addUserSelectList(viewModel);
-
-            viewModel.ShowViewModelPublishingDate = true;
-            viewModel.PublishingDate = DateTime.Now.ToString("yyyy-MM-dd");
+            var allUserList = userRepository.findAll().ToList();
+            viewModel.SetupCreateBeforePost(allUserList);
 
             return viewModel;
-        }    
-        
-        private AdvertViewModel addUserSelectList(AdvertViewModel viewModel) {
+       }
 
-            var userList = userRepository.findAll().ToList();
-            var advert = viewModel.Advert;
+        private AdvertViewModel SetupCreateAfterPost(AdvertViewModel viewModel, bool showRecaptchaErrorMessage) {            
 
-            var selectedElement = userList.FirstOrDefault(x => x.Id == advert?.UserId);
-            viewModel.UserSelectList = new SelectList(userList, "Id", "Name", selectedElement);
-
-            viewModel.ImageFromFile = retrieveIFormFile(viewModel.Advert);
+            var allUserList = userRepository.findAll().ToList();
+            viewModel.SetupCreateAfterPost(allUserList, showRecaptchaErrorMessage);
 
             return viewModel;
         }
 
-        private IFormFile retrieveIFormFile(Advert advert) {
+        private AdvertViewModel SetupForDetail(Guid advertId, AdvertViewModel viewModel) {
 
-            IFormFile file = null;
+            var advert = advertRepository.findById(advertId);
+            var allUserList = userRepository.findAll().ToList();
 
-            if (advert?.Image != null)
-            {
-                var stream = new MemoryStream(advert.Image);
-                file = new FormFile(stream, 0, advert.Image.Length, "name", "fileName");
-            }           
+            viewModel.SetupForDetail(advert, allUserList);
 
-            return file;
+            return viewModel;
+        }        
+
+        private AdvertViewModel SetupForEditBeforePost(Guid advertId) {
+
+            var viewModel = new AdvertViewModel();
+
+            var advert = advertRepository.findById(advertId);
+            var allUserList = userRepository.findAll().ToList();
+
+            viewModel.SetupForEditBeforePost(advert, allUserList);
+
+            return viewModel;
         }
     }
 }

@@ -1,12 +1,19 @@
-﻿@model AdvertViewModel
-
-    <div>
-        <h3>Объявление</h3>
-        <form asp-action="Create" method="post" role="form" class="form" enctype="multipart/form-data">
-            @Html.Partial("AdvertView", Model)     
-            <div class="row">
-                <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Вернутья</a>
-                <input class="btn btn-success" type="submit" value="Создать" />
-            </div>
-        </form>
-    </div>
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration configuration
+@model AdvertViewModel
+<script src="https://www.google.com/recaptcha/api.js"></script>
+<div>
+    <h3>Объявление</h3>
+    <form asp-action="Create" method="post" role="form" class="form" enctype="multipart/form-data">
+        @Html.Partial("AdvertView", Model)
+        <div class="g-recaptcha" data-sitekey="@configuration.GetSection("Recaptcha").GetSection("googleReCaptcha:SiteKey").Value"></div>        
+        @if (Model.ShowRecaptchaErrorMessage)
+        {
+            <span class="text-danger">Вы не прошли проверку, попытайтесь еще раз!</span>
+        }
+        <div class="row">
+            <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Вернутья</a>
+            <input class="btn btn-success" type="submit" value="Создать" />
+        </div>
+    </form>
+</div>

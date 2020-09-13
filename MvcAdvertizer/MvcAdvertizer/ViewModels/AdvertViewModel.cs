@@ -54,10 +54,12 @@ namespace MvcAdvertizer.ViewModels
 
         public bool ShowViewModelPublishingDate { get; set; } = false;
         
-        public bool ShowRecaptchaErrorMessage { get; set; } = false;     
+        public bool ShowRecaptchaErrorMessage { get; set; } = false;
+
+        public bool ShowMaxUserAdvertsCountLimitErrorMessage { get; set; } = false;
 
 
-        
+
         public void SetupCreateBeforePost(List<User> users) {
 
             ShowViewModelPublishingDate = true;
@@ -67,14 +69,15 @@ namespace MvcAdvertizer.ViewModels
             RetrieveIFormFile();
         }
 
-        public void SetupCreateAfterPost(List<User> users, bool showRecaptchaErrorMessage) {
+        public void SetupCreateAfterPost(List<User> users, bool showRecaptchaErrorMessage, bool showMaxUserAdvertsCountLimitErrorMessage) {
 
             ShowRecaptchaErrorMessage = showRecaptchaErrorMessage;
             Advert.Image = IFromFileUtils.IFormFileToByteArray(ImageFromFile);
 
             ShowViewModelPublishingDate = true;
             HideImageChooser = false;
-            
+            ShowMaxUserAdvertsCountLimitErrorMessage = showMaxUserAdvertsCountLimitErrorMessage;
+
             InitialUserSelectList(users);
             RetrieveIFormFile();
             

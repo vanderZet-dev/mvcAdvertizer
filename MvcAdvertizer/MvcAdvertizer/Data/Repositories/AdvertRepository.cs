@@ -43,5 +43,11 @@ namespace MvcAdvertizer.Data.Repositories
             source.Adverts.Remove(obj);
             source.SaveChanges();            
         }        
+
+        public long CountByUserId(Guid userId) {
+
+            var count = source.Adverts.Where(x => x.UserId == userId).Count();
+            return count;
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using MvcAdvertizer.Data.Interfaces;
 using MvcAdvertizer.Services.Interfaces;
 using MvcAdvertizer.ViewModels;
@@ -14,13 +15,16 @@ namespace MvcAdvertizer.Controllers
         private readonly IRecaptchaService recaptchaService;
         private readonly IUsers userRepository;
         private readonly IAdverts advertRepository;
+        private readonly IConfiguration configuration;
 
         public AdvertController(IRecaptchaService recaptchaService,
                                 IUsers userRepository,
-                                IAdverts advertRepository) {            
+                                IAdverts advertRepository,
+                                IConfiguration configuration) {            
             this.recaptchaService = recaptchaService;
             this.userRepository = userRepository;
             this.advertRepository = advertRepository;
+            this.configuration = configuration;
         }
 
         
@@ -58,7 +62,7 @@ namespace MvcAdvertizer.Controllers
 
         public IActionResult Create() {
 
-            var viewModel = SetupCreateBeforePost();
+            var viewModel = SetupCreateBeforePost();           
 
             return View(viewModel);
         }        
@@ -71,12 +75,20 @@ namespace MvcAdvertizer.Controllers
             var validRecaptcha = await recaptchaService.checkRecaptcha(recaptchaResponse, connectionRemoteIpAddress);
 
             var showRecaptchaErrorMessage = !validRecaptcha;
-            viewModel = SetupCreateAfterPost(viewModel, showRecaptchaErrorMessage);
-
             if (!validRecaptcha)
             {
                 ModelState.AddModelError("Recaptcha", "Check request return false value.");
-            }            
+            }
+
+            var userId = (Guid)viewModel?.Advert?.UserId;
+            var limitExceeded = checkUsersAdvertLimitCountForExceeded(userId);
+            var showMaxUserAdvertsCountLimitErrorMessage = limitExceeded;
+            if (limitExceeded)
+            {
+                ModelState.AddModelError("MaxUserAdvertsCountLimit", "Max user adverts count limit is exceeded.");
+            }   
+
+            viewModel = SetupCreateAfterPost(viewModel, showRecaptchaErrorMessage, showMaxUserAdvertsCountLimitErrorMessage);
 
             if (ModelState.IsValid)
             {
@@ -125,10 +137,10 @@ namespace MvcAdvertizer.Controllers
             return viewModel;
        }
 
-        private AdvertViewModel SetupCreateAfterPost(AdvertViewModel viewModel, bool showRecaptchaErrorMessage) {            
+        private AdvertViewModel SetupCreateAfterPost(AdvertViewModel viewModel, bool showRecaptchaErrorMessage, bool showMaxUserAdvertsCountLimitErrorMessage) {            
 
             var allUserList = userRepository.findAll().ToList();
-            viewModel.SetupCreateAfterPost(allUserList, showRecaptchaErrorMessage);
+            viewModel.SetupCreateAfterPost(allUserList, showRecaptchaErrorMessage, showMaxUserAdvertsCountLimitErrorMessage);
 
             return viewModel;
         }
@@ -153,6 +165,24 @@ namespace MvcAdvertizer.Controllers
             viewModel.SetupForEditBeforePost(advert, allUserList);
 
             return viewModel;
+        }
+
+
+        private bool checkUsersAdvertLimitCountForExceeded(Guid userId) {
+
+            var limitExceeded = false;
+
+            var maxUserAdvertsCount = Convert.ToInt64(configuration.GetSection("MaxUserAdvertsCount").Value);
+            var exceptUsersForCheckingSection = configuration.GetSection("ExceptUsersForChecking");            
+            var exceptUsersForChecking = exceptUsersForCheckingSection.Get<string[]>();
+
+            if (!exceptUsersForChecking.Contains(userId.ToString()))
+            {
+                var actualUserAdvertsCount = advertRepository.CountByUserId(userId);
+                limitExceeded = actualUserAdvertsCount >= maxUserAdvertsCount;                
+            }
+
+            return limitExceeded;
         }
     }
 }

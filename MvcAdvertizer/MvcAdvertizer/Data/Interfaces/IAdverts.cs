@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MvcAdvertizer.Data.Interfaces
 {
-    public interface IAdverts : IRepository<Advert, Guid>
+    public interface IAdverts : IRepository<Advert, Guid>, IEntityWithUser<Guid>
     {
 
     }

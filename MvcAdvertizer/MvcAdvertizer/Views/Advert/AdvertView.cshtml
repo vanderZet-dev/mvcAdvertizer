@@ -33,6 +33,10 @@ else
         <option value="">Выберите пользователя</option>
     </select>
     <span asp-validation-for="Advert.UserId" class="text-danger"></span>
+    @if (Model.ShowMaxUserAdvertsCountLimitErrorMessage)
+    {
+        <span class="text-danger">Для этого пользователя исчерпан лимит по добавленным объявлениям!</span>
+    }
 </div>
 <div class="form-group">
     <label asp-for="Advert.Content"></label>

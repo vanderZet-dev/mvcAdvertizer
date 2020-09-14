@@ -84,6 +84,7 @@ namespace MvcAdvertizer.ViewModels
                 advertSource = advertSource.Where(s => s.Number.ToString().Equals(AdvertSearchObject.SearchStringQuery)
                                        || (AdvertSearchObject.UserId != null && EF.Functions.Like(s.User.Name.ToUpper(), $"%{AdvertSearchObject.SearchStringQuery.ToUpper()}%"))
                                        || EF.Functions.Like(s.Content.ToUpper(), $"%{AdvertSearchObject.SearchStringQuery.ToUpper()}%")
+                                       || s.Rate.ToString().Equals(AdvertSearchObject.SearchStringQuery)
                                        );
             }
             return advertSource;

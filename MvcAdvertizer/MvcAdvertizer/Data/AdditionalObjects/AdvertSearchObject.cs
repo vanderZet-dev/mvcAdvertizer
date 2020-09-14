@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
+using System.ComponentModel;
 
 namespace MvcAdvertizer.Data.AdditionalObjects
 {
     public class AdvertSearchObject
     {   
         [BindRequired]
+        [DisplayName("Пользователь")]
         public Guid? UserId { get; set; }
 
         [BindRequired]

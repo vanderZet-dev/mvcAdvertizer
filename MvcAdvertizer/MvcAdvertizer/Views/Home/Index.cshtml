@@ -2,34 +2,64 @@
 
 <h3>Объявления</h3>
 <div>
-    <div style="text-align: center;
-    background: #4200be;
-    height: 200px;
-    margin-bottom: -50px;">
-       <a class="btn btn-light" asp-controller="Advert" asp-action="Index">ДОБАВИТЬ</a>
-           
+    <div
+        style="text-align: center;
+        background: #4200be;
+        height: 200px;
+        margin-bottom: -50px;">        
+
         <form style="color:inherit;" asp-action="Index" method="get">
-            <div class="form-inline form-group">
-                <div class="form-group">
-                    <label class="control-label" style="color:white">от</label>
-                    <input class="form-control" name="DateStartSearch" type="date" value="@Model.AdvertSearchObject.DateStartSearchString" />
-                    <span asp-validation-for="@Model.AdvertSearchObject.DateStartSearch" class="text-danger"></span>
+            <div class="container">
+                <div class="row align-items-lg-start">
+                    <a class="btn btn-light" style="margin:5px" asp-controller="Advert" asp-action="Index">ДОБАВИТЬ</a>
                 </div>
+                <div class="row align-items-center">
 
-                <div class="form-group">
-                    <label class="control-label" style="color:white">до</label>
-                    <input class="form-control" name="DateEndSearch" type="date" value="@Model.AdvertSearchObject.DateEndSearchString" />
-                    <span asp-validation-for="@Model.AdvertSearchObject.DateEndSearch" class="text-danger"></span>
+                    <div class="input-group" style="margin:5px">
+                        <div class="input-group-prepend">
+                            <input type="submit" value="Search" class="input-group-text" />
+                        </div>
+                        <input type="text" class="form-control" placeholder="Общий поиск" name="SearchStringQuery" value="@Model.AdvertSearchObject.SearchStringQuery" />
+                    </div>
+
+                    <div class="col" style="margin:5px">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <label style="color:white" asp-for="@Model.AdvertSearchObject.UserId"></label>
+                            </div>
+                            <div class="col">
+                                <select class="form-control" name="userId" asp-for="@Model.AdvertSearchObject.UserId" asp-items="@Model.UserSearchList" onchange="this.form.submit()"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col" style="margin:5px">
+                        <div class="row align-items-center">
+                            <div class="col-md-auto">
+                                <label class="control-label" style="color:white">от</label>
+                            </div>
+                            <div class="col">
+                                <input class="form-control" name="DateStartSearch" type="date" value="@Model.AdvertSearchObject.DateStartSearchString" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col" style="margin:5px">
+                        <div class="row align-items-center">
+                            <div class="col-md-auto">
+                                <label class="control-label" style="color:white">до</label>
+                            </div>
+                            <div class="col">
+                                <input class="form-control" name="DateEndSearch" type="date" value="@Model.AdvertSearchObject.DateEndSearchString" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
 
-                <select name="userId" asp-for="@Model.AdvertSearchObject.UserId" asp-items="@Model.UserSearchList" class="form-control" onchange="this.form.submit()"></select>
-
-                <input type="text" placeholder="Общий поиск" name="SearchStringQuery" value="@Model.AdvertSearchObject.SearchStringQuery" />
+            <div hidden="hidden">                
                 <input type="hidden" name="PageSize" value="@Model.RepresentObjectConfigurator.PageSize" />
                 <input type="hidden" name="SortOrderName" value="@Model.SortingListTool.SortOrderName" />
                 <input type="hidden" name="SortDirection" value="@Model.SortingListTool.SortDirection" />
-                <input type="hidden" name="NotChangeSort" value=true />
-                <input type="submit" value="Search" class="btn btn-default" />
+                <input type="hidden" name="NotChangeSort" value=true />                
             </div>
         </form>
         <label class="control-label" style="color:white">Найдено записей: @Model.Adverts.ItemsCount</label>
@@ -83,7 +113,15 @@
                         asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Рейтинг <sort-header current-sort="@Model.SortingListTool?.GetSortingElementByName("Rate")?.SortDirection" /></a>
                 </th>
                 <th>
-                    Пользователь
+                    <a style="color:inherit;"
+                       asp-action="Index"
+                       asp-route-sortOrderName="@Model.SortingListTool?.GetSortingElementByName("User")"
+                       asp-route-sortDirection="@Model.SortingListTool?.GetSortingElementByName("User")?.MirrorSortDirection"
+                       asp-route-userId="@Model.AdvertSearchObject.UserId"
+                       asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
+                       asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
+                       asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
+                       asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Пользователь <sort-header current-sort="@Model.SortingListTool?.GetSortingElementByName("User")?.SortDirection" /></a>
                 </th>
             </tr>
             @foreach (Advert advert in Model.Adverts)

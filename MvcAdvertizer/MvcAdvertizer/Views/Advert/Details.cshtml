@@ -1,8 +1,6 @@
 ﻿@model AdvertViewModel
-
 <div>
     <h3>Объявление</h3>
-
     @if (Model.ImgExists())
     {
         <div>
@@ -39,9 +37,9 @@
     <form role="form" class="form">
         @Html.Partial("AdvertView", Model)
         <div class="row">
-            <p><a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Вернутья</a></p>
-            <p><a class="btn btn-warning" asp-controller="Advert" asp-action="Edit" asp-route-id="@Model.Advert.Id">Редактировать</a></p>            
-            <p><a class="btn btn-danger" asp-controller="Advert" asp-action="SoftDelete" asp-route-id="@Model.Advert.Id">Удалить</a></p>
+            <p><a class="btn btn-secondary mr-2 ml-3" asp-controller="Home" asp-action="Index">Вернутья</a></p>
+            <p><a class="btn btn-warning" asp-controller="Advert" asp-action="Edit" asp-route-id="@Model.Advert.Id">Редактировать</a></p>
+            <p><a class="btn btn-danger ml-2" asp-controller="Advert" asp-action="SoftDelete" asp-route-id="@Model.Advert.Id">Удалить</a></p>
         </div>
     </form>
 </div>

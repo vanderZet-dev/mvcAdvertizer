@@ -5,6 +5,7 @@ using MvcAdvertizer.Config.Tools;
 using MvcAdvertizer.Data.AdditionalObjects;
 using MvcAdvertizer.Data.Models;
 using MvcAdvertizer.ViewModels;
+using Newtonsoft.Json;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,7 +23,13 @@ namespace MvcAdvertizer.Controllers
                                                 RepresentObjectConfigurator representObjectConfigurator,
                                                 SortingList<Advert> sortingListAdvert){
 
-            var result = new AdvertListViewModel(representObjectConfigurator, advertListViewModel, sortingListAdvert);            
+            Toaster toaster = null;
+            if (TempData["toaster"] != null)
+            {
+                toaster = JsonConvert.DeserializeObject<Toaster>((string)TempData["toaster"]);
+            }  
+
+            var result = new AdvertListViewModel(representObjectConfigurator, advertListViewModel, sortingListAdvert, toaster);            
 
             //формирования списка пользователей для осуществления поиска по юзерам        
             IQueryable<User> users = db.Users;
@@ -33,7 +40,6 @@ namespace MvcAdvertizer.Controllers
             await result.CreateAsync(adverts);
 
             return View(result);
-        }
-                
+        }                
     }
 }

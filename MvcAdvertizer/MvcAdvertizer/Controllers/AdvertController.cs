@@ -4,9 +4,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using MvcAdvertizer.Config.Tools;
 using MvcAdvertizer.Data.Interfaces;
 using MvcAdvertizer.Services.Interfaces;
+using MvcAdvertizer.Utils;
 using MvcAdvertizer.ViewModels;
+using Newtonsoft.Json;
 
 namespace MvcAdvertizer.Controllers
 {
@@ -51,8 +54,9 @@ namespace MvcAdvertizer.Controllers
 
             if (ModelState.IsValid)
             {
-                var updated = advertRepository.Update(viewModel.Advert);
-                return RedirectToAction("Details", new { id = updated.Id });
+                advertRepository.Update(viewModel.Advert);                
+                TempData["toaster"] = ToastGeneratorUtils.GetSuccessRecordUpdateSerializedToasterData();
+                return RedirectToAction("Index", "Home");
             }
             else
             {
@@ -92,8 +96,9 @@ namespace MvcAdvertizer.Controllers
 
             if (ModelState.IsValid)
             {
-                var created = advertRepository.Add(viewModel.Advert);
-                return RedirectToAction("Details", new { id = created.Id });
+                advertRepository.Add(viewModel.Advert);
+                TempData["toaster"] = ToastGeneratorUtils.GetSuccessRecordCreateSerializedToasterData();
+                return RedirectToAction("Index", "Home");
             }
             else
             {
@@ -109,7 +114,8 @@ namespace MvcAdvertizer.Controllers
             if (existedAdvert != null && !existedAdvert.Deleted)
             {
                 existedAdvert.Deleted = true;
-                advertRepository.Update(existedAdvert);                
+                advertRepository.Update(existedAdvert);
+                TempData["toaster"] = ToastGeneratorUtils.GetSuccessRecordDeleteSerializedToasterData();
             }
 
             return RedirectToAction("Index", "Home");

@@ -28,6 +28,9 @@ namespace MvcAdvertizer
 
             services.AddHttpClient();
 
+            services.AddMemoryCache();
+            services.AddSession();
+
             services.AddTransient<IRecaptchaService, RecaptchaService>();
 
             services.AddTransient<IUsers, UserRepository>();
@@ -42,8 +45,9 @@ namespace MvcAdvertizer
         {
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
-            app.UseStaticFiles();           
+            app.UseStaticFiles();
 
+            app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}");

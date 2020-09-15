@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using MvcAdvertizer.Config.Tools;
 using MvcAdvertizer.Data.AdditionalObjects;
 using MvcAdvertizer.Data.Models;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,15 +24,17 @@ namespace MvcAdvertizer.ViewModels
 
         public SelectList UserSearchList { get; set; }
 
+        public Toaster Toaster { get; set; }
 
         public AdvertListViewModel(RepresentObjectConfigurator representObjectConfigurator, 
                                     AdvertSearchObject advertSearchObject,
-                                    SortingList<Advert> sortingListTool)
+                                    SortingList<Advert> sortingListTool,
+                                    Toaster toaster)
         {
-
             AdvertSearchObject = advertSearchObject;
             RepresentObjectConfigurator = representObjectConfigurator;
             SortingListTool = sortingListTool;
+            Toaster = toaster;
 
             InitialSortingListTool();            
         }       
@@ -47,7 +51,8 @@ namespace MvcAdvertizer.ViewModels
         }
 
         public async Task<bool> CreateAsync(IQueryable<Advert> advertSource)
-        {   
+        {
+            advertSource = ApplyDeletedSearch(advertSource);
             advertSource = SortingListTool.ApplySorting(advertSource);
             advertSource = ApplyUserFiltration(advertSource);
             advertSource = ApplyStringQuerySearch(advertSource);
@@ -101,6 +106,13 @@ namespace MvcAdvertizer.ViewModels
             {
                 advertSource = advertSource.Where(s => s.CreatedOn <= AdvertSearchObject.DateEndSearch);
             }
+
+            return advertSource;
+        }
+
+        private IQueryable<Advert> ApplyDeletedSearch(IQueryable<Advert> advertSource) {
+            
+             advertSource = advertSource.Where(s => s.Deleted == false);           
 
             return advertSource;
         }

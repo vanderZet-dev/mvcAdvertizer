@@ -4,6 +4,6 @@ namespace MvcAdvertizer.Services.Interfaces
 {
     public interface IRecaptchaService
     {
-        public Task<bool> checkRecaptcha(string recaptchaResponse, string connectionRemoteIpAddress);
+        public Task<bool> CheckRecaptcha(string recaptchaResponse, string connectionRemoteIpAddress);
     }
 }

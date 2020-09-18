@@ -11,12 +11,12 @@ namespace MvcAdvertizer.Data.Repositories
 
         public AdvertRepository(ApplicationContext applicationContext) : base(applicationContext) { }
 
-        public IQueryable<Advert> findAll() {
+        public IQueryable<Advert> FindAll() {
 
             return source.Adverts;
         }
 
-        public Advert findById(Guid guid) {
+        public Advert FindById(Guid guid) {
 
             return source.Adverts.Where(x => x.Id.Equals(guid)).FirstOrDefault();
         }

@@ -4,9 +4,9 @@ namespace MvcAdvertizer.Data.Interfaces
 {
     public interface IRepository<Type, Identifier>
     {
-        public IQueryable<Type> findAll();
+        public IQueryable<Type> FindAll();
 
-        public Type findById(Identifier guid);
+        public Type FindById(Identifier guid);
 
         public Type Add(Type obj);
 

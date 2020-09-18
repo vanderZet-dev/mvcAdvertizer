@@ -1,6 +1,4 @@
 ﻿
-using System.ComponentModel.DataAnnotations;
-
 namespace MvcAdvertizer.Config.Tools
 {
     public class SortingElement

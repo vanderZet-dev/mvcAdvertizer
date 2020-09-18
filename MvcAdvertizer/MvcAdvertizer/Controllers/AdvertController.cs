@@ -4,12 +4,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using MvcAdvertizer.Config.Tools;
 using MvcAdvertizer.Data.Interfaces;
 using MvcAdvertizer.Services.Interfaces;
 using MvcAdvertizer.Utils;
 using MvcAdvertizer.ViewModels;
-using Newtonsoft.Json;
 
 namespace MvcAdvertizer.Controllers
 {
@@ -76,7 +74,7 @@ namespace MvcAdvertizer.Controllers
 
             string recaptchaResponse = Request.Form["g-recaptcha-response"];
             string connectionRemoteIpAddress = HttpContext.Connection.RemoteIpAddress.ToString();
-            var validRecaptcha = await recaptchaService.checkRecaptcha(recaptchaResponse, connectionRemoteIpAddress);
+            var validRecaptcha = await recaptchaService.CheckRecaptcha(recaptchaResponse, connectionRemoteIpAddress);
 
             var showRecaptchaErrorMessage = !validRecaptcha;
             if (!validRecaptcha)
@@ -85,7 +83,7 @@ namespace MvcAdvertizer.Controllers
             }
 
             var userId = (Guid)viewModel?.Advert?.UserId;
-            var limitExceeded = checkUsersAdvertLimitCountForExceeded(userId);
+            var limitExceeded = CheckUsersAdvertLimitCountForExceeded(userId);
             var showMaxUserAdvertsCountLimitErrorMessage = limitExceeded;
             if (limitExceeded)
             {
@@ -109,7 +107,7 @@ namespace MvcAdvertizer.Controllers
 
         public IActionResult SoftDelete(Guid id) {                        
 
-            var existedAdvert = advertRepository.findById(id);
+            var existedAdvert = advertRepository.FindById(id);
 
             if (existedAdvert != null && !existedAdvert.Deleted)
             {
@@ -125,7 +123,7 @@ namespace MvcAdvertizer.Controllers
 
             var viewModel = new AdvertViewModel();            
 
-            var advert = advertRepository.findById(id);            
+            var advert = advertRepository.FindById(id);            
 
             viewModel.Advert = advert;
 
@@ -137,7 +135,7 @@ namespace MvcAdvertizer.Controllers
 
             var viewModel = new AdvertViewModel();
 
-            var allUserList = userRepository.findAll().ToList();
+            var allUserList = userRepository.FindAll().ToList();
             viewModel.SetupCreateBeforePost(allUserList);
 
             return viewModel;
@@ -145,7 +143,7 @@ namespace MvcAdvertizer.Controllers
 
         private AdvertViewModel SetupCreateAfterPost(AdvertViewModel viewModel, bool showRecaptchaErrorMessage, bool showMaxUserAdvertsCountLimitErrorMessage) {            
 
-            var allUserList = userRepository.findAll().ToList();
+            var allUserList = userRepository.FindAll().ToList();
             viewModel.SetupCreateAfterPost(allUserList, showRecaptchaErrorMessage, showMaxUserAdvertsCountLimitErrorMessage);
 
             return viewModel;
@@ -153,8 +151,8 @@ namespace MvcAdvertizer.Controllers
 
         private AdvertViewModel SetupForDetail(Guid advertId, AdvertViewModel viewModel) {
 
-            var advert = advertRepository.findById(advertId);
-            var allUserList = userRepository.findAll().ToList();
+            var advert = advertRepository.FindById(advertId);
+            var allUserList = userRepository.FindAll().ToList();
 
             viewModel.SetupForDetail(advert, allUserList);
 
@@ -165,8 +163,8 @@ namespace MvcAdvertizer.Controllers
 
             var viewModel = new AdvertViewModel();
 
-            var advert = advertRepository.findById(advertId);
-            var allUserList = userRepository.findAll().ToList();
+            var advert = advertRepository.FindById(advertId);
+            var allUserList = userRepository.FindAll().ToList();
 
             viewModel.SetupForEditBeforePost(advert, allUserList);
 
@@ -174,7 +172,7 @@ namespace MvcAdvertizer.Controllers
         }
 
 
-        private bool checkUsersAdvertLimitCountForExceeded(Guid userId) {
+        private bool CheckUsersAdvertLimitCountForExceeded(Guid userId) {
 
             var limitExceeded = false;
 

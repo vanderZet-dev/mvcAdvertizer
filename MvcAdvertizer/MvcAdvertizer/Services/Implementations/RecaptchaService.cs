@@ -18,7 +18,7 @@ namespace MvcAdvertizer.Services.Implementations
             this.httpClientFactory = httpClientFactory;
         }
 
-        public async Task<bool> checkRecaptcha(string recaptchaResponse, string connectionRemoteIpAddress) {            
+        public async Task<bool> CheckRecaptcha(string recaptchaResponse, string connectionRemoteIpAddress) {            
 
             var recaptchaVerifyEndPoint = configuration.GetSection("Recaptcha").GetSection("recaptchaVerifyEndPoint").Value;
             var recaptchaSecretKey = configuration.GetSection("Recaptcha").GetSection("googleReCaptcha:SecretKey").Value;
@@ -30,12 +30,12 @@ namespace MvcAdvertizer.Services.Implementations
                     {"remoteip", connectionRemoteIpAddress}
                 };
 
-            var valid = await getRecaptchaCheckResult(recaptchaVerifyEndPoint, parameters);
+            var valid = await GetRecaptchaCheckResult(recaptchaVerifyEndPoint, parameters);
 
             return valid;
         }
 
-        private async Task<bool> getRecaptchaCheckResult(string recaptchaVerifyEndPoint, Dictionary<string, string> parameters) {
+        private async Task<bool> GetRecaptchaCheckResult(string recaptchaVerifyEndPoint, Dictionary<string, string> parameters) {
 
             var valid = true;
 

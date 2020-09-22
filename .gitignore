@@ -360,3 +360,5 @@ MigrationBackup/
 MvcAdvertizer/MvcAdvertizer/obj/
 
 MvcAdvertizer/.vs/MvcAdvertizer/DesignTimeBuild/.dtbcache.v2
+
+storage/

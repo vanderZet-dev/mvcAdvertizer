@@ -21,17 +21,20 @@ namespace MvcAdvertizer.Controllers
         private readonly IMapper mapper;
         private readonly IAdvertService advertService;
         private readonly IUserService userService;
+        private readonly IFileStorageService fileStorageService;
 
-        public AdvertController(IRecaptchaService recaptchaService,                                                              
+        public AdvertController(IRecaptchaService recaptchaService,
                                 IConfiguration configuration,
                                 IMapper mapper,
-                                IAdvertService advertService, 
-                                IUserService userService) {
-            this.recaptchaService = recaptchaService;                      
+                                IAdvertService advertService,
+                                IUserService userService, 
+                                IFileStorageService fileStorageService) {
+            this.recaptchaService = recaptchaService;
             this.configuration = configuration;
             this.mapper = mapper;
             this.advertService = advertService;
             this.userService = userService;
+            this.fileStorageService = fileStorageService;
         }
 
 
@@ -104,6 +107,8 @@ namespace MvcAdvertizer.Controllers
 
             if (ModelState.IsValid)
             {
+                var savedImageName = fileStorageService.Save(viewModel.ImageFromFile);
+                advert.ImageHash = savedImageName;
                 advertService.Create(advert);                
                 TempData["toaster"] = ToastGeneratorUtils.GetSuccessRecordCreateSerializedToasterData();
                 return RedirectToAction("Index", "Home");
@@ -168,9 +173,15 @@ namespace MvcAdvertizer.Controllers
             var advert = advertService.FindById(advertId);
             var allUserList = userService.FindAll().ToList();
             var allUserDtoList = mapper.Map<List<UserDto>>(allUserList);
-            var advertDto = mapper.Map<AdvertDto>(advert);
+            var advertDto = mapper.Map<AdvertDto>(advert);            
 
             viewModel.SetupForDetail(advertDto, allUserDtoList);
+
+            if (advert?.ImageHash?.Length > 0)
+            {
+                var img = IFromFileUtils.IFormFileToByteArray(fileStorageService.GetFile(advert.ImageHash));
+                viewModel.AdvertDto.Image = img;
+            }
 
             return viewModel;
         }        

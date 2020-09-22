@@ -34,7 +34,8 @@ namespace MvcAdvertizer
             services.AddMemoryCache();
             services.AddSession();
 
-            services.AddTransient<IRecaptchaService, RecaptchaService>();            
+            services.AddTransient<IRecaptchaService, RecaptchaService>();
+            services.AddTransient<IFileStorageService, FileStorageService>();
 
             services.AddTransient<IUsers, UserRepository>();
             services.AddTransient<IAdverts, AdvertRepository>();

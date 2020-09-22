@@ -25,7 +25,7 @@ namespace MvcAdvertizer.Data.DTO
         [StringLength(200, MinimumLength = 5, ErrorMessage = "Длина строки не должна быть от 5 до 200 символов")]
         [Required(ErrorMessage = "Поле должно быть заполнено")]
         public string Content { get; set; }
-
+                
         public byte[] Image { get; set; }
 
         [Display(Name = "Выставьте рейтинг от 1 до 10")]

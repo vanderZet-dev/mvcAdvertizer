@@ -13,13 +13,13 @@ namespace MvcAdvertizer.Data.Models
         
         public int Number { get; set; }
         
-        public Guid? UserId { get; set; }
+        public Guid UserId { get; set; }
 
         public virtual User User { get; set; }
         
         public string Content { get; set; }
-                     
-        public byte[] Image { get; set; }
+
+        public string ImageHash { get; set; }
         
         public int? Rate { get; set; }
         

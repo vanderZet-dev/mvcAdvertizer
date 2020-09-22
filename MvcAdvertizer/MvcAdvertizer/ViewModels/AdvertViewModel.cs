@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using MvcAdvertizer.Data.Models;
+using MvcAdvertizer.Data.DTO;
 using MvcAdvertizer.Utils;
 using MvcAdvertizer.Utils.Attributes;
 using System;
@@ -14,7 +14,7 @@ namespace MvcAdvertizer.ViewModels
 
         public SelectList UserSelectList { get; set; }
 
-        public Advert Advert { get; set; }
+        public AdvertDto AdvertDto { get; set; }
 
         public bool ReadOnly { get; set; } = false;
 
@@ -27,9 +27,9 @@ namespace MvcAdvertizer.ViewModels
                 
         public string Img() {
 
-            if (Advert?.Image != null)
+            if (AdvertDto?.Image != null)
             {
-                var base64 = Convert.ToBase64String(Advert.Image);
+                var base64 = Convert.ToBase64String(AdvertDto.Image);
                 var imgSrc = String.Format("data:image/png;base64,{0}", base64);
 
                 return imgSrc;
@@ -60,7 +60,7 @@ namespace MvcAdvertizer.ViewModels
 
 
 
-        public void SetupCreateBeforePost(List<User> users) {
+        public void SetupCreateBeforePost(List<UserDto> users) {
 
             ShowViewModelPublishingDate = true;
             HideImageChooser = false;
@@ -69,10 +69,10 @@ namespace MvcAdvertizer.ViewModels
             RetrieveIFormFile();
         }
 
-        public void SetupCreateAfterPost(List<User> users, bool showRecaptchaErrorMessage, bool showMaxUserAdvertsCountLimitErrorMessage) {
+        public void SetupCreateAfterPost(List<UserDto> users, bool showRecaptchaErrorMessage, bool showMaxUserAdvertsCountLimitErrorMessage) {
 
             ShowRecaptchaErrorMessage = showRecaptchaErrorMessage;
-            Advert.Image = IFromFileUtils.IFormFileToByteArray(ImageFromFile);
+            AdvertDto.Image = IFromFileUtils.IFormFileToByteArray(ImageFromFile);
 
             ShowViewModelPublishingDate = true;
             HideImageChooser = false;
@@ -80,37 +80,37 @@ namespace MvcAdvertizer.ViewModels
 
             InitialUserSelectList(users);
             RetrieveIFormFile();
-            
-            Advert.PublishingDate = Convert.ToDateTime(PublishingDate);
+
+            AdvertDto.PublishingDate = Convert.ToDateTime(PublishingDate);
         }
 
-        public void SetupForDetail(Advert advert, List<User> users) {
+        public void SetupForDetail(AdvertDto advertDto, List<UserDto> users) {
 
-            Advert = advert;
+            AdvertDto = advertDto;
             InitialUserSelectList(users);
             RetrieveIFormFile();
             ReadOnly = true;
         }
 
-        public void SetupForEditBeforePost(Advert advert, List<User> users) {
+        public void SetupForEditBeforePost(AdvertDto advertDto, List<UserDto> users) {
 
-            Advert = advert;
+            AdvertDto = advertDto;
             InitialUserSelectList(users);
             RetrieveIFormFile();
             ReadOnly = false;
         }
 
-        public void InitialUserSelectList(List<User> users) {            
+        public void InitialUserSelectList(List<UserDto> users) {            
 
-            var selectedElement = users.FirstOrDefault(x => x.Id == Advert?.UserId);
+            var selectedElement = users.FirstOrDefault(x => x.Id == AdvertDto?.UserId);
             UserSelectList = new SelectList(users, "Id", "Name", selectedElement);            
         }
 
         public void RetrieveIFormFile() {
                         
-            if (Advert?.Image != null)
+            if (AdvertDto?.Image != null)
             {
-                ImageFromFile = IFromFileUtils.ByteArrayToIFormFile(Advert.Image);
+                ImageFromFile = IFromFileUtils.ByteArrayToIFormFile(AdvertDto.Image);
             }            
         }
     }

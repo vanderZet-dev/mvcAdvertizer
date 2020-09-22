@@ -5,21 +5,21 @@
     {
         <div>
             <div id="img300" hidden="hidden">
-                <a asp-action="ShowImage" asp-route-id="@Model.Advert.Id" target="_blank">
+                <a asp-action="ShowImage" asp-route-id="@Model.AdvertDto.Id" target="_blank">
                     <label>Image with width 300</label>
                     <p><img src="@Model.Img()" width="300" /></p>
                 </a>
             </div>
 
             <div id="img500">
-                <a asp-action="ShowImage" asp-route-id="@Model.Advert.Id" target="_blank">
+                <a asp-action="ShowImage" asp-route-id="@Model.AdvertDto.Id" target="_blank">
                     <label>Image with width 500</label>
                     <p><img src="@Model.Img()" width="500" /></p>
                 </a>
             </div>
 
             <div id="img800" hidden="hidden">
-                <a asp-action="ShowImage" asp-route-id="@Model.Advert.Id" target="_blank">
+                <a asp-action="ShowImage" asp-route-id="@Model.AdvertDto.Id" target="_blank">
                     <label>Image with width 800</label>
                     <p><img src="@Model.Img()" width="800" /></p>
                 </a>
@@ -38,8 +38,8 @@
         @Html.Partial("AdvertView", Model)
         <div class="row">
             <p><a class="btn btn-secondary mr-2 ml-3" asp-controller="Home" asp-action="Index">Вернутья</a></p>
-            <p><a class="btn btn-warning" asp-controller="Advert" asp-action="Edit" asp-route-id="@Model.Advert.Id">Редактировать</a></p>
-            <p><a class="btn btn-danger ml-2" asp-controller="Advert" asp-action="SoftDelete" asp-route-id="@Model.Advert.Id">Удалить</a></p>
+            <p><a class="btn btn-warning" asp-controller="Advert" asp-action="Edit" asp-route-id="@Model.AdvertDto.Id">Редактировать</a></p>
+            <p><a class="btn btn-danger ml-2" asp-controller="Advert" asp-action="SoftDelete" asp-route-id="@Model.AdvertDto.Id">Удалить</a></p>
         </div>
     </form>
 </div>

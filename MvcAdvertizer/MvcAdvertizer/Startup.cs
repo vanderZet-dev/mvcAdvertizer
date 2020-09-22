@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +9,7 @@ using MvcAdvertizer.Data.Interfaces;
 using MvcAdvertizer.Data.Repositories;
 using MvcAdvertizer.Services.Interfaces;
 using MvcAdvertizer.Services.Implementations;
+using AutoMapper;
 
 namespace MvcAdvertizer
 {
@@ -26,15 +27,20 @@ namespace MvcAdvertizer
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection));
 
+            services.AddAutoMapper(typeof(Startup).Assembly);
+
             services.AddHttpClient();
 
             services.AddMemoryCache();
             services.AddSession();
 
-            services.AddTransient<IRecaptchaService, RecaptchaService>();
+            services.AddTransient<IRecaptchaService, RecaptchaService>();            
 
             services.AddTransient<IUsers, UserRepository>();
             services.AddTransient<IAdverts, AdvertRepository>();
+
+            services.AddTransient<IAdvertService, AdvertService>();
+            services.AddTransient<IUserService, UserService>();
 
             services.AddRazorPages().AddMvcOptions(options => options.EnableEndpointRouting = false);
 

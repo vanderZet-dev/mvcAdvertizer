@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using MvcAdvertizer.Data.Interfaces;
+using MvcAdvertizer.Data.DTO;
+using MvcAdvertizer.Data.Models;
 using MvcAdvertizer.Services.Interfaces;
 using MvcAdvertizer.Utils;
 using MvcAdvertizer.ViewModels;
@@ -14,21 +17,27 @@ namespace MvcAdvertizer.Controllers
     public class AdvertController : Controller
     {        
         private readonly IRecaptchaService recaptchaService;
-        private readonly IUsers userRepository;
-        private readonly IAdverts advertRepository;
+        //private readonly IUsers userRepository;        
         private readonly IConfiguration configuration;
+        private readonly IMapper mapper;
+        private readonly IAdvertService advertService;
+        private readonly IUserService userService;
 
         public AdvertController(IRecaptchaService recaptchaService,
-                                IUsers userRepository,
-                                IAdverts advertRepository,
-                                IConfiguration configuration) {            
+                                //IUsers userRepository,                                
+                                IConfiguration configuration,
+                                IMapper mapper,
+                                IAdvertService advertService, 
+                                IUserService userService) {
             this.recaptchaService = recaptchaService;
-            this.userRepository = userRepository;
-            this.advertRepository = advertRepository;
+            //this.userRepository = userRepository;            
             this.configuration = configuration;
+            this.mapper = mapper;
+            this.advertService = advertService;
+            this.userService = userService;
         }
 
-        
+
         public IActionResult Details(Guid id) {
 
             var viewModel = new AdvertViewModel();            
@@ -48,17 +57,19 @@ namespace MvcAdvertizer.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(AdvertViewModel viewModel) {                        
+        public IActionResult Edit(AdvertViewModel viewModel) {
+
+            var advert = mapper.Map<Advert>(viewModel.AdvertDto);
 
             if (ModelState.IsValid)
             {
-                advertRepository.Update(viewModel.Advert);                
+                advertService.Update(advert);                
                 TempData["toaster"] = ToastGeneratorUtils.GetSuccessRecordUpdateSerializedToasterData();
                 return RedirectToAction("Index", "Home");
             }
             else
             {
-                return RedirectToAction("Edit", new { id = viewModel.Advert.Id });
+                return RedirectToAction("Edit", new { id = advert.Id });
             }
         }
 
@@ -80,9 +91,9 @@ namespace MvcAdvertizer.Controllers
             if (!validRecaptcha)
             {
                 ModelState.AddModelError("Recaptcha", "Check request return false value.");
-            }
+            }            
 
-            var userId = (Guid)viewModel?.Advert?.UserId;
+            var userId = (Guid)viewModel.AdvertDto?.UserId;
             var limitExceeded = CheckUsersAdvertLimitCountForExceeded(userId);
             var showMaxUserAdvertsCountLimitErrorMessage = limitExceeded;
             if (limitExceeded)
@@ -92,9 +103,11 @@ namespace MvcAdvertizer.Controllers
 
             viewModel = SetupCreateAfterPost(viewModel, showRecaptchaErrorMessage, showMaxUserAdvertsCountLimitErrorMessage);
 
+            var advert = mapper.Map<Advert>(viewModel.AdvertDto);
+
             if (ModelState.IsValid)
             {
-                advertRepository.Add(viewModel.Advert);
+                advertService.Create(advert);                
                 TempData["toaster"] = ToastGeneratorUtils.GetSuccessRecordCreateSerializedToasterData();
                 return RedirectToAction("Index", "Home");
             }
@@ -105,14 +118,14 @@ namespace MvcAdvertizer.Controllers
         }       
 
 
-        public IActionResult SoftDelete(Guid id) {                        
+        public IActionResult SoftDelete(Guid id) {
 
-            var existedAdvert = advertRepository.FindById(id);
+            var existedAdvert = advertService.FindById(id);
 
             if (existedAdvert != null && !existedAdvert.Deleted)
             {
                 existedAdvert.Deleted = true;
-                advertRepository.Update(existedAdvert);
+                advertService.Update(existedAdvert);                
                 TempData["toaster"] = ToastGeneratorUtils.GetSuccessRecordDeleteSerializedToasterData();
             }
 
@@ -123,9 +136,11 @@ namespace MvcAdvertizer.Controllers
 
             var viewModel = new AdvertViewModel();            
 
-            var advert = advertRepository.FindById(id);            
+            var advert = advertService.FindById(id);
 
-            viewModel.Advert = advert;
+            var advertDto = mapper.Map<AdvertDto>(advert);
+
+            viewModel.AdvertDto = advertDto;
 
             return View(viewModel);
         }
@@ -135,26 +150,30 @@ namespace MvcAdvertizer.Controllers
 
             var viewModel = new AdvertViewModel();
 
-            var allUserList = userRepository.FindAll().ToList();
-            viewModel.SetupCreateBeforePost(allUserList);
+            var allUserList = userService.FindAll().ToList();
+            var allUserDtoList = mapper.Map<List<UserDto>>(allUserList);
+            viewModel.SetupCreateBeforePost(allUserDtoList);
 
             return viewModel;
        }
 
-        private AdvertViewModel SetupCreateAfterPost(AdvertViewModel viewModel, bool showRecaptchaErrorMessage, bool showMaxUserAdvertsCountLimitErrorMessage) {            
+        private AdvertViewModel SetupCreateAfterPost(AdvertViewModel viewModel, bool showRecaptchaErrorMessage, bool showMaxUserAdvertsCountLimitErrorMessage) {
 
-            var allUserList = userRepository.FindAll().ToList();
-            viewModel.SetupCreateAfterPost(allUserList, showRecaptchaErrorMessage, showMaxUserAdvertsCountLimitErrorMessage);
+            var allUserList = userService.FindAll().ToList();
+            var allUserDtoList = mapper.Map<List<UserDto>>(allUserList);
+            viewModel.SetupCreateAfterPost(allUserDtoList, showRecaptchaErrorMessage, showMaxUserAdvertsCountLimitErrorMessage);
 
             return viewModel;
         }
 
         private AdvertViewModel SetupForDetail(Guid advertId, AdvertViewModel viewModel) {
 
-            var advert = advertRepository.FindById(advertId);
-            var allUserList = userRepository.FindAll().ToList();
+            var advert = advertService.FindById(advertId);
+            var allUserList = userService.FindAll().ToList();
+            var allUserDtoList = mapper.Map<List<UserDto>>(allUserList);
+            var advertDto = mapper.Map<AdvertDto>(advert);
 
-            viewModel.SetupForDetail(advert, allUserList);
+            viewModel.SetupForDetail(advertDto, allUserDtoList);
 
             return viewModel;
         }        
@@ -163,10 +182,12 @@ namespace MvcAdvertizer.Controllers
 
             var viewModel = new AdvertViewModel();
 
-            var advert = advertRepository.FindById(advertId);
-            var allUserList = userRepository.FindAll().ToList();
+            var advert = advertService.FindById(advertId);
+            var allUserList = userService.FindAll().ToList();
+            var allUserDtoList = mapper.Map<List<UserDto>>(allUserList);
+            var advertDto = mapper.Map<AdvertDto>(advert);
 
-            viewModel.SetupForEditBeforePost(advert, allUserList);
+            viewModel.SetupForEditBeforePost(advertDto, allUserDtoList);
 
             return viewModel;
         }
@@ -182,7 +203,7 @@ namespace MvcAdvertizer.Controllers
 
             if (!exceptUsersForChecking.Contains(userId.ToString()))
             {
-                var actualUserAdvertsCount = advertRepository.CountByUserId(userId);
+                var actualUserAdvertsCount = advertService.CountByUserId(userId);
                 limitExceeded = actualUserAdvertsCount >= maxUserAdvertsCount;                
             }
 

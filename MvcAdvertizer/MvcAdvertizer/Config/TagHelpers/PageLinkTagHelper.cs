@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using MvcAdvertizer.Config.Tools;
+using MvcAdvertizer.Data.DTO;
 using MvcAdvertizer.Data.Models;
 using System.Collections.Generic;
 
@@ -19,7 +20,7 @@ namespace MvcAdvertizer.Config.TagHelpers
         [ViewContext]
         [HtmlAttributeNotBound]
         public ViewContext ViewContext { get; set; }
-        public PaginatedList<Advert> PageModel { get; set; }
+        public PaginatedList<AdvertDto> PageModel { get; set; }
         public string PageAction { get; set; }
 
         [HtmlAttributeName(DictionaryAttributePrefix = "page-url-")]

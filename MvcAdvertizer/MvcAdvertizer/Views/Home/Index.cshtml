@@ -73,8 +73,8 @@
 
             <div hidden="hidden">
                 <input type="hidden" name="PageSize" value="@Model.RepresentObjectConfigurator.PageSize" />
-                <input type="hidden" name="SortOrderName" value="@Model.SortingListTool.SortOrderName" />
-                <input type="hidden" name="SortDirection" value="@Model.SortingListTool.SortDirection" />
+                <input type="hidden" name="SortOrderName" value="@Model.SortingObject.SortOrderName" />
+                <input type="hidden" name="SortDirection" value="@Model.SortingObject.SortDirection" />
                 <input type="hidden" name="NotChangeSort" value=true />
             </div>
         </form>
@@ -87,60 +87,60 @@
                 <th>
                     <a style="color:inherit;"
                        asp-action="Index"
-                       asp-route-sortOrderName="@Model.SortingListTool?.GetSortingElementByName("Number")"
-                       asp-route-sortDirection="@Model.SortingListTool?.GetSortingElementByName("Number")?.MirrorSortDirection"
+                       asp-route-sortOrderName="@Model.SortingObject?.GetSortingElementByName("Number")"
+                       asp-route-sortDirection="@Model.SortingObject?.GetSortingElementByName("Number")?.MirrorSortDirection"
                        asp-route-userId="@Model.AdvertSearchObject.UserId"
                        asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
                        asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
                        asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
-                       asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Номер <sort-header current-sort="@Model.SortingListTool?.GetSortingElementByName("Number")?.SortDirection" /></a>
+                       asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Номер <sort-header current-sort="@Model.SortingObject?.GetSortingElementByName("Number")?.SortDirection" /></a>
                 </th>
                 <th>
                     <a style="color:inherit;"
                        asp-action="Index"
-                       asp-route-sortOrderName="@Model.SortingListTool?.GetSortingElementByName("CreatedOn")"
-                       asp-route-sortDirection="@Model.SortingListTool?.GetSortingElementByName("CreatedOn")?.MirrorSortDirection"
+                       asp-route-sortOrderName="@Model.SortingObject?.GetSortingElementByName("CreatedOn")"
+                       asp-route-sortDirection="@Model.SortingObject?.GetSortingElementByName("CreatedOn")?.MirrorSortDirection"
                        asp-route-userId="@Model.AdvertSearchObject.UserId"
                        asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
                        asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
                        asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
-                       asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Создано <sort-header current-sort="@Model.SortingListTool?.GetSortingElementByName("CreatedOn")?.SortDirection" /></a>
+                       asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Создано <sort-header current-sort="@Model.SortingObject?.GetSortingElementByName("CreatedOn")?.SortDirection" /></a>
                 </th>
                 <th>
                     <a style="color:inherit;"
                        asp-action="Index"
-                       asp-route-sortOrderName="@Model.SortingListTool?.GetSortingElementByName("Content")"
-                       asp-route-sortDirection="@Model.SortingListTool?.GetSortingElementByName("Content")?.MirrorSortDirection"
+                       asp-route-sortOrderName="@Model.SortingObject?.GetSortingElementByName("Content")"
+                       asp-route-sortDirection="@Model.SortingObject?.GetSortingElementByName("Content")?.MirrorSortDirection"
                        asp-route-userId="@Model.AdvertSearchObject.UserId"
                        asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
                        asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
                        asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
-                       asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Объявление <sort-header current-sort="@Model.SortingListTool?.GetSortingElementByName("Content")?.SortDirection" /></a>
+                       asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Объявление <sort-header current-sort="@Model.SortingObject?.GetSortingElementByName("Content")?.SortDirection" /></a>
                 </th>
                 <th>
                     <a style="color:inherit;"
                        asp-action="Index"
-                       asp-route-sortOrderName="@Model.SortingListTool?.GetSortingElementByName("Rate")"
-                       asp-route-sortDirection="@Model.SortingListTool?.GetSortingElementByName("Rate")?.MirrorSortDirection"
+                       asp-route-sortOrderName="@Model.SortingObject?.GetSortingElementByName("Rate")"
+                       asp-route-sortDirection="@Model.SortingObject?.GetSortingElementByName("Rate")?.MirrorSortDirection"
                        asp-route-userId="@Model.AdvertSearchObject.UserId"
                        asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
                        asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
                        asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
-                       asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Рейтинг <sort-header current-sort="@Model.SortingListTool?.GetSortingElementByName("Rate")?.SortDirection" /></a>
+                       asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Рейтинг <sort-header current-sort="@Model.SortingObject?.GetSortingElementByName("Rate")?.SortDirection" /></a>
                 </th>
                 <th>
                     <a style="color:inherit;"
                        asp-action="Index"
-                       asp-route-sortOrderName="@Model.SortingListTool?.GetSortingElementByName("User")"
-                       asp-route-sortDirection="@Model.SortingListTool?.GetSortingElementByName("User")?.MirrorSortDirection"
+                       asp-route-sortOrderName="@Model.SortingObject?.GetSortingElementByName("User")"
+                       asp-route-sortDirection="@Model.SortingObject?.GetSortingElementByName("User")?.MirrorSortDirection"
                        asp-route-userId="@Model.AdvertSearchObject.UserId"
                        asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
                        asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
                        asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
-                       asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Пользователь <sort-header current-sort="@Model.SortingListTool?.GetSortingElementByName("User")?.SortDirection" /></a>
+                       asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Пользователь <sort-header current-sort="@Model.SortingObject?.GetSortingElementByName("User")?.SortDirection" /></a>
                 </th>
             </tr>
-            @foreach (Advert advert in Model.Adverts)
+            @foreach (AdvertDto advert in Model.Adverts)
             {
                 <tr>
                     <td>
@@ -171,8 +171,8 @@
                     <li class="page-item  @additional">
                         <a class="page-link" style="margin-left:10px;margin-right:10px"
                            asp-action="Index"
-                           asp-route-sortOrderName="@Model.SortingListTool.SortOrderName"
-                           asp-route-sortDirection="@Model.SortingListTool.SortDirection"
+                           asp-route-sortOrderName="@Model.SortingObject.SortOrderName"
+                           asp-route-sortDirection="@Model.SortingObject.SortDirection"
                            asp-route-notChangeSort=true
                            asp-route-userId="@Model.AdvertSearchObject.UserId"
                            asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
@@ -188,8 +188,8 @@
                     <li class="page-item  @additional">
                         <a class="page-link" style="margin-right:10px"
                            asp-action="Index"
-                           asp-route-sortOrderName="@Model.SortingListTool.SortOrderName"
-                           asp-route-sortDirection="@Model.SortingListTool.SortDirection"
+                           asp-route-sortOrderName="@Model.SortingObject.SortOrderName"
+                           asp-route-sortDirection="@Model.SortingObject.SortDirection"
                            asp-route-notChangeSort=true
                            asp-route-userId="@Model.AdvertSearchObject.UserId"
                            asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
@@ -205,8 +205,8 @@
                     <li class="page-item  @additional">
                         <a class="page-link" style="margin-right:10px"
                            asp-action="Index"
-                           asp-route-sortOrderName="@Model.SortingListTool.SortOrderName"
-                           asp-route-sortDirection="@Model.SortingListTool.SortDirection"
+                           asp-route-sortOrderName="@Model.SortingObject.SortOrderName"
+                           asp-route-sortDirection="@Model.SortingObject.SortDirection"
                            asp-route-notChangeSort=true
                            asp-route-userId="@Model.AdvertSearchObject.UserId"
                            asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
@@ -222,8 +222,8 @@
                     <li class="page-item  @additional">
                         <a class="page-link" style="margin-right:10px;"
                            asp-action="Index"
-                           asp-route-sortOrderName="@Model.SortingListTool.SortOrderName"
-                           asp-route-sortDirection="@Model.SortingListTool.SortDirection"
+                           asp-route-sortOrderName="@Model.SortingObject.SortOrderName"
+                           asp-route-sortDirection="@Model.SortingObject.SortDirection"
                            asp-route-notChangeSort=true
                            asp-route-userId="@Model.AdvertSearchObject.UserId"
                            asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
@@ -236,9 +236,9 @@
                 </ul>
             </div>
 
-            <page-link page-model="Model.Adverts" page-action="Index"
-                       page-url-sortOrderName="@Model.SortingListTool.SortOrderName"
-                       page-url-sortDirection="@Model.SortingListTool.SortDirection"
+            <page-link page-model="@Model.Adverts" page-action="Index"
+                       page-url-sortOrderName="@Model.SortingObject.SortOrderName"
+                       page-url-sortDirection="@Model.SortingObject.SortDirection"
                        page-url-notChangeSort=true
                        page-url-userId="@Model.AdvertSearchObject.UserId"
                        page-url-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
@@ -252,8 +252,8 @@
             }
 
             <a asp-action="Index"
-               asp-route-sortOrderName="@Model.SortingListTool.SortOrderName"
-               asp-route-sortDirection="@Model.SortingListTool.SortDirection"
+               asp-route-sortOrderName="@Model.SortingObject.SortOrderName"
+               asp-route-sortDirection="@Model.SortingObject.SortDirection"
                asp-route-notChangeSort=true
                asp-route-userId="@Model.AdvertSearchObject.UserId"
                asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
@@ -265,8 +265,8 @@
                 Previous
             </a>
             <a asp-action="Index"
-               asp-route-sortOrderName="@Model.SortingListTool.SortOrderName"
-               asp-route-sortDirection="@Model.SortingListTool.SortDirection"
+               asp-route-sortOrderName="@Model.SortingObject.SortOrderName"
+               asp-route-sortDirection="@Model.SortingObject.SortDirection"
                asp-route-notChangeSort=true
                asp-route-userId="@Model.AdvertSearchObject.UserId"
                asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"

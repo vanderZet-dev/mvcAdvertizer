@@ -16,21 +16,18 @@ namespace MvcAdvertizer.Controllers
 {
     public class AdvertController : Controller
     {        
-        private readonly IRecaptchaService recaptchaService;
-        //private readonly IUsers userRepository;        
+        private readonly IRecaptchaService recaptchaService;           
         private readonly IConfiguration configuration;
         private readonly IMapper mapper;
         private readonly IAdvertService advertService;
         private readonly IUserService userService;
 
-        public AdvertController(IRecaptchaService recaptchaService,
-                                //IUsers userRepository,                                
+        public AdvertController(IRecaptchaService recaptchaService,                                                              
                                 IConfiguration configuration,
                                 IMapper mapper,
                                 IAdvertService advertService, 
                                 IUserService userService) {
-            this.recaptchaService = recaptchaService;
-            //this.userRepository = userRepository;            
+            this.recaptchaService = recaptchaService;                      
             this.configuration = configuration;
             this.mapper = mapper;
             this.advertService = advertService;

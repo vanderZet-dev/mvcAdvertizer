@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace MvcAdvertizer.Config.Tools
 {
-    public class SortingList<T>
+    public class SortingList
     {        
         public string SortOrderName { get; set; }        
         public string SortDirection { get; set; }    
@@ -57,27 +57,6 @@ namespace MvcAdvertizer.Config.Tools
         public SortingElement GetActiveSortingElement()
         {
             return SortingElements.FirstOrDefault(x => x.IsActive);
-        }
-
-        public IQueryable<T> ApplySorting (IQueryable<T> source)
-        {
-            var activeSortElement = GetActiveSortingElement();
-            if (activeSortElement != null)
-            {
-
-                switch (activeSortElement.SortDirection)
-                {
-                    case "asc":
-                        source = DynamicQuableSortingGenerator.OrderBy(source, activeSortElement.SortParam);
-                        break;
-                    case "desc":
-                        source = DynamicQuableSortingGenerator.OrderByDescending(source, activeSortElement.SortParam);
-                        break;
-                }
-            }
-            return source;
-        }
-
-        
+        }        
     }
 }

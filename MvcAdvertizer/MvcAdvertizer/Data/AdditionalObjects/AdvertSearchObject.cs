@@ -20,6 +20,5 @@ namespace MvcAdvertizer.Data.AdditionalObjects
         private DateTime dateEndSearch = DateTime.Now.AddDays(1);
         public DateTime DateEndSearch { get => dateEndSearch; set { if (value != null) dateEndSearch = value; } }
         public string DateEndSearchString { get => DateEndSearch.ToString("yyyy-MM-dd"); }
-
     }
 }

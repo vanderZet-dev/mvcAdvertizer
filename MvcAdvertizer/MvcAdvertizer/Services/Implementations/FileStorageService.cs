@@ -13,19 +13,17 @@ namespace MvcAdvertizer.Services.Implementations
     {
         private readonly string savePath = Path.Combine("storage");
 
-        public IFormFile GetFile(string hash) {
-
-            IFormFile file = null;
-
+        public byte[] GetFileData(string hash) {
+                        
+            byte[] bytes = null;
             string path = Path.Combine(savePath, hash);
 
             if (File.Exists(path))
             {                
-                byte[] bytes = File.ReadAllBytes(path);
-                file = IFromFileUtils.ByteArrayToIFormFile(bytes);
+                bytes = File.ReadAllBytes(path);            
             }
 
-            return file;
+            return bytes;
         }
 
         public string Save(IFormFile file) {

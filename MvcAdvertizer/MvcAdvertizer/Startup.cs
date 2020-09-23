@@ -65,7 +65,7 @@ namespace MvcAdvertizer
                 routes.MapRoute(name: "advertUpdate", template: "{controller=Advert}/{action=Update}/{id}");
                 routes.MapRoute(name: "advertSoftDelete", template: "{controller=Advert}/{action=SoftDelete}/{id}");
 
-                routes.MapRoute(name: "advertShowImage", template: "{controller=Advert}/{action=ShowImage}/{id}");
+                routes.MapRoute(name: "advertShowImage", template: "{controller=Advert}/{action=ShowImage}/{id}/{width}");
             });
         }
     }

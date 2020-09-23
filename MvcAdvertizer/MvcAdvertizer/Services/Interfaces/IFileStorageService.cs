@@ -6,6 +6,6 @@ namespace MvcAdvertizer.Services.Interfaces
     {
         string Save(IFormFile file);
 
-        IFormFile GetFile(string hash);
+        byte[] GetFileData(string hash);
     }
 }

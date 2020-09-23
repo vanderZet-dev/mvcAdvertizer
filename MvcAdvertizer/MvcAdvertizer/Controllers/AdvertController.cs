@@ -134,7 +134,7 @@ namespace MvcAdvertizer.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult ShowImage(Guid id) {
+        public IActionResult ShowImage(Guid id, int width) {
 
             var viewModel = new AdvertViewModel();            
 
@@ -145,6 +145,13 @@ namespace MvcAdvertizer.Controllers
             viewModel.AdvertDto = advertDto;
 
             AttachImageToViewModel(advert, viewModel);
+
+            var image = viewModel.AdvertDto.Image;
+
+            if (image != null)
+            {
+                viewModel.AdvertDto.Image = ImageResizerUtill.ScaledByWidth(image, width);
+            }            
 
             return View(viewModel);
         }
@@ -220,7 +227,8 @@ namespace MvcAdvertizer.Controllers
 
             if (advert?.ImageHash?.Length > 0)
             {
-                var img = IFromFileUtils.IFormFileToByteArray(fileStorageService.GetFile(advert.ImageHash));
+                var img = fileStorageService.GetFileData(advert.ImageHash);                
+
                 viewModel.AdvertDto.Image = img;
             }
         }

@@ -144,6 +144,8 @@ namespace MvcAdvertizer.Controllers
 
             viewModel.AdvertDto = advertDto;
 
+            AttachImageToViewModel(advert, viewModel);
+
             return View(viewModel);
         }
               
@@ -177,11 +179,7 @@ namespace MvcAdvertizer.Controllers
 
             viewModel.SetupForDetail(advertDto, allUserDtoList);
 
-            if (advert?.ImageHash?.Length > 0)
-            {
-                var img = IFromFileUtils.IFormFileToByteArray(fileStorageService.GetFile(advert.ImageHash));
-                viewModel.AdvertDto.Image = img;
-            }
+            AttachImageToViewModel(advert, viewModel);            
 
             return viewModel;
         }        
@@ -216,6 +214,15 @@ namespace MvcAdvertizer.Controllers
             }
 
             return limitExceeded;
+        }
+
+        private void AttachImageToViewModel(Advert advert, AdvertViewModel viewModel) {
+
+            if (advert?.ImageHash?.Length > 0)
+            {
+                var img = IFromFileUtils.IFormFileToByteArray(fileStorageService.GetFile(advert.ImageHash));
+                viewModel.AdvertDto.Image = img;
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-    using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +10,7 @@ using MvcAdvertizer.Data.Repositories;
 using MvcAdvertizer.Services.Interfaces;
 using MvcAdvertizer.Services.Implementations;
 using AutoMapper;
+using MvcAdvertizer.Config;
 
 namespace MvcAdvertizer
 {
@@ -24,6 +25,8 @@ namespace MvcAdvertizer
                 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AppSettings>(Configuration);            
+
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection));
 

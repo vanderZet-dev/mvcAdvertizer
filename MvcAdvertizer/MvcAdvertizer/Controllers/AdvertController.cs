@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using MvcAdvertizer.Config;
 using MvcAdvertizer.Data.DTO;
 using MvcAdvertizer.Data.Models;
 using MvcAdvertizer.Services.Interfaces;
@@ -15,22 +16,22 @@ using MvcAdvertizer.ViewModels;
 namespace MvcAdvertizer.Controllers
 {
     public class AdvertController : Controller
-    {        
-        private readonly IRecaptchaService recaptchaService;           
-        private readonly IConfiguration configuration;
+    {
+        private readonly UsersAdvertsSettings usersAdvertsSettings;
+        private readonly IRecaptchaService recaptchaService;        
         private readonly IMapper mapper;
         private readonly IAdvertService advertService;
         private readonly IUserService userService;
         private readonly IFileStorageService fileStorageService;
 
-        public AdvertController(IRecaptchaService recaptchaService,
-                                IConfiguration configuration,
+        public AdvertController(IOptions<AppSettings> settings,
+                                IRecaptchaService recaptchaService,
                                 IMapper mapper,
                                 IAdvertService advertService,
                                 IUserService userService, 
                                 IFileStorageService fileStorageService) {
-            this.recaptchaService = recaptchaService;
-            this.configuration = configuration;
+            usersAdvertsSettings = settings?.Value?.UsersAdvertsSettings;
+            this.recaptchaService = recaptchaService;            
             this.mapper = mapper;
             this.advertService = advertService;
             this.userService = userService;
@@ -210,9 +211,8 @@ namespace MvcAdvertizer.Controllers
 
             var limitExceeded = false;
 
-            var maxUserAdvertsCount = Convert.ToInt64(configuration.GetSection("MaxUserAdvertsCount").Value);
-            var exceptUsersForCheckingSection = configuration.GetSection("ExceptUsersForChecking");            
-            var exceptUsersForChecking = exceptUsersForCheckingSection.Get<string[]>();
+            var maxUserAdvertsCount = usersAdvertsSettings.MaxUserAdvertsCount;
+            var exceptUsersForChecking = usersAdvertsSettings.ExceptUsersForChecking;            
 
             if (!exceptUsersForChecking.Contains(userId.ToString()))
             {

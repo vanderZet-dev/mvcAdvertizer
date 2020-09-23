@@ -1,12 +1,12 @@
 ﻿@using Microsoft.Extensions.Configuration
-@inject IConfiguration configuration
+@inject Microsoft.Extensions.Options.IOptions<MvcAdvertizer.Config.AppSettings> settings
 @model AdvertViewModel
 <script src="https://www.google.com/recaptcha/api.js"></script>
 <div>
     <h3>Объявление</h3>
     <form asp-action="Create" method="post" role="form" class="form" enctype="multipart/form-data">
         @Html.Partial("AdvertView", Model)
-        <div class="g-recaptcha" data-sitekey="@configuration.GetSection("Recaptcha").GetSection("googleReCaptcha:SiteKey").Value"></div>        
+        <div class="g-recaptcha" data-sitekey="@settings.Value.RecaptchaSettings.SiteKey"></div>        
         @if (Model.ShowRecaptchaErrorMessage)
         {
             <span class="text-danger">Вы не прошли проверку, попытайтесь еще раз!</span>

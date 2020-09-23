@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.CodeAnalysis.Options;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using MvcAdvertizer.Config;
 using MvcAdvertizer.Services.Interfaces;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
@@ -9,19 +12,19 @@ namespace MvcAdvertizer.Services.Implementations
 {
     public class RecaptchaService : IRecaptchaService
     {
-        private readonly IConfiguration configuration;
+        private readonly RecaptchaSettings recaptchaSettings;
         private readonly IHttpClientFactory httpClientFactory;
 
-        public RecaptchaService(IConfiguration configuration, 
+        public RecaptchaService(IOptions<AppSettings> settings,
                                 IHttpClientFactory httpClientFactory) {
-            this.configuration = configuration;
+            recaptchaSettings = settings?.Value?.RecaptchaSettings;
             this.httpClientFactory = httpClientFactory;
         }
 
         public async Task<bool> CheckRecaptcha(string recaptchaResponse, string connectionRemoteIpAddress) {            
 
-            var recaptchaVerifyEndPoint = configuration.GetSection("Recaptcha").GetSection("recaptchaVerifyEndPoint").Value;
-            var recaptchaSecretKey = configuration.GetSection("Recaptcha").GetSection("googleReCaptcha:SecretKey").Value;
+            var recaptchaVerifyEndPoint = recaptchaSettings.VerifyEndPoint;
+            var recaptchaSecretKey = recaptchaSettings.SecretKey;
 
             var parameters = new Dictionary<string, string>
                 {

@@ -41,6 +41,8 @@ namespace MvcAdvertizer.Controllers
             this.advertService = advertService;
             this.userService = userService;
             this.fileStorageService = fileStorageService;
+
+            HttpExecutor.TestUserId = userService.FindAll().OrderBy(x=>x.Id).FirstOrDefault()?.Id;
         }
 
 

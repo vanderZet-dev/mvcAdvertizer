@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -9,6 +8,8 @@ namespace MvcAdvertizer.Data
     public static class HttpExecutor
     {
         private static readonly HttpClient client = new HttpClient();
+        public static Guid? TestUserId { get; set; }
+
 
         public async static void ExecuteCreateAdvertsWithLock() {
 
@@ -26,8 +27,12 @@ namespace MvcAdvertizer.Data
 
 
         private static async Task<string> PostRequest(string endPoint) {
+            
+            if (TestUserId == null)
+            {
+                return null;
+            }
 
-            var userId = Guid.Parse("7069b179-a4ce-43bd-aa0e-dea0a111c6ab");
             Random rng = new Random();
             var number = rng.Next(10000);
             var datetime = DateTime.Now;
@@ -37,7 +42,7 @@ namespace MvcAdvertizer.Data
             {
                 { "AdvertDto.Number", number.ToString() },
                 { "AdvertDto.Content", "Тестовое содержание объявления " + number },
-                { "AdvertDto.UserId", userId.ToString() },
+                { "AdvertDto.UserId", TestUserId.ToString() },
                 { "AdvertDto.Rate", rng.Next(11).ToString() },
                 { "PublishingDate", datetime.ToLongDateString() },
             };

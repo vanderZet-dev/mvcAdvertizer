@@ -69,9 +69,8 @@ namespace MvcAdvertizer.ViewModels
             RetrieveIFormFile();
         }
 
-        public void SetupCreateAfterPost(List<UserDto> users, bool showRecaptchaErrorMessage, bool showMaxUserAdvertsCountLimitErrorMessage) {
-
-            ShowRecaptchaErrorMessage = showRecaptchaErrorMessage;
+        public void SetupCreateAfterPost(List<UserDto> users, bool showMaxUserAdvertsCountLimitErrorMessage) {
+            
             AdvertDto.Image = IFromFileUtils.IFormFileToByteArray(ImageFromFile);
 
             ShowViewModelPublishingDate = true;

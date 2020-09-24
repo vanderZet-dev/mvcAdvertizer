@@ -28,6 +28,7 @@ namespace MvcAdvertizer.Controllers
             this.mapper = mapper;
             this.advertService = advertService;        
         }
+
         public async Task<IActionResult> Index(AdvertSearchObject searchObject,
                                                 RepresentObjectConfigurator representObjectConfigurator,
                                                 SortingList sortingObject){
@@ -49,6 +50,12 @@ namespace MvcAdvertizer.Controllers
             result.Adverts = new PaginatedList<AdvertDto>(mapper.Map<List<AdvertDto>>(adverts.ToList()), adverts.ItemsCount, adverts.PageIndex, (int)representObjectConfigurator.pageSize);
 
             return View(result);
+        }
+
+        public IActionResult AdvertsDeleteAll() {
+
+            advertService.DeleteAll();
+            return RedirectToAction("Index");
         }
     }
 }

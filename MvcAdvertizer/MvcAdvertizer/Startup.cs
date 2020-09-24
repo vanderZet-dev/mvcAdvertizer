@@ -61,14 +61,21 @@ namespace MvcAdvertizer
             app.UseMvc(routes =>
             {
                 routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute(name: "advertsDeleteAll", template: "{controller=Home}/{action=AdvertsDeleteAll}");
+
                 routes.MapRoute(name: "createAdvert", template: "{controller=Advert}/{action=Create}");
-                
+                routes.MapRoute(name: "createTestAdvertWithLock", template: "{controller=Advert}/{action=CreateTestWithLock}");
+                routes.MapRoute(name: "createTestAdvertWithoutLock", template: "{controller=Advert}/{action=CreateTestWithoutLock}");
+
                 routes.MapRoute(name: "advertDetails", template: "{controller=Advert}/{action=Details}/{id}");
                 routes.MapRoute(name: "advertEdit", template: "{controller=Advert}/{action=Edit}/{id}");
                 routes.MapRoute(name: "advertUpdate", template: "{controller=Advert}/{action=Update}/{id}");
                 routes.MapRoute(name: "advertSoftDelete", template: "{controller=Advert}/{action=SoftDelete}/{id}");
 
                 routes.MapRoute(name: "advertShowImage", template: "{controller=Advert}/{action=ShowImage}/{id}/{width}");
+
+                routes.MapRoute(name: "generateUsersAdvertsWithLock", template: "{controller=Advert}/{action=GenerateUsersAdvertsWithLock}");
+                routes.MapRoute(name: "generateUsersAdvertsWithoutLock", template: "{controller=Advert}/{action=GenerateUsersAdvertsWithoutLock}");
             });
         }
     }

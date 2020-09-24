@@ -25,11 +25,11 @@ namespace MvcAdvertizer.Data
                         Name = "Пользователь 3"
                     }
                 );
-                context.SaveChanges();               
+                context.SaveChanges();
             }
 
             if (!context.Adverts.Any())
-            {                
+            {
                 Random rng = new Random();
                 var allUsers = context.Users.ToList();
                 for (int i = 1; i <= 100; i++)
@@ -44,10 +44,10 @@ namespace MvcAdvertizer.Data
                         Rate = rng.Next(11),
                         PublishingDate = datetime,
                         Deleted = false
-                    }); ;
+                    });
                 }
                 context.SaveChanges();
             }
-        }
+        }        
     }
 }

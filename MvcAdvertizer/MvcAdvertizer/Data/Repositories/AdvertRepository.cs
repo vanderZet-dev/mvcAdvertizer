@@ -1,4 +1,5 @@
-﻿using MvcAdvertizer.Config.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using MvcAdvertizer.Config.Database;
 using MvcAdvertizer.Data.Interfaces;
 using MvcAdvertizer.Data.Models;
 using System;
@@ -13,7 +14,7 @@ namespace MvcAdvertizer.Data.Repositories
 
         public IQueryable<Advert> FindAll() {
 
-            return source.Adverts;
+            return source.Adverts.Include(x=>x.User);
         }
 
         public Advert FindById(Guid guid) {
@@ -49,6 +50,12 @@ namespace MvcAdvertizer.Data.Repositories
 
             var count = source.Adverts.Where(x => x.UserId == userId).Count();
             return count;
+        }
+
+        public void DeleteAll() {
+
+            source.RemoveRange(source.Adverts);
+            source.SaveChanges();
         }
     }
 }

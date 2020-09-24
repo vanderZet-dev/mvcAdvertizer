@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MvcAdvertizer.Config;
+using MvcAdvertizer.Data;
+using MvcAdvertizer.Data.AdditionalObjects;
 using MvcAdvertizer.Data.DTO;
 using MvcAdvertizer.Data.Models;
 using MvcAdvertizer.Services.Interfaces;
@@ -17,6 +20,8 @@ namespace MvcAdvertizer.Controllers
 {
     public class AdvertController : Controller
     {
+        private static object locker = new object();
+
         private readonly UsersAdvertsSettings usersAdvertsSettings;
         private readonly IRecaptchaService recaptchaService;        
         private readonly IMapper mapper;
@@ -84,42 +89,116 @@ namespace MvcAdvertizer.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(AdvertViewModel viewModel) {
 
-            string recaptchaResponse = Request.Form["g-recaptcha-response"];
-            string connectionRemoteIpAddress = HttpContext.Connection.RemoteIpAddress.ToString();
-            var validRecaptcha = await recaptchaService.CheckRecaptcha(recaptchaResponse, connectionRemoteIpAddress);
+            var recaptchaResponse = new RecaptchaResponse();
+            recaptchaResponse.Response = Request.Form["g-recaptcha-response"];
+            recaptchaResponse.ConnectionRemoteIpAddress = HttpContext.Connection.RemoteIpAddress.ToString();
+            recaptchaResponse.Valid = await recaptchaService
+                .CheckRecaptcha(recaptchaResponse.Response, recaptchaResponse.ConnectionRemoteIpAddress);
 
-            var showRecaptchaErrorMessage = !validRecaptcha;
-            if (!validRecaptcha)
+            viewModel.ShowRecaptchaErrorMessage = !recaptchaResponse.ValidateModelState(ModelState);            
+
+            lock (locker)
             {
-                ModelState.AddModelError("Recaptcha", "Check request return false value.");
-            }            
+                var userId = (Guid)viewModel.AdvertDto?.UserId;
+                var limitExceeded = CheckUsersAdvertLimitCountForExceeded(userId);
+                var showMaxUserAdvertsCountLimitErrorMessage = limitExceeded;
+                if (limitExceeded)
+                {
+                    ModelState.AddModelError("MaxUserAdvertsCountLimit", "Max user adverts count limit is exceeded.");
+                }
 
+                viewModel = SetupCreateAfterPost(viewModel, showMaxUserAdvertsCountLimitErrorMessage);
+
+                var advert = mapper.Map<Advert>(viewModel.AdvertDto);
+
+                if (ModelState.IsValid)
+                {
+                    if (viewModel.ImageFromFile != null)
+                    {
+                        var savedImageName = fileStorageService.Save(viewModel.ImageFromFile);
+                        advert.ImageHash = savedImageName;
+                    }
+
+                    advertService.Create(advert);
+                    TempData["toaster"] = ToastGeneratorUtils.GetSuccessRecordCreateSerializedToasterData();
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    return View(viewModel);
+                }
+            }              
+        }
+        
+
+        [HttpPost]
+        public IActionResult CreateTestWithLock(AdvertViewModel viewModel) {   
+
+            lock (locker)
+            {
+                var userId = (Guid)viewModel.AdvertDto?.UserId;
+                var limitExceeded = CheckUsersAdvertLimitCountForExceeded(userId);
+                var showMaxUserAdvertsCountLimitErrorMessage = limitExceeded;
+                if (limitExceeded)
+                {
+                    ModelState.AddModelError("MaxUserAdvertsCountLimit", "Max user adverts count limit is exceeded.");
+                }
+
+                viewModel = SetupCreateAfterPost(viewModel, showMaxUserAdvertsCountLimitErrorMessage);
+
+                var advert = mapper.Map<Advert>(viewModel.AdvertDto);
+
+                if (ModelState.IsValid)
+                {
+                    if (viewModel.ImageFromFile != null)
+                    {
+                        var savedImageName = fileStorageService.Save(viewModel.ImageFromFile);
+                        advert.ImageHash = savedImageName;
+                    }
+
+                    advertService.Create(advert);
+                    TempData["toaster"] = ToastGeneratorUtils.GetSuccessRecordCreateSerializedToasterData();
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+        }
+
+        [HttpPost]
+        public IActionResult CreateTestWithoutLock(AdvertViewModel viewModel) {
+            
             var userId = (Guid)viewModel.AdvertDto?.UserId;
             var limitExceeded = CheckUsersAdvertLimitCountForExceeded(userId);
             var showMaxUserAdvertsCountLimitErrorMessage = limitExceeded;
             if (limitExceeded)
             {
                 ModelState.AddModelError("MaxUserAdvertsCountLimit", "Max user adverts count limit is exceeded.");
-            }   
+            }
 
-            viewModel = SetupCreateAfterPost(viewModel, showRecaptchaErrorMessage, showMaxUserAdvertsCountLimitErrorMessage);
+            viewModel = SetupCreateAfterPost(viewModel, showMaxUserAdvertsCountLimitErrorMessage);
 
             var advert = mapper.Map<Advert>(viewModel.AdvertDto);
 
             if (ModelState.IsValid)
             {
-                var savedImageName = fileStorageService.Save(viewModel.ImageFromFile);
-                advert.ImageHash = savedImageName;
-                advertService.Create(advert);                
+                if (viewModel.ImageFromFile != null)
+                {
+                    var savedImageName = fileStorageService.Save(viewModel.ImageFromFile);
+                    advert.ImageHash = savedImageName;
+                }
+
+                advertService.Create(advert);
                 TempData["toaster"] = ToastGeneratorUtils.GetSuccessRecordCreateSerializedToasterData();
                 return RedirectToAction("Index", "Home");
             }
             else
             {
-                return View(viewModel);
+                return RedirectToAction("Index", "Home");
             }            
-        }       
-
+        }
 
         public IActionResult SoftDelete(Guid id) {
 
@@ -156,7 +235,28 @@ namespace MvcAdvertizer.Controllers
 
             return View(viewModel);
         }
-              
+         
+        public IActionResult GenerateUsersAdvertsWithLock() {
+
+            for (int i = 0; i < 10; i++)
+            {
+                Thread myThread = new Thread(HttpExecutor.ExecuteCreateAdvertsWithLock);                
+                myThread.Start();
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult GenerateUsersAdvertsWithoutLock() {
+
+            for (int i = 0; i < 10; i++)
+            {
+                Thread myThread = new Thread(HttpExecutor.ExecuteCreateAdvertsWithoutLock);
+                myThread.Start();
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
 
         private AdvertViewModel SetupCreateBeforePost() {
 
@@ -169,11 +269,11 @@ namespace MvcAdvertizer.Controllers
             return viewModel;
        }
 
-        private AdvertViewModel SetupCreateAfterPost(AdvertViewModel viewModel, bool showRecaptchaErrorMessage, bool showMaxUserAdvertsCountLimitErrorMessage) {
+        private AdvertViewModel SetupCreateAfterPost(AdvertViewModel viewModel, bool showMaxUserAdvertsCountLimitErrorMessage) {
 
             var allUserList = userService.FindAll().ToList();
             var allUserDtoList = mapper.Map<List<UserDto>>(allUserList);
-            viewModel.SetupCreateAfterPost(allUserDtoList, showRecaptchaErrorMessage, showMaxUserAdvertsCountLimitErrorMessage);
+            viewModel.SetupCreateAfterPost(allUserDtoList, showMaxUserAdvertsCountLimitErrorMessage);
 
             return viewModel;
         }

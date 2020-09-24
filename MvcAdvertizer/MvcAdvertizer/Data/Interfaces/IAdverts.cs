@@ -5,6 +5,6 @@ namespace MvcAdvertizer.Data.Interfaces
 {
     public interface IAdverts : IRepository<Advert, Guid>, IEntityWithUser<Guid>
     {
-
+        void DeleteAll();
     }
 }

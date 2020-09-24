@@ -97,7 +97,7 @@ namespace MvcAdvertizer.Services.Implementations
             return advertSource;
         }
 
-        public IQueryable<Advert> ApplySorting(IQueryable<Advert> advertSource, SortingList sortingObject) {
+        private IQueryable<Advert> ApplySorting(IQueryable<Advert> advertSource, SortingList sortingObject) {
             var activeSortElement = sortingObject.GetActiveSortingElement();
             if (activeSortElement != null)
             {
@@ -113,6 +113,11 @@ namespace MvcAdvertizer.Services.Implementations
                 }
             }
             return advertSource;
+        }
+
+        public void DeleteAll() {
+
+            advertsRepository.DeleteAll();
         }
     }
 }

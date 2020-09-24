@@ -27,7 +27,7 @@ namespace MvcAdvertizer.Services.Implementations
         }
 
         public string Save(IFormFile file) {
-                        
+
             string newFileName = DateTime.Now.Ticks + "_" + Guid.NewGuid().ToString();
             Directory.CreateDirectory(savePath);
             var filePath = Path.Combine(savePath, newFileName);

@@ -2,7 +2,6 @@
 using MvcAdvertizer.Data.AdditionalObjects;
 using MvcAdvertizer.Data.Models;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MvcAdvertizer.Services.Interfaces
@@ -20,5 +19,7 @@ namespace MvcAdvertizer.Services.Interfaces
         void Delete(Advert advert);
 
         long CountByUserId(Guid userId);
+
+        void DeleteAll();
     }
 }

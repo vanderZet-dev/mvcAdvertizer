@@ -12,20 +12,23 @@ namespace MvcAdvertizer.Services.Implementations
 {
     public class AdvertService : IAdvertService
     {
-        private readonly IAdverts advertsRepository;     
+        private readonly IAdverts advertsRepository;
+        private readonly IUserAdvertsCounter userAdvertsCounterRepository;
 
-        public AdvertService(IAdverts advertsRepository) {
+        public AdvertService(IAdverts advertsRepository,
+                             IUserAdvertsCounter userAdvertsCounterRepository) {
             this.advertsRepository = advertsRepository;
+            this.userAdvertsCounterRepository = userAdvertsCounterRepository;
         }
 
-        public Advert Create(Advert advert) {            
+        public Advert Create(Advert advert) {
 
             return advertsRepository.Add(advert);
         }
 
         public void Delete(Advert advert) {
 
-            advertsRepository.Delete(advert);            
+            advertsRepository.Delete(advert);
         }
 
         public Advert FindById(Guid advertId) {
@@ -35,13 +38,21 @@ namespace MvcAdvertizer.Services.Implementations
 
         public Advert Update(Advert advert) {
 
-            return advertsRepository.Update(advert);            
+            return advertsRepository.Update(advert);
         }
 
         public long CountByUserId(Guid userId) {
 
-            return advertsRepository.CountByUserId(userId);            
-        }        
+            long currentCount = 0;
+
+            var counter = userAdvertsCounterRepository.FindByUserId(userId);
+            if (counter != null)
+            {
+                currentCount = counter.Count;
+            }
+
+            return currentCount;
+        }
 
         public async Task<PaginatedList<Advert>> GetFiltredAdverts(AdvertSearchObject searchObject, SortingList sortingObject, RepresentObjectConfigurator pageSizeObject) {
 

@@ -10,7 +10,6 @@ namespace MvcAdvertizer.Data
         private static readonly HttpClient client = new HttpClient();
         public static Guid? TestUserId { get; set; }
 
-
         public async static void ExecuteCreateAdvertsWithLock() {
 
             var endPoint = "http://localhost:61703/Advert/CreateTestWithLock";
@@ -18,16 +17,8 @@ namespace MvcAdvertizer.Data
             await PostRequest(endPoint);
         }
 
-        public async static void ExecuteCreateAdvertsWithoutLock() {
-
-            var endPoint = "http://localhost:61703/Advert/CreateTestWithoutLock";
-
-            await PostRequest(endPoint);
-        }
-
-
         private static async Task<string> PostRequest(string endPoint) {
-            
+
             if (TestUserId == null)
             {
                 return null;
@@ -36,7 +27,7 @@ namespace MvcAdvertizer.Data
             Random rng = new Random();
             var number = rng.Next(10000);
             var datetime = DateTime.Now;
-            datetime = datetime.AddTicks(-(datetime.Ticks % TimeSpan.TicksPerSecond));           
+            datetime = datetime.AddTicks(-(datetime.Ticks % TimeSpan.TicksPerSecond));
 
             var values = new Dictionary<string, string>
             {
@@ -51,7 +42,7 @@ namespace MvcAdvertizer.Data
 
             var response = await client.PostAsync(endPoint, content);
 
-            var responseString = await response.Content.ReadAsStringAsync();            
+            var responseString = await response.Content.ReadAsStringAsync();
 
             return responseString;
         }

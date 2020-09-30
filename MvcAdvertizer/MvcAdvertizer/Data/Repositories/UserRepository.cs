@@ -7,9 +7,10 @@ using System.Linq;
 namespace MvcAdvertizer.Data.Repositories
 {
     public class UserRepository : BaseRepository, IUsers
-    {       
-
-        public UserRepository(ApplicationContext applicationContext):base(applicationContext) {}
+    {        
+        public UserRepository(ApplicationContext applicationContext) 
+            : base(applicationContext) {            
+        }
 
         public IQueryable<User> FindAll() {
 
@@ -24,6 +25,7 @@ namespace MvcAdvertizer.Data.Repositories
         public User Add(User obj) {
 
             source.Users.Add(obj);
+            source.UsersAdvertsCounters.Add(new UserAdvertsCounter() { UserId = obj.Id, Count = 0 });
             source.SaveChanges();
 
             return obj;

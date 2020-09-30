@@ -8,14 +8,13 @@ namespace MvcAdvertizer.Services.Implementations
 {
     public class UserService : IUserService
     {
-        private readonly IUsers userRepository;
+        private readonly IUsers userRepository;        
 
         public UserService(IUsers userRepository) {
-            this.userRepository = userRepository;
+            this.userRepository = userRepository;            
         }
 
         public User Create(User obj) {
-
             return userRepository.Add(obj);            
         }
 

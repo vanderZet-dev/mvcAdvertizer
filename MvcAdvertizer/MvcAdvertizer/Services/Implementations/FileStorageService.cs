@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using MvcAdvertizer.Services.Interfaces;
-using MvcAdvertizer.Utils;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MvcAdvertizer.Services.Implementations
 {

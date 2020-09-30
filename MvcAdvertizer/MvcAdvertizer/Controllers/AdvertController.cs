@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MvcAdvertizer.Config;
+using MvcAdvertizer.Core.Exceptions;
 using MvcAdvertizer.Data;
 using MvcAdvertizer.Data.AdditionalObjects;
 using MvcAdvertizer.Data.DTO;
@@ -20,10 +23,8 @@ namespace MvcAdvertizer.Controllers
 {
     public class AdvertController : Controller
     {
-        private static object locker = new object();
-
         private readonly UsersAdvertsSettings usersAdvertsSettings;
-        private readonly IRecaptchaService recaptchaService;        
+        private readonly IRecaptchaService recaptchaService;
         private readonly IMapper mapper;
         private readonly IAdvertService advertService;
         private readonly IUserService userService;
@@ -33,30 +34,29 @@ namespace MvcAdvertizer.Controllers
                                 IRecaptchaService recaptchaService,
                                 IMapper mapper,
                                 IAdvertService advertService,
-                                IUserService userService, 
+                                IUserService userService,
                                 IFileStorageService fileStorageService) {
             usersAdvertsSettings = settings?.Value?.UsersAdvertsSettings;
-            this.recaptchaService = recaptchaService;            
+            this.recaptchaService = recaptchaService;
             this.mapper = mapper;
             this.advertService = advertService;
             this.userService = userService;
             this.fileStorageService = fileStorageService;
 
-            HttpExecutor.TestUserId = userService.FindAll().OrderBy(x=>x.Id).FirstOrDefault()?.Id;
+            HttpExecutor.TestUserId = userService.FindAll().OrderBy(x => x.Id).FirstOrDefault()?.Id;
         }
-
 
         public IActionResult Details(Guid id) {
 
-            var viewModel = new AdvertViewModel();            
+            var viewModel = new AdvertViewModel();
 
-            var advertId = id;            
+            var advertId = id;
             viewModel = SetupForDetail(advertId, viewModel);
 
             return View(viewModel);
         }
 
-        public IActionResult Edit(Guid id) {            
+        public IActionResult Edit(Guid id) {
 
             var advertId = id;
             var viewModel = SetupForEditBeforePost(advertId);
@@ -71,7 +71,7 @@ namespace MvcAdvertizer.Controllers
 
             if (ModelState.IsValid)
             {
-                advertService.Update(advert);                
+                advertService.Update(advert);
                 TempData["toaster"] = ToastGeneratorUtils.GetSuccessRecordUpdateSerializedToasterData();
                 return RedirectToAction("Index", "Home");
             }
@@ -83,10 +83,10 @@ namespace MvcAdvertizer.Controllers
 
         public IActionResult Create() {
 
-            var viewModel = SetupCreateBeforePost();           
+            var viewModel = SetupCreateBeforePost();
 
             return View(viewModel);
-        }        
+        }
 
         [HttpPost]
         public async Task<IActionResult> Create(AdvertViewModel viewModel) {
@@ -97,22 +97,14 @@ namespace MvcAdvertizer.Controllers
             recaptchaResponse.Valid = await recaptchaService
                 .CheckRecaptcha(recaptchaResponse.Response, recaptchaResponse.ConnectionRemoteIpAddress);
 
-            viewModel.ShowRecaptchaErrorMessage = !recaptchaResponse.ValidateModelState(ModelState);            
+            viewModel.ShowRecaptchaErrorMessage = !recaptchaResponse.ValidateModelState(ModelState);
 
-            lock (locker)
+            viewModel = SetupCreateAfterPost(viewModel);
+
+            var advert = mapper.Map<Advert>(viewModel.AdvertDto);
+
+            try
             {
-                var userId = (Guid)viewModel.AdvertDto?.UserId;
-                var limitExceeded = CheckUsersAdvertLimitCountForExceeded(userId);
-                var showMaxUserAdvertsCountLimitErrorMessage = limitExceeded;
-                if (limitExceeded)
-                {
-                    ModelState.AddModelError("MaxUserAdvertsCountLimit", "Max user adverts count limit is exceeded.");
-                }
-
-                viewModel = SetupCreateAfterPost(viewModel, showMaxUserAdvertsCountLimitErrorMessage);
-
-                var advert = mapper.Map<Advert>(viewModel.AdvertDto);
-
                 if (ModelState.IsValid)
                 {
                     if (viewModel.ImageFromFile != null)
@@ -129,27 +121,25 @@ namespace MvcAdvertizer.Controllers
                 {
                     return View(viewModel);
                 }
-            }              
+            }
+            catch (UserAdvertLimitExceededException ex)
+            {
+                Debug.WriteLine(ex.Message);
+                ModelState.AddModelError("MaxUserAdvertsCountLimit", "Max user adverts count limit is exceeded.");
+                viewModel.ShowMaxUserAdvertsCountLimitErrorMessage = true;
+                return View(viewModel);
+            }
         }
-        
 
         [HttpPost]
-        public IActionResult CreateTestWithLock(AdvertViewModel viewModel) {   
+        public IActionResult CreateTestWithLock(AdvertViewModel viewModel) {
 
-            lock (locker)
+            viewModel = SetupCreateAfterPost(viewModel);
+
+            var advert = mapper.Map<Advert>(viewModel.AdvertDto);
+
+            try
             {
-                var userId = (Guid)viewModel.AdvertDto?.UserId;
-                var limitExceeded = CheckUsersAdvertLimitCountForExceeded(userId);
-                var showMaxUserAdvertsCountLimitErrorMessage = limitExceeded;
-                if (limitExceeded)
-                {
-                    ModelState.AddModelError("MaxUserAdvertsCountLimit", "Max user adverts count limit is exceeded.");
-                }
-
-                viewModel = SetupCreateAfterPost(viewModel, showMaxUserAdvertsCountLimitErrorMessage);
-
-                var advert = mapper.Map<Advert>(viewModel.AdvertDto);
-
                 if (ModelState.IsValid)
                 {
                     if (viewModel.ImageFromFile != null)
@@ -164,42 +154,16 @@ namespace MvcAdvertizer.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("Index", "Home");
+                    return View(viewModel);
                 }
             }
-        }
-
-        [HttpPost]
-        public IActionResult CreateTestWithoutLock(AdvertViewModel viewModel) {
-            
-            var userId = (Guid)viewModel.AdvertDto?.UserId;
-            var limitExceeded = CheckUsersAdvertLimitCountForExceeded(userId);
-            var showMaxUserAdvertsCountLimitErrorMessage = limitExceeded;
-            if (limitExceeded)
+            catch (UserAdvertLimitExceededException ex)
             {
+                Debug.WriteLine(ex.Message);
                 ModelState.AddModelError("MaxUserAdvertsCountLimit", "Max user adverts count limit is exceeded.");
-            }
-
-            viewModel = SetupCreateAfterPost(viewModel, showMaxUserAdvertsCountLimitErrorMessage);
-
-            var advert = mapper.Map<Advert>(viewModel.AdvertDto);
-
-            if (ModelState.IsValid)
-            {
-                if (viewModel.ImageFromFile != null)
-                {
-                    var savedImageName = fileStorageService.Save(viewModel.ImageFromFile);
-                    advert.ImageHash = savedImageName;
-                }
-
-                advertService.Create(advert);
-                TempData["toaster"] = ToastGeneratorUtils.GetSuccessRecordCreateSerializedToasterData();
+                viewModel.ShowMaxUserAdvertsCountLimitErrorMessage = true;
                 return RedirectToAction("Index", "Home");
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }            
         }
 
         public IActionResult SoftDelete(Guid id) {
@@ -209,7 +173,7 @@ namespace MvcAdvertizer.Controllers
             if (existedAdvert != null && !existedAdvert.Deleted)
             {
                 existedAdvert.Deleted = true;
-                advertService.Update(existedAdvert);                
+                advertService.Update(existedAdvert);
                 TempData["toaster"] = ToastGeneratorUtils.GetSuccessRecordDeleteSerializedToasterData();
             }
 
@@ -218,7 +182,7 @@ namespace MvcAdvertizer.Controllers
 
         public IActionResult ShowImage(Guid id, int width) {
 
-            var viewModel = new AdvertViewModel();            
+            var viewModel = new AdvertViewModel();
 
             var advert = advertService.FindById(id);
 
@@ -233,32 +197,21 @@ namespace MvcAdvertizer.Controllers
             if (image != null)
             {
                 viewModel.AdvertDto.Image = ImageResizerUtill.ScaledByWidth(image, width);
-            }            
+            }
 
             return View(viewModel);
         }
-         
+
         public IActionResult GenerateUsersAdvertsWithLock() {
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 5; i++)
             {
-                Thread myThread = new Thread(HttpExecutor.ExecuteCreateAdvertsWithLock);                
+                Thread myThread = new Thread(HttpExecutor.ExecuteCreateAdvertsWithLock);
                 myThread.Start();
             }
 
             return RedirectToAction("Index", "Home");
-        }
-
-        public IActionResult GenerateUsersAdvertsWithoutLock() {
-
-            for (int i = 0; i < 10; i++)
-            {
-                Thread myThread = new Thread(HttpExecutor.ExecuteCreateAdvertsWithoutLock);
-                myThread.Start();
-            }
-
-            return RedirectToAction("Index", "Home");
-        }
+        }        
 
         private AdvertViewModel SetupCreateBeforePost() {
 
@@ -269,13 +222,13 @@ namespace MvcAdvertizer.Controllers
             viewModel.SetupCreateBeforePost(allUserDtoList);
 
             return viewModel;
-       }
+        }
 
-        private AdvertViewModel SetupCreateAfterPost(AdvertViewModel viewModel, bool showMaxUserAdvertsCountLimitErrorMessage) {
+        private AdvertViewModel SetupCreateAfterPost(AdvertViewModel viewModel) {
 
             var allUserList = userService.FindAll().ToList();
             var allUserDtoList = mapper.Map<List<UserDto>>(allUserList);
-            viewModel.SetupCreateAfterPost(allUserDtoList, showMaxUserAdvertsCountLimitErrorMessage);
+            viewModel.SetupCreateAfterPost(allUserDtoList);
 
             return viewModel;
         }
@@ -285,14 +238,14 @@ namespace MvcAdvertizer.Controllers
             var advert = advertService.FindById(advertId);
             var allUserList = userService.FindAll().ToList();
             var allUserDtoList = mapper.Map<List<UserDto>>(allUserList);
-            var advertDto = mapper.Map<AdvertDto>(advert);            
+            var advertDto = mapper.Map<AdvertDto>(advert);
 
             viewModel.SetupForDetail(advertDto, allUserDtoList);
 
-            AttachImageToViewModel(advert, viewModel);            
+            AttachImageToViewModel(advert, viewModel);
 
             return viewModel;
-        }        
+        }
 
         private AdvertViewModel SetupForEditBeforePost(Guid advertId) {
 
@@ -314,12 +267,12 @@ namespace MvcAdvertizer.Controllers
             var limitExceeded = false;
 
             var maxUserAdvertsCount = usersAdvertsSettings.MaxUserAdvertsCount;
-            var exceptUsersForChecking = usersAdvertsSettings.ExceptUsersForChecking;            
+            var exceptUsersForChecking = usersAdvertsSettings.ExceptUsersForChecking;
 
             if (!exceptUsersForChecking.Contains(userId.ToString()))
             {
                 var actualUserAdvertsCount = advertService.CountByUserId(userId);
-                limitExceeded = actualUserAdvertsCount >= maxUserAdvertsCount;                
+                limitExceeded = actualUserAdvertsCount >= maxUserAdvertsCount;
             }
 
             return limitExceeded;
@@ -329,7 +282,7 @@ namespace MvcAdvertizer.Controllers
 
             if (advert?.ImageHash?.Length > 0)
             {
-                var img = fileStorageService.GetFileData(advert.ImageHash);                
+                var img = fileStorageService.GetFileData(advert.ImageHash);
 
                 viewModel.AdvertDto.Image = img;
             }

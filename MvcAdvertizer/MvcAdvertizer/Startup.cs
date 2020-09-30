@@ -16,16 +16,14 @@ namespace MvcAdvertizer
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
+        public Startup(IConfiguration configuration) {
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
-                
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.Configure<AppSettings>(Configuration);            
+
+        public void ConfigureServices(IServiceCollection services) {
+            services.Configure<AppSettings>(Configuration);
 
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection));
@@ -37,22 +35,22 @@ namespace MvcAdvertizer
             services.AddMemoryCache();
             services.AddSession();
 
-            services.AddTransient<IRecaptchaService, RecaptchaService>();
-            services.AddTransient<IFileStorageService, FileStorageService>();
-
-            services.AddTransient<IUsers, UserRepository>();
-            services.AddTransient<IAdverts, AdvertRepository>();
+            services.AddSingleton<IRecaptchaService, RecaptchaService>();
+            services.AddSingleton<IFileStorageService, FileStorageService>();
 
             services.AddTransient<IAdvertService, AdvertService>();
             services.AddTransient<IUserService, UserService>();
 
+            services.AddScoped<IAdverts, AdvertRepository>();
+            services.AddScoped<IUsers, UserRepository>();
+            services.AddScoped<IUserAdvertsCounter, UserAdvertsCounterRepository>();
+
             services.AddRazorPages().AddMvcOptions(options => options.EnableEndpointRouting = false);
 
-            services.AddMvc();                
+            services.AddMvc();
         }
-                
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
             app.UseStaticFiles();

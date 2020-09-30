@@ -9,11 +9,21 @@ namespace MvcAdvertizer.Config.Database
     {
         public DbSet<Advert> Adverts { get; set; }
         public DbSet<User> Users { get; set; }
-              
+        public DbSet<UserAdvertsCounter> UsersAdvertsCounters { get; set; }
+
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)        
         {
                        
-        }               
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            modelBuilder.Entity<UserAdvertsCounter>()
+                .Property(b => b.Count)
+                .IsConcurrencyToken();            
+            modelBuilder.Entity<UserAdvertsCounter>()
+                .HasIndex(b => b.UserId)
+                .IsUnique();
+        }
 
         public override int SaveChanges()
         {

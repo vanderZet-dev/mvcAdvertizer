@@ -69,13 +69,12 @@ namespace MvcAdvertizer.ViewModels
             RetrieveIFormFile();
         }
 
-        public void SetupCreateAfterPost(List<UserDto> users, bool showMaxUserAdvertsCountLimitErrorMessage) {
+        public void SetupCreateAfterPost(List<UserDto> users) {
             
             AdvertDto.Image = IFromFileUtils.IFormFileToByteArray(ImageFromFile);
 
             ShowViewModelPublishingDate = true;
-            HideImageChooser = false;
-            ShowMaxUserAdvertsCountLimitErrorMessage = showMaxUserAdvertsCountLimitErrorMessage;
+            HideImageChooser = false;            
 
             InitialUserSelectList(users);
             RetrieveIFormFile();

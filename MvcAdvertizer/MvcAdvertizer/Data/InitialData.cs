@@ -11,20 +11,12 @@ namespace MvcAdvertizer.Data
         {
             if (!context.Users.Any())
             {
-                context.Users.AddRange(
-                    new User
-                    {
-                        Name = "Пользователь 1"
-                    },
-                    new User
-                    {
-                        Name = "Пользователь 2"
-                    },
-                    new User
-                    {
-                        Name = "Пользователь 3"
-                    }
-                );
+                for(int i = 0; i < 10; i++)
+                {
+                    var newUser = new User() { Name = "Пользователь " + i };
+                    context.Users.Add(newUser);
+                    context.UsersAdvertsCounters.Add(new UserAdvertsCounter() { UserId = newUser.Id, Count = 0 });
+                }
                 context.SaveChanges();
             }
 
@@ -40,7 +32,7 @@ namespace MvcAdvertizer.Data
                     {
                         Number = rng.Next(10000),
                         Content = "Тестовое содержание объявления " + i,
-                        User = allUsers[rng.Next(3)],
+                        User = allUsers[rng.Next(allUsers.Count)],
                         Rate = rng.Next(11),
                         PublishingDate = datetime,
                         Deleted = false

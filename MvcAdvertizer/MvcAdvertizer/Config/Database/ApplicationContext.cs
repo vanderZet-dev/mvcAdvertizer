@@ -2,6 +2,8 @@
 using MvcAdvertizer.Data.Models;
 using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MvcAdvertizer.Config.Database
 {
@@ -27,6 +29,20 @@ namespace MvcAdvertizer.Config.Database
 
         public override int SaveChanges()
         {
+            Save();
+
+            return base.SaveChanges();
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) {
+
+            Save();
+
+            return await base.SaveChangesAsync(true, cancellationToken);
+        }        
+
+        private void Save() {
+
             var addedAuditedEntities = ChangeTracker.Entries<IAuditedEntity>()
             .Where(p => p.State == EntityState.Added)
             .Select(p => p.Entity);
@@ -47,8 +63,6 @@ namespace MvcAdvertizer.Config.Database
             {
                 modified.UpdatedOn = now;
             }
-
-            return base.SaveChanges();
         }
     }
 }

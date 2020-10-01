@@ -35,7 +35,7 @@
     }
 
     <form role="form" class="form">
-        @Html.Partial("AdvertView", Model)
+        @await Html.PartialAsync("AdvertView", Model)
         <div class="row">
             <p><a class="btn btn-secondary mr-2 ml-3" asp-controller="Home" asp-action="Index">Вернутья</a></p>
             <p><a class="btn btn-warning" asp-controller="Advert" asp-action="Edit" asp-route-id="@Model.AdvertDto.Id">Редактировать</a></p>

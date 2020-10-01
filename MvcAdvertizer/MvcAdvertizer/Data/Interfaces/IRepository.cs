@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 
 namespace MvcAdvertizer.Data.Interfaces
 {
@@ -6,12 +7,12 @@ namespace MvcAdvertizer.Data.Interfaces
     {
         public IQueryable<Type> FindAll();
 
-        public Type FindById(Identifier guid);
+        public Task<Type> FindById(Identifier guid);
 
-        public Type Add(Type obj);
+        public Task<Type> Add(Type obj);
 
-        public Type Update(Type obj);
+        public Task<Type> Update(Type obj);
 
-        public void Delete(Type obj);
+        public Task Delete(Type obj);
     }
 }

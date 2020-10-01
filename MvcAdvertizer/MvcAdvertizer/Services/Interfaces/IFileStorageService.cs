@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace MvcAdvertizer.Services.Interfaces
 {
     public interface IFileStorageService
     {
-        string Save(IFormFile file);
+        Task<string> Save(IFormFile file);
 
-        byte[] GetFileData(string hash);
+        Task<byte[]> GetFileData(string hash);
     }
 }

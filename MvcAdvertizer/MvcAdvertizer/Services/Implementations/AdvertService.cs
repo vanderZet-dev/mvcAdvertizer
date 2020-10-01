@@ -21,31 +21,31 @@ namespace MvcAdvertizer.Services.Implementations
             this.userAdvertsCounterRepository = userAdvertsCounterRepository;
         }
 
-        public Advert Create(Advert advert) {
+        public async Task<Advert> Create(Advert advert) {
 
-            return advertsRepository.Add(advert);
+            return await advertsRepository.Add(advert);
         }
 
-        public void Delete(Advert advert) {
+        public async Task Delete(Advert advert) {
 
-            advertsRepository.Delete(advert);
+            await advertsRepository.Delete(advert);
         }
 
-        public Advert FindById(Guid advertId) {
+        public async Task<Advert> FindById(Guid advertId) {
 
-            return advertsRepository.FindById(advertId);
+            return await advertsRepository.FindById(advertId);
         }
 
-        public Advert Update(Advert advert) {
+        public async Task<Advert> Update(Advert advert) {
 
-            return advertsRepository.Update(advert);
+            return await advertsRepository.Update(advert);
         }
 
-        public long CountByUserId(Guid userId) {
+        public async Task<long> CountByUserId(Guid userId) {
 
             long currentCount = 0;
 
-            var counter = userAdvertsCounterRepository.FindByUserId(userId);
+            var counter = await userAdvertsCounterRepository.FindByUserId(userId);
             if (counter != null)
             {
                 currentCount = counter.Count;
@@ -126,9 +126,9 @@ namespace MvcAdvertizer.Services.Implementations
             return advertSource;
         }
 
-        public void DeleteAll() {
+        public async Task DeleteAll() {
 
-            advertsRepository.DeleteAll();
+            await advertsRepository.DeleteAll();
         }
     }
 }

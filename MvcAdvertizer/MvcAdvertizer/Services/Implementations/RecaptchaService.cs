@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MvcAdvertizer.Config;
 using MvcAdvertizer.Services.Interfaces;
 using Newtonsoft.Json.Linq;
@@ -12,11 +13,14 @@ namespace MvcAdvertizer.Services.Implementations
     {
         private readonly RecaptchaSettings recaptchaSettings;
         private readonly IHttpClientFactory httpClientFactory;
+        private readonly ILogger<RecaptchaService> logger;
 
         public RecaptchaService(IOptions<RecaptchaSettings> recaptchaSettings,
-                                IHttpClientFactory httpClientFactory) {
+                                IHttpClientFactory httpClientFactory,
+                                ILogger<RecaptchaService> logger) {
             this.recaptchaSettings = recaptchaSettings?.Value;
             this.httpClientFactory = httpClientFactory;
+            this.logger = logger;
         }
 
         public async Task<bool> CheckRecaptcha(string recaptchaResponse, string connectionRemoteIpAddress) {
@@ -56,6 +60,7 @@ namespace MvcAdvertizer.Services.Implementations
             catch (HttpRequestException ex)
             {
                 valid = false;
+                logger.LogError(ex.Message);
             }
 
             return valid;

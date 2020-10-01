@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using MvcAdvertizer.Config.Tools;
 using MvcAdvertizer.Data.AdditionalObjects;
 using MvcAdvertizer.Data.DTO;
-using MvcAdvertizer.Data.Models;
 using MvcAdvertizer.Services.Interfaces;
 using MvcAdvertizer.ViewModels;
 using Newtonsoft.Json;
@@ -19,19 +18,19 @@ namespace MvcAdvertizer.Controllers
         private readonly IMapper mapper;
 
         private readonly IUserService userService;
-        private readonly IAdvertService advertService;       
+        private readonly IAdvertService advertService;
 
         public HomeController(IUserService userService,
                               IMapper mapper,
                               IAdvertService advertService) {
             this.userService = userService;
             this.mapper = mapper;
-            this.advertService = advertService;        
+            this.advertService = advertService;
         }
 
         public async Task<IActionResult> Index(AdvertSearchObject searchObject,
                                                 RepresentObjectConfigurator representObjectConfigurator,
-                                                SortingList sortingObject){
+                                                SortingList sortingObject) {
 
             Toaster toaster = null;
             if (TempData["toaster"] != null)
@@ -43,18 +42,18 @@ namespace MvcAdvertizer.Controllers
 
             var allUserList = userService.FindAll().ToList();
             var allUserDtoList = mapper.Map<List<UserDto>>(allUserList);
-            
+
             result.GenerateUserSearchList(allUserDtoList);
-                        
+
             var adverts = await advertService.GetFiltredAdverts(searchObject, result.SortingObject, representObjectConfigurator);
             result.Adverts = new PaginatedList<AdvertDto>(mapper.Map<List<AdvertDto>>(adverts.ToList()), adverts.ItemsCount, adverts.PageIndex, (int)representObjectConfigurator.pageSize);
 
             return View(result);
         }
 
-        public IActionResult AdvertsDeleteAll() {
+        public async Task<IActionResult> AdvertsDeleteAll() {
 
-            advertService.DeleteAll();
+            await advertService.DeleteAll();
             return RedirectToAction("Index");
         }
     }

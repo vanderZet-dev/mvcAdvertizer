@@ -1,6 +1,7 @@
 ﻿using MvcAdvertizer.Data.Models;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MvcAdvertizer.Services.Interfaces
 {
@@ -8,12 +9,12 @@ namespace MvcAdvertizer.Services.Interfaces
     {
         IQueryable<User> FindAll();
 
-        User FindById(Guid guid);
+        Task<User> FindById(Guid guid);
 
-        User Create(User obj);
+        Task<User> Create(User obj);
 
-        User Update(User obj);
+        Task<User> Update(User obj);
 
-        void Delete(User obj);
+        Task Delete(User obj);
     }
 }

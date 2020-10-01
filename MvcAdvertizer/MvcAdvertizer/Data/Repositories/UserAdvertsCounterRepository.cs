@@ -5,6 +5,7 @@ using MvcAdvertizer.Data.Interfaces;
 using MvcAdvertizer.Data.Models;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MvcAdvertizer.Data.Repositories
 {
@@ -13,17 +14,17 @@ namespace MvcAdvertizer.Data.Repositories
 
         public UserAdvertsCounterRepository(ApplicationContext applicationContext) : base(applicationContext) { }
 
-        public UserAdvertsCounter Add(UserAdvertsCounter obj) {
+        public async Task<UserAdvertsCounter> Add(UserAdvertsCounter obj) {
 
             source.UsersAdvertsCounters.Add(obj);
-            source.SaveChanges();
+            await source.SaveChangesAsync();
             return obj;
         }
 
-        public void Delete(UserAdvertsCounter obj) {
+        public async Task Delete(UserAdvertsCounter obj) {
 
             source.UsersAdvertsCounters.Remove(obj);
-            source.SaveChanges();
+            await source.SaveChangesAsync();
         }
 
         public IQueryable<UserAdvertsCounter> FindAll() {
@@ -31,19 +32,19 @@ namespace MvcAdvertizer.Data.Repositories
             return source.UsersAdvertsCounters;
         }
 
-        public UserAdvertsCounter FindById(Guid guid) {
+        public async Task<UserAdvertsCounter> FindById(Guid guid) {
 
-            return source.UsersAdvertsCounters.Find(guid);
+            return await source.UsersAdvertsCounters.FindAsync(guid);
         }
 
-        public UserAdvertsCounter FindByUserId(Guid userId) {
+        public async Task<UserAdvertsCounter> FindByUserId(Guid userId) {
 
-            return source.UsersAdvertsCounters.Where(x => x.UserId.Equals(userId)).FirstOrDefault();
+            return await source.UsersAdvertsCounters.Where(x => x.UserId.Equals(userId)).FirstOrDefaultAsync();
         }
 
-        public long IncrementCountForUserId(Guid userId) {
+        public async Task<long> IncrementCountForUserId(Guid userId) {
 
-            var counter = FindByUserId(userId);
+            var counter = await FindByUserId(userId);
 
             if (counter != null)
             {
@@ -57,12 +58,12 @@ namespace MvcAdvertizer.Data.Repositories
 
                     try
                     {
-                        source.SaveChanges();
+                        await source.SaveChangesAsync();
                     }
                     catch (DbUpdateConcurrencyException e)
                     {
                         saveFailed = true;
-                        e.Entries.Single().Reload();
+                        await e.Entries.Single().ReloadAsync();
                     }
                 } while (saveFailed);
             }
@@ -70,16 +71,16 @@ namespace MvcAdvertizer.Data.Repositories
             return counter.Count;
         }
 
-        public void ResetAllCounters() {
+        public async Task ResetAllCounters() {
 
             source.UsersAdvertsCounters.AsQueryable().ForAll(x => x.Count = 0);
-            source.SaveChanges();
+            await source.SaveChangesAsync();
         }
 
-        public UserAdvertsCounter Update(UserAdvertsCounter obj) {
+        public async Task<UserAdvertsCounter> Update(UserAdvertsCounter obj) {
 
             source.UsersAdvertsCounters.Update(obj);
-            source.SaveChanges();
+            await source.SaveChangesAsync();
             return obj;
         }
     }

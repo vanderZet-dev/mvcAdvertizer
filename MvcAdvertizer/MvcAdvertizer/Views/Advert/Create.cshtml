@@ -4,7 +4,7 @@
 <div>
     <h3>Объявление</h3>
     <form asp-action="Create" method="post" role="form" class="form" enctype="multipart/form-data">
-        @Html.Partial("AdvertView", Model)
+        @await Html.PartialAsync("AdvertView", Model)
         <div class="g-recaptcha" data-sitekey="@recaptchaSettings?.Value?.SiteKey"></div>        
         @if (Model.ShowRecaptchaErrorMessage)
         {

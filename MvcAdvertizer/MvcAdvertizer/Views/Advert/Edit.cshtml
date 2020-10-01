@@ -4,7 +4,7 @@
     <h3>Объявление</h3>
     <p><img src="@Model.Img()" width="300" /></p>
     <form asp-action="Edit" method="post" role="form" class="form" enctype="multipart/form-data">
-        @Html.Partial("AdvertView", Model)
+        @await Html.PartialAsync("AdvertView", Model)
         <div class="row">
             <p><input class="btn btn-success mr-2 ml-3" type="submit" value="Сохранить" /></p>
             <p><a class="btn btn-danger" asp-controller="Home" asp-action="Index">Удалить</a></p>

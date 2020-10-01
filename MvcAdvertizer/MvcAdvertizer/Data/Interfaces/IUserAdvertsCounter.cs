@@ -1,14 +1,15 @@
 ﻿using MvcAdvertizer.Data.Models;
 using System;
+using System.Threading.Tasks;
 
 namespace MvcAdvertizer.Data.Interfaces
 {
     public interface IUserAdvertsCounter : IRepository<UserAdvertsCounter, Guid>
     {
-        long IncrementCountForUserId(Guid userId);
+        Task<long> IncrementCountForUserId(Guid userId);
 
-        UserAdvertsCounter FindByUserId(Guid userId);
+        Task<UserAdvertsCounter> FindByUserId(Guid userId);
 
-        void ResetAllCounters();
+        Task ResetAllCounters();
     }
 }

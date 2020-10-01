@@ -36,32 +36,32 @@ namespace MvcAdvertizer.Controllers
             this.fileStorageService = fileStorageService;
         }
 
-        public IActionResult Details(Guid id) {
+        public async Task<IActionResult> Details(Guid id) {
 
             var viewModel = new AdvertViewModel();
 
             var advertId = id;
-            viewModel = SetupForDetail(advertId, viewModel);
+            viewModel = await SetupForDetail(advertId, viewModel);
 
             return View(viewModel);
         }
 
-        public IActionResult Edit(Guid id) {
+        public async Task<IActionResult> Edit(Guid id) {
 
             var advertId = id;
-            var viewModel = SetupForEditBeforePost(advertId);
+            var viewModel = await SetupForEditBeforePost(advertId);
 
             return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult Edit(AdvertViewModel viewModel) {
+        public async Task<IActionResult> Edit(AdvertViewModel viewModel) {
 
             var advert = mapper.Map<Advert>(viewModel.AdvertDto);
 
             if (ModelState.IsValid)
             {
-                advertService.Update(advert);
+                await advertService.Update(advert);
                 TempData["toaster"] = ToastGeneratorUtils.GetSuccessRecordUpdateSerializedToasterData();
                 return RedirectToAction("Index", "Home");
             }
@@ -83,16 +83,16 @@ namespace MvcAdvertizer.Controllers
 
             viewModel = await AddRecaptchaResponse(viewModel);            
 
-            return CreateAdvert(viewModel);
+            return await CreateAdvert(viewModel);
         }
 
         [HttpPost]
-        public IActionResult CreateWithoutRecaptcha(AdvertViewModel viewModel) {
+        public async Task<IActionResult> CreateWithoutRecaptcha(AdvertViewModel viewModel) {
 
-            return CreateAdvert(viewModel);
+            return await CreateAdvert(viewModel);
         }
 
-        private IActionResult CreateAdvert(AdvertViewModel viewModel) {
+        private async Task<IActionResult> CreateAdvert(AdvertViewModel viewModel) {
 
             viewModel = SetupCreateAfterPost(viewModel);
 
@@ -104,11 +104,11 @@ namespace MvcAdvertizer.Controllers
                 {
                     if (viewModel.ImageFromFile != null)
                     {
-                        var savedImageName = fileStorageService.Save(viewModel.ImageFromFile);
+                        var savedImageName = await fileStorageService.Save(viewModel.ImageFromFile);
                         advert.ImageHash = savedImageName;
                     }
 
-                    advertService.Create(advert);
+                    await advertService.Create(advert);
                     TempData["toaster"] = ToastGeneratorUtils.GetSuccessRecordCreateSerializedToasterData();
                     return RedirectToAction("Index", "Home");
                 }
@@ -139,31 +139,31 @@ namespace MvcAdvertizer.Controllers
             return viewModel;
         }
 
-        public IActionResult SoftDelete(Guid id) {
+        public async Task<IActionResult> SoftDelete(Guid id) {
 
-            var existedAdvert = advertService.FindById(id);
+            var existedAdvert = await advertService.FindById(id);
 
             if (existedAdvert != null && !existedAdvert.Deleted)
             {
                 existedAdvert.Deleted = true;
-                advertService.Update(existedAdvert);
+                await advertService.Update(existedAdvert);
                 TempData["toaster"] = ToastGeneratorUtils.GetSuccessRecordDeleteSerializedToasterData();
             }
 
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult ShowImage(Guid id, int width) {
+        public async Task<IActionResult> ShowImage(Guid id, int width) {
 
             var viewModel = new AdvertViewModel();
 
-            var advert = advertService.FindById(id);
+            var advert = await advertService.FindById(id);
 
             var advertDto = mapper.Map<AdvertDto>(advert);
 
             viewModel.AdvertDto = advertDto;
 
-            AttachImageToViewModel(advert, viewModel);
+            await AttachImageToViewModel(advert, viewModel);
 
             var image = viewModel.AdvertDto.Image;
 
@@ -195,25 +195,25 @@ namespace MvcAdvertizer.Controllers
             return viewModel;
         }
 
-        private AdvertViewModel SetupForDetail(Guid advertId, AdvertViewModel viewModel) {
+        private async Task<AdvertViewModel> SetupForDetail(Guid advertId, AdvertViewModel viewModel) {
 
-            var advert = advertService.FindById(advertId);
+            var advert = await advertService.FindById(advertId);
             var allUserList = userService.FindAll().ToList();
             var allUserDtoList = mapper.Map<List<UserDto>>(allUserList);
             var advertDto = mapper.Map<AdvertDto>(advert);
 
             viewModel.SetupForDetail(advertDto, allUserDtoList);
 
-            AttachImageToViewModel(advert, viewModel);
+            await AttachImageToViewModel(advert, viewModel);
 
             return viewModel;
         }
 
-        private AdvertViewModel SetupForEditBeforePost(Guid advertId) {
+        private async Task<AdvertViewModel> SetupForEditBeforePost(Guid advertId) {
 
             var viewModel = new AdvertViewModel();
 
-            var advert = advertService.FindById(advertId);
+            var advert = await advertService.FindById(advertId);
             var allUserList = userService.FindAll().ToList();
             var allUserDtoList = mapper.Map<List<UserDto>>(allUserList);
             var advertDto = mapper.Map<AdvertDto>(advert);
@@ -223,11 +223,11 @@ namespace MvcAdvertizer.Controllers
             return viewModel;
         }
 
-        private void AttachImageToViewModel(Advert advert, AdvertViewModel viewModel) {
+        private async Task AttachImageToViewModel(Advert advert, AdvertViewModel viewModel) {
 
             if (advert?.ImageHash?.Length > 0)
             {
-                var img = fileStorageService.GetFileData(advert.ImageHash);
+                var img = await fileStorageService.GetFileData(advert.ImageHash);
 
                 viewModel.AdvertDto.Image = img;
             }

@@ -1,8 +1,10 @@
-﻿using MvcAdvertizer.Config.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using MvcAdvertizer.Config.Database;
 using MvcAdvertizer.Data.Interfaces;
 using MvcAdvertizer.Data.Models;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MvcAdvertizer.Data.Repositories
 {
@@ -17,32 +19,32 @@ namespace MvcAdvertizer.Data.Repositories
              return source.Users;
         }
 
-        public User FindById(Guid guid) {
+        public async Task<User> FindById(Guid guid) {
 
-            return source.Users.Where(x=>x.Id.Equals(guid)).FirstOrDefault();
+            return await source.Users.Where(x=>x.Id.Equals(guid)).FirstOrDefaultAsync();
         }
 
-        public User Add(User obj) {
+        public async Task<User> Add(User obj) {
 
             source.Users.Add(obj);
             source.UsersAdvertsCounters.Add(new UserAdvertsCounter() { UserId = obj.Id, Count = 0 });
-            source.SaveChanges();
+            await source.SaveChangesAsync();
 
             return obj;
         }
 
-        public User Update(User obj) {
+        public async Task<User> Update(User obj) {
 
             source.Users.Update(obj);
-            source.SaveChanges();
+            await source.SaveChangesAsync();
 
             return obj;
         }
 
-        public void Delete(User obj) {
+        public async Task Delete(User obj) {
 
             source.Users.Remove(obj);
-            source.SaveChanges();
+            await source.SaveChangesAsync();
         }
     }
 }

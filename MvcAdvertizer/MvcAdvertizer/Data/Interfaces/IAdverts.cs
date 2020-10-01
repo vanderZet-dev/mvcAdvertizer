@@ -1,10 +1,11 @@
 ﻿using MvcAdvertizer.Data.Models;
 using System;
+using System.Threading.Tasks;
 
 namespace MvcAdvertizer.Data.Interfaces
 {
-    public interface IAdverts : IRepository<Advert, Guid>, IEntityWithUser<Guid>
+    public interface IAdverts : IRepository<Advert, Guid>
     {
-        void DeleteAll();
+        Task DeleteAll();
     }
 }

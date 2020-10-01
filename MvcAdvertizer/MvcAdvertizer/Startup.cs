@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MvcAdvertizer.Config.Database;
@@ -23,34 +22,26 @@ namespace MvcAdvertizer
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services) {
-            services.Configure<AppSettings>(Configuration);
+
+            LoadAppSettings(services);
+            LoadCommonServices(services);
+            LoadDomainServices(services);
+            LoadDomainRepositories(services);
 
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection));
-
-            services.AddAutoMapper(typeof(Startup).Assembly);
 
             services.AddHttpClient();
 
             services.AddMemoryCache();
             services.AddSession();
 
-            services.AddSingleton<IRecaptchaService, RecaptchaService>();
-            services.AddSingleton<IFileStorageService, FileStorageService>();
-
-            services.AddTransient<IAdvertService, AdvertService>();
-            services.AddTransient<IUserService, UserService>();
-
-            services.AddScoped<IAdverts, AdvertRepository>();
-            services.AddScoped<IUsers, UserRepository>();
-            services.AddScoped<IUserAdvertsCounter, UserAdvertsCounterRepository>();
-
             services.AddRazorPages().AddMvcOptions(options => options.EnableEndpointRouting = false);
 
             services.AddMvc();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+        public void Configure(IApplicationBuilder app) {
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
             app.UseStaticFiles();
@@ -60,8 +51,35 @@ namespace MvcAdvertizer
             app.UseMvc(routes =>
             {
                 routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}");
-                routes.MapRoute(name: "createAdvert", template: "{controller=Advert}/{action=Create}");                
+                routes.MapRoute(name: "createAdvert", template: "{controller=Advert}/{action=Create}");
             });
+        }
+
+        private void LoadAppSettings(IServiceCollection services) {
+
+            services.Configure<AppSettings>(Configuration);
+            services.Configure<RecaptchaSettings>(Configuration.GetSection("RecaptchaSettings"));
+            services.Configure<UsersAdvertsSettings>(Configuration.GetSection("UsersAdvertsSettings"));
+        }
+
+        private void LoadDomainRepositories(IServiceCollection services) {
+
+            services.AddScoped<IAdverts, AdvertRepository>();
+            services.AddScoped<IUsers, UserRepository>();
+            services.AddScoped<IUserAdvertsCounter, UserAdvertsCounterRepository>();
+        }
+
+        private void LoadDomainServices(IServiceCollection services) {
+
+            services.AddTransient<IAdvertService, AdvertService>();
+            services.AddTransient<IUserService, UserService>();
+        }
+
+        private void LoadCommonServices(IServiceCollection services) {
+
+            services.AddAutoMapper(typeof(Startup).Assembly);
+            services.AddSingleton<IRecaptchaService, RecaptchaService>();
+            services.AddSingleton<IFileStorageService, FileStorageService>();
         }
     }
 }

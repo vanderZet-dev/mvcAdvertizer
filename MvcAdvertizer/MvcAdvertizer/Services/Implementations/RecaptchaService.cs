@@ -1,6 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Options;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using MvcAdvertizer.Config;
 using MvcAdvertizer.Services.Interfaces;
 using Newtonsoft.Json.Linq;
@@ -15,13 +13,13 @@ namespace MvcAdvertizer.Services.Implementations
         private readonly RecaptchaSettings recaptchaSettings;
         private readonly IHttpClientFactory httpClientFactory;
 
-        public RecaptchaService(IOptions<AppSettings> settings,
+        public RecaptchaService(IOptions<RecaptchaSettings> recaptchaSettings,
                                 IHttpClientFactory httpClientFactory) {
-            recaptchaSettings = settings?.Value?.RecaptchaSettings;
+            this.recaptchaSettings = recaptchaSettings?.Value;
             this.httpClientFactory = httpClientFactory;
         }
 
-        public async Task<bool> CheckRecaptcha(string recaptchaResponse, string connectionRemoteIpAddress) {            
+        public async Task<bool> CheckRecaptcha(string recaptchaResponse, string connectionRemoteIpAddress) {
 
             var recaptchaVerifyEndPoint = recaptchaSettings.VerifyEndPoint;
             var recaptchaSecretKey = recaptchaSettings.SecretKey;
@@ -44,7 +42,7 @@ namespace MvcAdvertizer.Services.Implementations
 
             var client = httpClientFactory.CreateClient();
             try
-            {      
+            {
                 HttpResponseMessage response = await client.PostAsync(recaptchaVerifyEndPoint, new FormUrlEncodedContent(parameters));
                 response.EnsureSuccessStatusCode();
 

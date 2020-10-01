@@ -17,9 +17,10 @@ namespace MvcAdvertizer.Data.Repositories
 
         public AdvertRepository(ApplicationContext applicationContext,
                                 IUserAdvertsCounter userAdvertsCounterRepository,
-                                IOptions<AppSettings> settings) : base(applicationContext) {
+                                IOptions<UsersAdvertsSettings> usersAdvertsSettings)
+            : base(applicationContext) {
             this.userAdvertsCounterRepository = userAdvertsCounterRepository;
-            advertsLimit = settings.Value.UsersAdvertsSettings.MaxUserAdvertsCount;
+            advertsLimit = usersAdvertsSettings.Value.MaxUserAdvertsCount;
         }
 
         public IQueryable<Advert> FindAll() {

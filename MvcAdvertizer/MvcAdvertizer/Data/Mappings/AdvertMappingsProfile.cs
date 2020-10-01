@@ -4,14 +4,16 @@ using MvcAdvertizer.Data.Models;
 
 namespace MvcAdvertizer.Data.Mappings
 {
-    public class AdvertDtoProfile : Profile
+    public class AdvertMappingsProfile : Profile
     {
-        public AdvertDtoProfile() {
+        public AdvertMappingsProfile() {
 
             var config = new MapperConfiguration(config => config.CreateMap<User, UserDto>());
 
             CreateMap<Advert, AdvertDto>()
-                .ForMember(dst => dst.User, act => act.MapFrom(src=>src.User));                
+                .ForMember(dst => dst.User, act => act.MapFrom(src => src.User));
+
+            CreateMap<AdvertDto, Advert>();
         }
     }
 }

@@ -77,7 +77,7 @@
             </div>
 
             <div hidden="hidden">
-                <input type="hidden" name="PageSize" value="@Model.RepresentObjectConfigurator.PageSize" />
+                <input type="hidden" name="PageSize" value="@Model.AdvertSearchObject.PageSize" />
                 <input type="hidden" name="SortOrderName" value="@Model.SortingObject.SortOrderName" />
                 <input type="hidden" name="SortDirection" value="@Model.SortingObject.SortDirection" />
                 <input type="hidden" name="NotChangeSort" value=true />
@@ -98,7 +98,7 @@
                        asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
                        asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
                        asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
-                       asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Номер <sort-header current-sort="@Model.SortingObject?.GetSortingElementByName("Number")?.SortDirection" /></a>
+                       asp-route-pageSize="@Model.AdvertSearchObject.PageSize">Номер <sort-header current-sort="@Model.SortingObject?.GetSortingElementByName("Number")?.SortDirection" /></a>
                 </th>
                 <th>
                     <a style="color:inherit;"
@@ -109,7 +109,7 @@
                        asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
                        asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
                        asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
-                       asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Создано <sort-header current-sort="@Model.SortingObject?.GetSortingElementByName("CreatedOn")?.SortDirection" /></a>
+                       asp-route-pageSize="@Model.AdvertSearchObject.PageSize">Создано <sort-header current-sort="@Model.SortingObject?.GetSortingElementByName("CreatedOn")?.SortDirection" /></a>
                 </th>
                 <th>
                     <a style="color:inherit;"
@@ -120,7 +120,7 @@
                        asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
                        asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
                        asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
-                       asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Объявление <sort-header current-sort="@Model.SortingObject?.GetSortingElementByName("Content")?.SortDirection" /></a>
+                       asp-route-pageSize="@Model.AdvertSearchObject.PageSize">Объявление <sort-header current-sort="@Model.SortingObject?.GetSortingElementByName("Content")?.SortDirection" /></a>
                 </th>
                 <th>
                     <a style="color:inherit;"
@@ -131,7 +131,7 @@
                        asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
                        asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
                        asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
-                       asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Рейтинг <sort-header current-sort="@Model.SortingObject?.GetSortingElementByName("Rate")?.SortDirection" /></a>
+                       asp-route-pageSize="@Model.AdvertSearchObject.PageSize">Рейтинг <sort-header current-sort="@Model.SortingObject?.GetSortingElementByName("Rate")?.SortDirection" /></a>
                 </th>
                 <th>
                     <a style="color:inherit;"
@@ -142,7 +142,7 @@
                        asp-route-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
                        asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
                        asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
-                       asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize">Пользователь <sort-header current-sort="@Model.SortingObject?.GetSortingElementByName("User")?.SortDirection" /></a>
+                       asp-route-pageSize="@Model.AdvertSearchObject.PageSize">Пользователь <sort-header current-sort="@Model.SortingObject?.GetSortingElementByName("User")?.SortDirection" /></a>
                 </th>
             </tr>
             @foreach (AdvertDto advert in Model.Adverts)
@@ -171,7 +171,7 @@
                 <span style="float:left">Количество строк на странице:</span>
                 <ul class="pagination">
                     @{
-                        var additional = Model.RepresentObjectConfigurator.PageSize.ToString() == "1" ? "active" : "";
+                        var additional = Model.AdvertSearchObject.PageSize.ToString() == "1" ? "active" : "";
                     }
                     <li class="page-item  @additional">
                         <a class="page-link" style="margin-left:10px;margin-right:10px"
@@ -188,7 +188,7 @@
                         </a>
                     </li>
                     @{
-                        additional = Model.RepresentObjectConfigurator.PageSize.ToString() == "3" ? "active" : "";
+                        additional = Model.AdvertSearchObject.PageSize.ToString() == "3" ? "active" : "";
                     }
                     <li class="page-item  @additional">
                         <a class="page-link" style="margin-right:10px"
@@ -205,7 +205,7 @@
                         </a>
                     </li>
                     @{
-                        additional = Model.RepresentObjectConfigurator.PageSize.ToString() == "5" ? "active" : "";
+                        additional = Model.AdvertSearchObject.PageSize.ToString() == "5" ? "active" : "";
                     }
                     <li class="page-item  @additional">
                         <a class="page-link" style="margin-right:10px"
@@ -222,7 +222,7 @@
                         </a>
                     </li>
                     @{
-                        additional = @Model.RepresentObjectConfigurator.PageSize.ToString() == "10" ? "active" : "";
+                        additional = @Model.AdvertSearchObject.PageSize.ToString() == "10" ? "active" : "";
                     }
                     <li class="page-item  @additional">
                         <a class="page-link" style="margin-right:10px;"
@@ -249,7 +249,7 @@
                        page-url-dateStartSearch="@Model.AdvertSearchObject.DateStartSearchString"
                        page-url-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
                        page-url-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
-                       page-url-pageSize="@Model.RepresentObjectConfigurator.PageSize"></page-link>
+                       page-url-pageSize="@Model.AdvertSearchObject.PageSize"></page-link>
 
             @{
                 var prevDisabled = !Model.Adverts.HasPreviousPage ? "disabled" : "";
@@ -265,7 +265,7 @@
                asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
                asp-route-pageNumber="@(Model.Adverts.PageIndex - 1)"
                asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
-               asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize"
+               asp-route-pageSize="@Model.AdvertSearchObject.PageSize"
                class="btn btn-default @prevDisabled">
                 Previous
             </a>
@@ -278,7 +278,7 @@
                asp-route-dateEndSearch="@Model.AdvertSearchObject.DateEndSearchString"
                asp-route-pageNumber="@(Model.Adverts.PageIndex + 1)"
                asp-route-searchStringQuery="@Model.AdvertSearchObject.SearchStringQuery"
-               asp-route-pageSize="@Model.RepresentObjectConfigurator.PageSize"
+               asp-route-pageSize="@Model.AdvertSearchObject.PageSize"
                class="btn btn-default @nextDisabled">
                 Next
             </a>

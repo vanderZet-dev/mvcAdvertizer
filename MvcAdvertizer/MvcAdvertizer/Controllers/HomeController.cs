@@ -29,7 +29,6 @@ namespace MvcAdvertizer.Controllers
         }
 
         public async Task<IActionResult> Index(AdvertSearchObject searchObject,
-                                                RepresentObjectConfigurator representObjectConfigurator,
                                                 SortingList sortingObject) {
 
             Toaster toaster = null;
@@ -38,15 +37,15 @@ namespace MvcAdvertizer.Controllers
                 toaster = JsonConvert.DeserializeObject<Toaster>((string)TempData["toaster"]);
             }
 
-            var result = new AdvertListViewModel(representObjectConfigurator, searchObject, sortingObject, toaster);
+            var result = new AdvertListViewModel(searchObject, sortingObject, toaster);
 
             var allUserList = userService.FindAll().ToList();
             var allUserDtoList = mapper.Map<List<UserDto>>(allUserList);
 
             result.GenerateUserSearchList(allUserDtoList);
 
-            var adverts = await advertService.GetFiltredAdverts(searchObject, result.SortingObject, representObjectConfigurator);
-            result.Adverts = new PaginatedList<AdvertDto>(mapper.Map<List<AdvertDto>>(adverts.ToList()), adverts.ItemsCount, adverts.PageIndex, (int)representObjectConfigurator.pageSize);
+            var adverts = await advertService.GetFiltredAdverts(searchObject, result.SortingObject);
+            result.Adverts = new PaginatedList<AdvertDto>(mapper.Map<List<AdvertDto>>(adverts.ToList()), adverts.ItemsCount, adverts.PageIndex, (int)searchObject.pageSize);
 
             return View(result);
         }

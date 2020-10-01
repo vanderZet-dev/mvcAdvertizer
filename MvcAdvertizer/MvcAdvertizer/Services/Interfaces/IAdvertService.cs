@@ -8,7 +8,7 @@ namespace MvcAdvertizer.Services.Interfaces
 {
     public interface IAdvertService
     {
-        Task<PaginatedList<Advert>> GetFiltredAdverts(AdvertSearchObject searchObject, SortingList sortingObject, RepresentObjectConfigurator pageSizeObject);
+        Task<PaginatedList<Advert>> GetFiltredAdverts(AdvertSearchObject searchObject, SortingList sortingObject);
 
         Task<Advert> FindById(Guid advertId);
 

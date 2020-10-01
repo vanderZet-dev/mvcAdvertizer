@@ -54,7 +54,7 @@ namespace MvcAdvertizer.Services.Implementations
             return currentCount;
         }
 
-        public async Task<PaginatedList<Advert>> GetFiltredAdverts(AdvertSearchObject searchObject, SortingList sortingObject, RepresentObjectConfigurator pageSizeObject) {
+        public async Task<PaginatedList<Advert>> GetFiltredAdverts(AdvertSearchObject searchObject, SortingList sortingObject) {
 
             var advertsSouce = advertsRepository.FindAll();
             advertsSouce = ApplyDeletedSearch(advertsSouce);
@@ -63,7 +63,7 @@ namespace MvcAdvertizer.Services.Implementations
             advertsSouce = ApplyDateSearch(advertsSouce, searchObject);
             advertsSouce = ApplySorting(advertsSouce, sortingObject);
 
-            return await PaginatedList<Advert>.CreateAsync(advertsSouce.AsNoTracking(), pageSizeObject.PageNumber ?? 1, pageSizeObject.PageSize ?? 3);
+            return await PaginatedList<Advert>.CreateAsync(advertsSouce.AsNoTracking(), searchObject.PageNumber ?? 1, searchObject.PageSize ?? 3);
         }
 
         private IQueryable<Advert> ApplyDeletedSearch(IQueryable<Advert> advertSource) {

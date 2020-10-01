@@ -5,15 +5,23 @@ using System.ComponentModel;
 namespace MvcAdvertizer.Data.AdditionalObjects
 {
     public class AdvertSearchObject
-    {   
+    {
+        public int? pageNumber = 1;
+        [BindRequired]
+        public int? PageNumber { get => pageNumber; set { if (value != null) pageNumber = value; } }
+
+        public int? pageSize = 5;
+        [BindRequired]
+        public int? PageSize { get => pageSize; set { if (value != null) pageSize = value; } }
+
         [BindRequired]
         [DisplayName("Пользователь")]
         public Guid? UserId { get; set; }
 
         [BindRequired]
         public string SearchStringQuery { get; set; }
-                
-        private DateTime dateStartSearch = DateTime.Now.AddDays(-100);        
+
+        private DateTime dateStartSearch = DateTime.Now.AddDays(-100);
         public DateTime DateStartSearch { get => dateStartSearch; set { if (value != null) dateStartSearch = value; } }
         public string DateStartSearchString { get => DateStartSearch.ToString("yyyy-MM-dd"); }
 

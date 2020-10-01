@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MvcAdvertizer.Core.Exceptions;
 using MvcAdvertizer.Data.AdditionalObjects;
 using MvcAdvertizer.Data.DTO;
@@ -23,17 +24,20 @@ namespace MvcAdvertizer.Controllers
         private readonly IAdvertService advertService;
         private readonly IUserService userService;
         private readonly IFileStorageService fileStorageService;
+        private readonly ILogger<AdvertController> logger;
 
         public AdvertController(IRecaptchaService recaptchaService,
                                 IMapper mapper,
                                 IAdvertService advertService,
                                 IUserService userService,
-                                IFileStorageService fileStorageService) {
+                                IFileStorageService fileStorageService,
+                                ILogger<AdvertController> logger) {
             this.recaptchaService = recaptchaService;
             this.mapper = mapper;
             this.advertService = advertService;
             this.userService = userService;
             this.fileStorageService = fileStorageService;
+            this.logger = logger;
         }
 
         public async Task<IActionResult> Details(Guid id) {
@@ -81,7 +85,7 @@ namespace MvcAdvertizer.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(AdvertViewModel viewModel) {
 
-            viewModel = await AddRecaptchaResponse(viewModel);            
+            viewModel = await AddRecaptchaResponse(viewModel);
 
             return await CreateAdvert(viewModel);
         }
@@ -102,10 +106,17 @@ namespace MvcAdvertizer.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (viewModel.ImageFromFile != null)
+                    try
                     {
-                        var savedImageName = await fileStorageService.Save(viewModel.ImageFromFile);
-                        advert.ImageHash = savedImageName;
+                        if (viewModel.ImageFromFile != null)
+                        {
+                            var savedImageName = await fileStorageService.Save(viewModel.ImageFromFile);
+                            advert.ImageHash = savedImageName;
+                        }
+                    }
+                    catch (FileStorageSavePathInvalidException ex)
+                    {
+                        logger.LogError(ex.Message);
                     }
 
                     await advertService.Create(advert);
@@ -227,9 +238,16 @@ namespace MvcAdvertizer.Controllers
 
             if (advert?.ImageHash?.Length > 0)
             {
-                var img = await fileStorageService.GetFileData(advert.ImageHash);
+                try
+                {
+                    var img = await fileStorageService.GetFileData(advert.ImageHash);
 
-                viewModel.AdvertDto.Image = img;
+                    viewModel.AdvertDto.Image = img;
+                }
+                catch (FileStorageSavePathInvalidException ex)
+                {
+                    logger.LogError(ex.Message);
+                }
             }
         }
     }

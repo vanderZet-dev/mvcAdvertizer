@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MvcAdvertizer.Config.Database;
-
 using Microsoft.EntityFrameworkCore;
 using MvcAdvertizer.Data.Interfaces;
 using MvcAdvertizer.Data.Repositories;
@@ -57,7 +56,7 @@ namespace MvcAdvertizer
 
         private void LoadAppSettings(IServiceCollection services) {
 
-            services.Configure<AppSettings>(Configuration);
+            services.Configure<FileStorageSettings>(Configuration.GetSection("FileStorageSettings"));
             services.Configure<RecaptchaSettings>(Configuration.GetSection("RecaptchaSettings"));
             services.Configure<UsersAdvertsSettings>(Configuration.GetSection("UsersAdvertsSettings"));
         }

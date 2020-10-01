@@ -2,16 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using MvcAdvertizer.Config;
 using MvcAdvertizer.Core.Exceptions;
-using MvcAdvertizer.Data;
 using MvcAdvertizer.Data.AdditionalObjects;
 using MvcAdvertizer.Data.DTO;
 using MvcAdvertizer.Data.Models;
@@ -23,27 +18,22 @@ namespace MvcAdvertizer.Controllers
 {
     public class AdvertController : Controller
     {
-        private readonly UsersAdvertsSettings usersAdvertsSettings;
         private readonly IRecaptchaService recaptchaService;
         private readonly IMapper mapper;
         private readonly IAdvertService advertService;
         private readonly IUserService userService;
         private readonly IFileStorageService fileStorageService;
 
-        public AdvertController(IOptions<AppSettings> settings,
-                                IRecaptchaService recaptchaService,
+        public AdvertController(IRecaptchaService recaptchaService,
                                 IMapper mapper,
                                 IAdvertService advertService,
                                 IUserService userService,
                                 IFileStorageService fileStorageService) {
-            usersAdvertsSettings = settings?.Value?.UsersAdvertsSettings;
             this.recaptchaService = recaptchaService;
             this.mapper = mapper;
             this.advertService = advertService;
             this.userService = userService;
             this.fileStorageService = fileStorageService;
-
-            HttpExecutor.TestUserId = userService.FindAll().OrderBy(x => x.Id).FirstOrDefault()?.Id;
         }
 
         public IActionResult Details(Guid id) {
@@ -91,13 +81,18 @@ namespace MvcAdvertizer.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(AdvertViewModel viewModel) {
 
-            var recaptchaResponse = new RecaptchaResponse();
-            recaptchaResponse.Response = Request.Form["g-recaptcha-response"];
-            recaptchaResponse.ConnectionRemoteIpAddress = HttpContext.Connection.RemoteIpAddress.ToString();
-            recaptchaResponse.Valid = await recaptchaService
-                .CheckRecaptcha(recaptchaResponse.Response, recaptchaResponse.ConnectionRemoteIpAddress);
+            viewModel = await AddRecaptchaResponse(viewModel);            
 
-            viewModel.ShowRecaptchaErrorMessage = !recaptchaResponse.ValidateModelState(ModelState);
+            return CreateAdvert(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreateWithoutRecaptcha(AdvertViewModel viewModel) {
+
+            return CreateAdvert(viewModel);
+        }
+
+        private IActionResult CreateAdvert(AdvertViewModel viewModel) {
 
             viewModel = SetupCreateAfterPost(viewModel);
 
@@ -131,39 +126,17 @@ namespace MvcAdvertizer.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult CreateTestWithLock(AdvertViewModel viewModel) {
+        private async Task<AdvertViewModel> AddRecaptchaResponse(AdvertViewModel viewModel) {
 
-            viewModel = SetupCreateAfterPost(viewModel);
+            var recaptchaResponse = new RecaptchaResponse();
+            recaptchaResponse.Response = Request.Form["g-recaptcha-response"];
+            recaptchaResponse.ConnectionRemoteIpAddress = HttpContext.Connection.RemoteIpAddress.ToString();
+            recaptchaResponse.Valid = await recaptchaService
+                .CheckRecaptcha(recaptchaResponse.Response, recaptchaResponse.ConnectionRemoteIpAddress);
 
-            var advert = mapper.Map<Advert>(viewModel.AdvertDto);
+            viewModel.ShowRecaptchaErrorMessage = !recaptchaResponse.ValidateModelState(ModelState);
 
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    if (viewModel.ImageFromFile != null)
-                    {
-                        var savedImageName = fileStorageService.Save(viewModel.ImageFromFile);
-                        advert.ImageHash = savedImageName;
-                    }
-
-                    advertService.Create(advert);
-                    TempData["toaster"] = ToastGeneratorUtils.GetSuccessRecordCreateSerializedToasterData();
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    return View(viewModel);
-                }
-            }
-            catch (UserAdvertLimitExceededException ex)
-            {
-                Debug.WriteLine(ex.Message);
-                ModelState.AddModelError("MaxUserAdvertsCountLimit", "Max user adverts count limit is exceeded.");
-                viewModel.ShowMaxUserAdvertsCountLimitErrorMessage = true;
-                return RedirectToAction("Index", "Home");
-            }
+            return viewModel;
         }
 
         public IActionResult SoftDelete(Guid id) {
@@ -201,17 +174,6 @@ namespace MvcAdvertizer.Controllers
 
             return View(viewModel);
         }
-
-        public IActionResult GenerateUsersAdvertsWithLock() {
-
-            for (int i = 0; i < 5; i++)
-            {
-                Thread myThread = new Thread(HttpExecutor.ExecuteCreateAdvertsWithLock);
-                myThread.Start();
-            }
-
-            return RedirectToAction("Index", "Home");
-        }        
 
         private AdvertViewModel SetupCreateBeforePost() {
 
@@ -259,23 +221,6 @@ namespace MvcAdvertizer.Controllers
             viewModel.SetupForEditBeforePost(advertDto, allUserDtoList);
 
             return viewModel;
-        }
-
-
-        private bool CheckUsersAdvertLimitCountForExceeded(Guid userId) {
-
-            var limitExceeded = false;
-
-            var maxUserAdvertsCount = usersAdvertsSettings.MaxUserAdvertsCount;
-            var exceptUsersForChecking = usersAdvertsSettings.ExceptUsersForChecking;
-
-            if (!exceptUsersForChecking.Contains(userId.ToString()))
-            {
-                var actualUserAdvertsCount = advertService.CountByUserId(userId);
-                limitExceeded = actualUserAdvertsCount >= maxUserAdvertsCount;
-            }
-
-            return limitExceeded;
         }
 
         private void AttachImageToViewModel(Advert advert, AdvertViewModel viewModel) {

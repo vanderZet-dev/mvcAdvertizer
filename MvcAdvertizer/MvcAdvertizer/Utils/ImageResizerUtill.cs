@@ -6,12 +6,14 @@ namespace MvcAdvertizer.Utils
 {
     public static class ImageResizerUtill
     {
-        public static byte[] ScaledByWidth(byte[] bytes, int width) {
+        public static byte[] ScaledByWidth(byte[] bytes, string widthParam) {
 
             var fullSizeImage = ByteArrayToImage(bytes);
+            var width = int.Parse(widthParam);
+            width = MaxWidthLimiter(width);
             var scaledImage = ScaleImage(fullSizeImage, width);
-            
-            return ImageToByte(scaledImage);  
+
+            return ImageToByte(scaledImage);
         }
 
         private static Image ByteArrayToImage(byte[] byteArrayIn) {
@@ -27,10 +29,10 @@ namespace MvcAdvertizer.Utils
         public static byte[] ImageToByte(Image img) {
             ImageConverter converter = new ImageConverter();
             return (byte[])converter.ConvertTo(img, typeof(byte[]));
-        }         
+        }
 
         public static Image ScaleImage(Image image, int maxWidth) {
-            
+
             var maxHeight = maxWidth;
 
             var ratioX = (double)maxWidth / image.Width;
@@ -46,6 +48,18 @@ namespace MvcAdvertizer.Utils
                 graphics.DrawImage(image, 0, 0, newWidth, newHeight);
 
             return newImage;
+        }
+
+        private static int MaxWidthLimiter(int width) {
+
+            var maxWidth = 2000;
+
+            if (width > maxWidth)
+            {
+                width = maxWidth;
+            }
+
+            return width;
         }
     }
 }

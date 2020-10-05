@@ -164,28 +164,6 @@ namespace MvcAdvertizer.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public async Task<IActionResult> ShowImage(Guid id, int width) {
-
-            var viewModel = new AdvertViewModel();
-
-            var advert = await advertService.FindById(id);
-
-            var advertDto = mapper.Map<AdvertDto>(advert);
-
-            viewModel.AdvertDto = advertDto;
-
-            await AttachImageToViewModel(advert, viewModel);
-
-            var image = viewModel.AdvertDto.Image;
-
-            if (image != null)
-            {
-                viewModel.AdvertDto.Image = ImageResizerUtill.ScaledByWidth(image, width);
-            }
-
-            return View(viewModel);
-        }
-
         private AdvertViewModel SetupCreateBeforePost() {
 
             var viewModel = new AdvertViewModel();

@@ -10,7 +10,8 @@ using System.Linq;
 
 namespace MvcAdvertizer.ViewModels
 {
-    public class AdvertViewModel {
+    public class AdvertViewModel
+    {
 
         public SelectList UserSelectList { get; set; }
 
@@ -20,11 +21,11 @@ namespace MvcAdvertizer.ViewModels
 
         public bool HideImageChooser { get; set; } = true;
 
-        [Display(Name = "Выберите изображение")]  
+        [Display(Name = "Выберите изображение")]
         [AllowedExtensions(new string[] { ".jpg", ".png" }, "Изображение имеет не верный формат")]
         [MaxFileSize(10, "Объем загружаемых файлов не должен превышать 10 мб")]
         public IFormFile ImageFromFile { get; set; }
-                
+
         public string Img() {
 
             if (AdvertDto?.Image != null)
@@ -34,7 +35,7 @@ namespace MvcAdvertizer.ViewModels
 
                 return imgSrc;
             }
-            else return "";            
+            else return "";
         }
 
         public bool ImgExists() {
@@ -53,7 +54,7 @@ namespace MvcAdvertizer.ViewModels
         public string PublishingDate { get; set; } = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss").Replace(' ', 'T');
 
         public bool ShowViewModelPublishingDate { get; set; } = false;
-        
+
         public bool ShowRecaptchaErrorMessage { get; set; } = false;
 
         public bool ShowMaxUserAdvertsCountLimitErrorMessage { get; set; } = false;
@@ -70,11 +71,11 @@ namespace MvcAdvertizer.ViewModels
         }
 
         public void SetupCreateAfterPost(List<UserDto> users) {
-            
+
             AdvertDto.Image = IFromFileUtils.IFormFileToByteArray(ImageFromFile);
 
             ShowViewModelPublishingDate = true;
-            HideImageChooser = false;            
+            HideImageChooser = false;
 
             InitialUserSelectList(users);
             RetrieveIFormFile();
@@ -98,18 +99,18 @@ namespace MvcAdvertizer.ViewModels
             ReadOnly = false;
         }
 
-        public void InitialUserSelectList(List<UserDto> users) {            
+        public void InitialUserSelectList(List<UserDto> users) {
 
             var selectedElement = users.FirstOrDefault(x => x.Id == AdvertDto?.UserId);
-            UserSelectList = new SelectList(users, "Id", "Name", selectedElement);            
+            UserSelectList = new SelectList(users, "Id", "Name", selectedElement);
         }
 
         public void RetrieveIFormFile() {
-                        
+
             if (AdvertDto?.Image != null)
             {
                 ImageFromFile = IFromFileUtils.ByteArrayToIFormFile(AdvertDto.Image);
-            }            
+            }
         }
     }
 }

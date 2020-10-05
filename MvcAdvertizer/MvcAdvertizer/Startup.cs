@@ -9,6 +9,7 @@ using MvcAdvertizer.Services.Interfaces;
 using MvcAdvertizer.Services.Implementations;
 using AutoMapper;
 using MvcAdvertizer.Config;
+using MvcAdvertizer.Config.Middlewares;
 
 namespace MvcAdvertizer
 {
@@ -46,6 +47,8 @@ namespace MvcAdvertizer
             app.UseStaticFiles();
 
             app.UseSession();
+
+            app.UseMiddleware<ImageResizeMiddleware>();
 
             app.UseMvc(routes =>
             {

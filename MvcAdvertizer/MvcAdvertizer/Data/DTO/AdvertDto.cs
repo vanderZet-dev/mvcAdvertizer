@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MvcAdvertizer.Data.DTO
 {
     public class AdvertDto
-    {        
+    {
         public Guid? Id { get; set; }
 
         [Display(Name = "Номер")]
@@ -25,7 +25,9 @@ namespace MvcAdvertizer.Data.DTO
         [StringLength(200, MinimumLength = 5, ErrorMessage = "Длина строки не должна быть от 5 до 200 символов")]
         [Required(ErrorMessage = "Поле должно быть заполнено")]
         public string Content { get; set; }
-                
+
+        public string ImageHash { get; set; }
+
         public byte[] Image { get; set; }
 
         [Display(Name = "Выставьте рейтинг от 1 до 10")]
@@ -42,7 +44,7 @@ namespace MvcAdvertizer.Data.DTO
 
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
-                
+
         public bool? Selected { get; set; } = false;
     }
 }

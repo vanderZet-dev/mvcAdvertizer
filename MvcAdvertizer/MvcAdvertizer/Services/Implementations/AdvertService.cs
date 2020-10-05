@@ -77,8 +77,8 @@ namespace MvcAdvertizer.Services.Implementations
             if (!string.IsNullOrEmpty(searchObject.SearchStringQuery))
             {
                 advertSource = advertSource.Where(s => s.Number.ToString().Equals(searchObject.SearchStringQuery)
-                                       || (searchObject.UserId != null && EF.Functions.Like(s.User.Name.ToUpper(), $"%{searchObject.SearchStringQuery.ToUpper()}%"))
-                                       || EF.Functions.Like(s.Content.ToUpper(), $"%{searchObject.SearchStringQuery.ToUpper()}%")
+                                       || (searchObject.UserId != null && EF.Functions.ILike(s.User.Name, $"%{searchObject.SearchStringQuery}%"))
+                                       || EF.Functions.ILike(s.Content, $"%{searchObject.SearchStringQuery}%")
                                        || s.Rate.ToString().Equals(searchObject.SearchStringQuery)
                                        );
             }

@@ -32,8 +32,6 @@ namespace MvcAdvertizer
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection));
 
             services.AddHttpClient();
-
-            services.AddMemoryCache();
             services.AddSession();
 
             services.AddRazorPages().AddMvcOptions(options => options.EnableEndpointRouting = false);

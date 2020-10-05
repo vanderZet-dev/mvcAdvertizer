@@ -75,9 +75,9 @@ namespace MvcAdvertizer.Controllers
             }
         }
 
-        public IActionResult Create() {
+        public async Task<IActionResult> Create() {
 
-            var viewModel = SetupCreateBeforePost();
+            var viewModel = await SetupCreateBeforePost();
 
             return View(viewModel);
         }
@@ -98,7 +98,7 @@ namespace MvcAdvertizer.Controllers
 
         private async Task<IActionResult> CreateAdvert(AdvertViewModel viewModel) {
 
-            viewModel = SetupCreateAfterPost(viewModel);
+            viewModel = await SetupCreateAfterPost(viewModel);
 
             var advert = mapper.Map<Advert>(viewModel.AdvertDto);
 
@@ -164,20 +164,20 @@ namespace MvcAdvertizer.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        private AdvertViewModel SetupCreateBeforePost() {
+        private async Task<AdvertViewModel> SetupCreateBeforePost() {
 
             var viewModel = new AdvertViewModel();
 
-            var allUserList = userService.FindAll().ToList();
+            var allUserList = await userService.FindAll();
             var allUserDtoList = mapper.Map<List<UserDto>>(allUserList);
             viewModel.SetupCreateBeforePost(allUserDtoList);
 
             return viewModel;
         }
 
-        private AdvertViewModel SetupCreateAfterPost(AdvertViewModel viewModel) {
+        private async Task<AdvertViewModel> SetupCreateAfterPost(AdvertViewModel viewModel) {
 
-            var allUserList = userService.FindAll().ToList();
+            var allUserList = await userService.FindAll();
             var allUserDtoList = mapper.Map<List<UserDto>>(allUserList);
             viewModel.SetupCreateAfterPost(allUserDtoList);
 
@@ -187,7 +187,7 @@ namespace MvcAdvertizer.Controllers
         private async Task<AdvertViewModel> SetupForDetail(Guid advertId, AdvertViewModel viewModel) {
 
             var advert = await advertService.FindById(advertId);
-            var allUserList = userService.FindAll().ToList();
+            var allUserList = await userService.FindAll();
             var allUserDtoList = mapper.Map<List<UserDto>>(allUserList);
             var advertDto = mapper.Map<AdvertDto>(advert);
 
@@ -203,7 +203,7 @@ namespace MvcAdvertizer.Controllers
             var viewModel = new AdvertViewModel();
 
             var advert = await advertService.FindById(advertId);
-            var allUserList = userService.FindAll().ToList();
+            var allUserList = await userService.FindAll();
             var allUserDtoList = mapper.Map<List<UserDto>>(allUserList);
             var advertDto = mapper.Map<AdvertDto>(advert);
 

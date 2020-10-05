@@ -1,13 +1,13 @@
 ﻿using MvcAdvertizer.Data.Models;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MvcAdvertizer.Services.Interfaces
 {
     public interface IUserService
     {
-        IQueryable<User> FindAll();
+        Task<IEnumerable<User>> FindAll();
 
         Task<User> FindById(Guid guid);
 

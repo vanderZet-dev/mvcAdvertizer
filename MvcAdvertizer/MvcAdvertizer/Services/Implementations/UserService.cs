@@ -2,6 +2,8 @@
 using MvcAdvertizer.Data.Models;
 using MvcAdvertizer.Services.Interfaces;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,9 +26,9 @@ namespace MvcAdvertizer.Services.Implementations
             await userRepository.Delete(obj);
         }
 
-        public IQueryable<User> FindAll() {
+        public Task<IEnumerable<User>> FindAll() {
 
-            return userRepository.FindAll();
+            return Task.Run(()=> userRepository.FindAll().AsEnumerable()); 
         }
 
         public async Task<User> FindById(Guid guid) {

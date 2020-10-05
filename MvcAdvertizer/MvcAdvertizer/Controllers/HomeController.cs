@@ -39,7 +39,7 @@ namespace MvcAdvertizer.Controllers
 
             var result = new AdvertListViewModel(searchObject, sortingObject, toaster);
 
-            var allUserList = userService.FindAll().ToList();
+            var allUserList = await userService.FindAll();
             var allUserDtoList = mapper.Map<List<UserDto>>(allUserList);
 
             result.GenerateUserSearchList(allUserDtoList);

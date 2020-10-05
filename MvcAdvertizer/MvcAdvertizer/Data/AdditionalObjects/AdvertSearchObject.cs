@@ -6,13 +6,11 @@ namespace MvcAdvertizer.Data.AdditionalObjects
 {
     public class AdvertSearchObject
     {
-        public int? pageNumber = 1;
         [BindRequired]
-        public int? PageNumber { get => pageNumber; set { if (value != null) pageNumber = value; } }
+        public int PageNumber { get; set; } = 1;
 
-        public int? pageSize = 5;
         [BindRequired]
-        public int? PageSize { get => pageSize; set { if (value != null) pageSize = value; } }
+        public int PageSize { get; set; } = 3;
 
         [BindRequired]
         [DisplayName("Пользователь")]

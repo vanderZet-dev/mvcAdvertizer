@@ -63,7 +63,7 @@ namespace MvcAdvertizer.Services.Implementations
             advertsSouce = ApplyDateSearch(advertsSouce, searchObject);
             advertsSouce = ApplySorting(advertsSouce, sortingObject);
 
-            return await PaginatedList<Advert>.CreateAsync(advertsSouce.AsNoTracking(), searchObject.PageNumber ?? 1, searchObject.PageSize ?? 3);
+            return await PaginatedList<Advert>.CreateAsync(advertsSouce.AsNoTracking(), searchObject.PageNumber, searchObject.PageSize);
         }
 
         private IQueryable<Advert> ApplyDeletedSearch(IQueryable<Advert> advertSource) {

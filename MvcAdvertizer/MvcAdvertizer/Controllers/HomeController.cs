@@ -45,7 +45,7 @@ namespace MvcAdvertizer.Controllers
             result.GenerateUserSearchList(allUserDtoList);
 
             var adverts = await advertService.GetFiltredAdverts(searchObject, result.SortingObject);
-            result.Adverts = new PaginatedList<AdvertDto>(mapper.Map<List<AdvertDto>>(adverts.ToList()), adverts.ItemsCount, adverts.PageIndex, (int)searchObject.pageSize);
+            result.Adverts = new PaginatedList<AdvertDto>(mapper.Map<List<AdvertDto>>(adverts.ToList()), adverts.ItemsCount, adverts.PageIndex, searchObject.PageSize);
 
             return View(result);
         }

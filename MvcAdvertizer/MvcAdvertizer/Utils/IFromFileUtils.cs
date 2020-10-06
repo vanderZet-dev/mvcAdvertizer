@@ -21,10 +21,8 @@ namespace MvcAdvertizer.Utils
 
         public static IFormFile ByteArrayToIFormFile(byte[] bytes) {
 
-            IFormFile file = null;
-            
             var stream = new MemoryStream(bytes);
-            file = new FormFile(stream, 0, bytes.Length, "name", "fileName");            
+            IFormFile file = new FormFile(stream, 0, bytes.Length, "name", "fileName");
 
             return file;
         }

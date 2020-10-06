@@ -78,7 +78,6 @@ namespace MvcAdvertizer.ViewModels
             HideImageChooser = false;
 
             InitialUserSelectList(users);
-            RetrieveIFormFile();
 
             AdvertDto.PublishingDate = Convert.ToDateTime(PublishingDate);
         }

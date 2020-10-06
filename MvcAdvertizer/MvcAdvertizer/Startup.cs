@@ -10,6 +10,9 @@ using MvcAdvertizer.Services.Implementations;
 using AutoMapper;
 using MvcAdvertizer.Config;
 using MvcAdvertizer.Config.Middlewares;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using Microsoft.Extensions.Hosting;
 
 namespace MvcAdvertizer
 {
@@ -42,11 +45,12 @@ namespace MvcAdvertizer
         public void Configure(IApplicationBuilder app) {
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
+
+            app.UseMiddleware<ImageResizeMiddleware>();
+
             app.UseStaticFiles();
 
             app.UseSession();
-
-            app.UseMiddleware<ImageResizeMiddleware>();
 
             app.UseMvc(routes =>
             {

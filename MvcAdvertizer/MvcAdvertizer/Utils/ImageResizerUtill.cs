@@ -10,7 +10,7 @@ namespace MvcAdvertizer.Utils
 
             var fullSizeImage = ByteArrayToImage(bytes);
             var width = int.Parse(widthParam);
-            width = MaxWidthLimiter(width);
+            width = WidthLimiter(width);
             var scaledImage = ScaleImage(fullSizeImage, width);
 
             return ImageToByte(scaledImage);
@@ -50,13 +50,18 @@ namespace MvcAdvertizer.Utils
             return newImage;
         }
 
-        private static int MaxWidthLimiter(int width) {
+        private static int WidthLimiter(int width) {
 
             var maxWidth = 2000;
-
             if (width > maxWidth)
             {
                 width = maxWidth;
+            }
+
+            var minWidth = 10;
+            if (width < minWidth)
+            {
+                width = minWidth;
             }
 
             return width;

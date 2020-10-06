@@ -37,7 +37,9 @@ namespace MvcAdvertizer.Services.Implementations
 
             SavePathValidation();
 
-            string newFileName = DateTime.Now.Ticks + "_" + Guid.NewGuid().ToString();
+            string extension = ParseFileExtension(file.FileName);
+
+            string newFileName = DateTime.Now.Ticks + "_" + Guid.NewGuid().ToString() + "." + extension;
             Directory.CreateDirectory(savePath);
             var filePath = Path.Combine(savePath, newFileName);
 
@@ -55,6 +57,21 @@ namespace MvcAdvertizer.Services.Implementations
             {
                 throw new FileStorageSavePathInvalidException(savePath);
             }
+        }
+
+        private string ParseFileExtension(string fileName) {
+
+            var splitted = fileName.Split(".");
+            var lastElement = splitted.Length - 1;
+
+            if (lastElement <= 0)
+            {
+                throw new Exception("Can not identify extension type.");
+            }
+
+            var extension = splitted[lastElement];
+
+            return extension;
         }
     }
 }

@@ -362,4 +362,4 @@ MvcAdvertizer/MvcAdvertizer/obj/
 MvcAdvertizer/.vs/MvcAdvertizer/DesignTimeBuild/.dtbcache.v2
 
 storage/
-wwwroot/img/
+**/wwwroot/img/
